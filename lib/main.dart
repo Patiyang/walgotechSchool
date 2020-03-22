@@ -14,8 +14,9 @@ class MyApp extends StatelessWidget {
       theme: ThemeData(
         primaryColor: primaryColor,
         accentColor: accentColor,
+        scaffoldBackgroundColor: primaryColor
       ),
-      home: HomePage(title: 'Irene'),
+      home: HomePage(title: 'School Name'),
     );
   }
 }

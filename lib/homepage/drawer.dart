@@ -14,7 +14,7 @@ class DrawerItems extends StatelessWidget {
           ),
            currentAccountPicture: GestureDetector(
             child: new CircleAvatar(
-              backgroundImage: AssetImage('images/profilepic.jpg'),
+              backgroundImage: AssetImage('images/student.jpg'),
             ),
           ),
         )

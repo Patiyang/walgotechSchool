@@ -1,7 +1,11 @@
 import 'package:carousel_pro/carousel_pro.dart';
 import 'package:flutter/material.dart';
 import 'package:walgotech_final/homepage/drawer.dart';
+import 'package:walgotech_final/homepage/modules.dart';
 import 'package:walgotech_final/styling.dart';
+
+import 'carousel.dart';
+import 'customdivider.dart';
 
 class HomePage extends StatefulWidget {
   final String title;
@@ -15,44 +19,52 @@ class _HomePageState extends State<HomePage> {
   _HomePageState();
   @override
   Widget build(BuildContext context) {
-    Widget carousel = new Container(
-      height: 140,
-      color: primaryColor,
-      child: Carousel(
-        boxFit: BoxFit.cover,
-        images: [
-          Image.asset('images/C1.jpg')
-        ],
-        dotBgColor: Colors.transparent,
-        indicatorBgPadding: 5,
-        overlayShadow: false,
-        borderRadius: false,
-        dotSize: 5,
-        animationCurve: Curves.easeOutQuart,
-        autoplay: false,
-        animationDuration: Duration(milliseconds: 1000),
-      ),
-    );
-    return Scaffold(
-      appBar: AppBar(
-        title: Text(widget.title),
-        // automaticallyImplyLeading: false,
-        centerTitle: true,
-        elevation: 0,
-        actions: <Widget>[
-          Padding(
-            padding: const EdgeInsets.all(8.0),
-            child: Icon(Icons.search),
-          )
-        ],
-      ),
-      drawer:new Drawer(child: DrawerItems(),) ,
-      body: ListView(
-        physics: BouncingScrollPhysics(),
-        children: <Widget>[
-          carousel,
-
-        ],
+    return SafeArea(
+      child: Scaffold(
+        appBar: AppBar(
+          leading: Padding(
+            padding: const EdgeInsets.all(17.0),
+            child: CircleAvatar(
+              backgroundImage: AssetImage('images/student.jpg'),
+            ),
+          ),
+          title: Text(widget.title),
+          // automaticallyImplyLeading: false,
+          centerTitle: true,
+          elevation: 0,
+          actions: <Widget>[
+            Padding(
+              padding: const EdgeInsets.all(8.0),
+              child: Icon(Icons.search),
+            )
+          ],
+        ),
+        // drawer: new Drawer(
+        //   child: DrawerItems(),
+        // ),
+        body: Column(
+          children: <Widget>[
+            ImageCarousel(),
+            Expanded(
+              child: Stack(
+                children: <Widget>[
+                  Container(
+                    height: MediaQuery.of(context).size.height,
+                    child: Image.asset(
+                      'images/student.jpg',
+                      fit: BoxFit.cover,
+                    ),
+                  ),
+                  Container(
+                    height: MediaQuery.of(context).size.height,
+                    decoration: BoxDecoration(color: accentColor.withOpacity(.5)),
+                  ),
+                  Modules()
+                ],
+              ),
+            )
+          ],
+        ),
       ),
     );
   }
