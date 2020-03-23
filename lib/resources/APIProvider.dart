@@ -2,6 +2,7 @@ import 'dart:convert';
 
 import 'package:http/http.dart' show Client;
 import 'package:shared_preferences/shared_preferences.dart';
+import 'package:walgotech_final/models/contacts.dart';
 import 'package:walgotech_final/models/users.dart';
 
 class DBManagement {
@@ -41,6 +42,8 @@ String url = 'http://10.0.2.2:8000/backend/operations/login.php';
       throw Exception('cannot add the user to pref list');
     }
   }
+
+  
 
   saveUName(String jwt) async {
     SharedPreferences preferences = await SharedPreferences.getInstance();

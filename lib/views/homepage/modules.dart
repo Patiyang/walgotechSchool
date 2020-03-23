@@ -127,7 +127,7 @@ class Modules extends StatelessWidget {
               children: <Widget>[
                 CircleAvatar(
                   radius: 35,
-                  backgroundImage: AssetImage('images/syllabus.png'),
+                  backgroundImage: AssetImage('images/modules/syllabus.png'),
                 ),
                 HorizontalDIvider(),
                 Text('Syllabus/Attendance', style: modules)

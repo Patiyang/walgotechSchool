@@ -1,6 +1,7 @@
 import 'dart:async';
 import 'package:path/path.dart';
 import 'package:sqflite/sqflite.dart';
+import 'package:walgotech_final/models/contacts.dart';
 import 'package:walgotech_final/models/sms.dart';
 
 Database db;
@@ -18,6 +19,7 @@ class WalgotechDB {
 class SmsManager {
   Database _database;
   static const databaseName = 'SMS.db';
+  static const number = 'number';
   static const formOne = 'formOne';
   static const id = 'id';
   static const message = 'message';
@@ -81,5 +83,27 @@ class SmsManager {
   Future<void> deleteAll() async {
     await openDB();
     await _database.delete(formOne);
+  }
+}
+
+class ContactsManager {
+  Database _database;
+  static const databaseName = 'SMS.db';
+  static const id = 'id';
+  static const number = 'number';
+  static const tableName = 'formOne';
+
+  Future openDB() async {
+    if (_database == null) {
+      _database = await openDatabase(join(await getDatabasesPath(), ContactsManager.databaseName),
+          version: 1, onCreate: (Database db, int version) async {
+        await db.execute('CREATE TABLE formOne (id INTEGER PRIMARYKEY autoIncrement, number TEXT, )');
+      });
+    }
+  }
+
+  Future<int> addContact(Contacts contact) async {
+    await openDB();
+    return await _database.insert(ContactsManager.databaseName, contact.toMap());
   }
 }

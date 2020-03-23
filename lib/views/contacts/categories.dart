@@ -2,6 +2,8 @@ import 'package:curved_navigation_bar/curved_navigation_bar.dart';
 import 'package:flutter/material.dart';
 import 'package:walgotech_final/styling.dart';
 
+import 'paentsCategories.dart';
+
 class AllContactCategories extends StatefulWidget {
   @override
   _AllContactCategoriesState createState() => _AllContactCategoriesState();
@@ -25,7 +27,7 @@ class _AllContactCategoriesState extends State<AllContactCategories> {
         elevation: .7,
         centerTitle: true,
         leading: Padding(
-          padding: const EdgeInsets.all(3.0),
+          padding: const EdgeInsets.all(6.0),
           child: Hero(
               tag: 'contacts',
               child: CircleAvatar(
@@ -35,18 +37,18 @@ class _AllContactCategoriesState extends State<AllContactCategories> {
         title: Text('SMS Categories'),
       ),
       bottomNavigationBar: CurvedNavigationBar(
-        // color: p,
+        color: Colors.black54,
         key: barKey,
         animationDuration: Duration(milliseconds: 150),
         index: 1,
         height: 45,
         animationCurve: Curves.easeInOut,
-        buttonBackgroundColor: Colors.white,
+        buttonBackgroundColor: Colors.black54,
         backgroundColor: primaryColor,
         items: <Widget>[
-          Icon(Icons.face, size: 19),
-          Icon(Icons.people, size: 19),
-          Icon(Icons.group_work, size: 19)
+          Icon(Icons.face, size: 19,color: Colors.white),
+          Icon(Icons.people, size: 19,color:Colors.white),
+          Icon(Icons.group_work, size: 19,color:Colors.white)
         ],
         onTap: (index) {
           debugPrint('current index is $index');
@@ -59,7 +61,7 @@ class _AllContactCategoriesState extends State<AllContactCategories> {
           ? Center(child: Text('Teachers\'s Page'))
           : Container(
               child: page == 1
-                  ? Container(child: Center(child: Text('Parents Page')))
+                  ? Container(child: Center(child: ParentsCategory()))
                   : Container(child: Center(child: Text('Staff Page'))),
             ),
     );
