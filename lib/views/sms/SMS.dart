@@ -1,8 +1,10 @@
 import 'package:flutter/material.dart';
+import 'package:shared_preferences/shared_preferences.dart';
 import 'package:walgotech_final/database/database.dart';
 import 'package:walgotech_final/models/sms.dart';
 import 'package:walgotech_final/styling.dart';
-import 'package:walgotech_final/views/contacts/parentsHistory.dart';
+
+import 'parents/parentsHistory.dart';
 
 class MessageModule extends StatefulWidget {
   @override
@@ -11,8 +13,10 @@ class MessageModule extends StatefulWidget {
 
 class _FormOneState extends State<MessageModule> {
   final SmsManager _smsManager = new SmsManager();
+  String _userName;
+  Text userName;
   SMS sms;
-  List<SMS> smsList;
+ 
   final messageController = new TextEditingController();
   final recipentController = new TextEditingController();
   final formKey = new GlobalKey<FormState>();
@@ -21,7 +25,7 @@ class _FormOneState extends State<MessageModule> {
   @override
   Widget build(BuildContext context) {
     return Material(
-      // color: Colors.white,
+      color: Colors.white,
       child: SingleChildScrollView(
               child: Column(
           // physics: BouncingScrollPhysics(),
@@ -32,12 +36,12 @@ class _FormOneState extends State<MessageModule> {
                 children: <Widget>[
                   Padding(
                     padding: const EdgeInsets.all(8.0),
-                    child: TextFormField(
-                      maxLines: 6,
+                    child: TextFormField(readOnly: true,
+                      maxLines: 4,
                       controller: messageController,
                       validator: (v) => v.isNotEmpty ? null : 'message is empty',
                       decoration:
-                          InputDecoration(hintText: 'Type in Phone Numbers', border: OutlineInputBorder()),
+                          InputDecoration(hintText: 'Pick a Category above', border: OutlineInputBorder()),
                     ),
                   ),
                   Padding(
@@ -47,7 +51,7 @@ class _FormOneState extends State<MessageModule> {
                       controller: recipentController,
                       validator: (v) => v.isNotEmpty ? null : 'recipents are empty',
                       decoration: InputDecoration(
-                          enabled: true, hintText: 'Type in Message', border: OutlineInputBorder()),
+                          enabled: true, hintText: 'Type in Message', border: OutlineInputBorder(),),
                     ),
                   ),
                   MaterialButton(
@@ -88,6 +92,18 @@ class _FormOneState extends State<MessageModule> {
     );
   }
 
+Future getUserName() async {
+    SharedPreferences prefs = await SharedPreferences.getInstance();
+    setState(() {
+      _userName = prefs.getString('userName');
+      setState(() {
+        userName = new Text(
+          _userName.toUpperCase(),
+          style: TextStyle(fontFamily: 'Sans'),
+        );
+      });
+    });
+  }
   void sendMessage(BuildContext context) {
     if (formKey.currentState.validate()) {
       if (sms == null) {

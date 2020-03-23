@@ -1,8 +1,8 @@
 import 'package:flutter/material.dart';
+import 'package:shared_preferences/shared_preferences.dart';
 import 'package:walgotech_final/database/database.dart';
 import 'package:walgotech_final/models/sms.dart';
 
-import '../../styling.dart';
 
 class ParentHistory extends StatefulWidget {
   @override
@@ -11,7 +11,14 @@ class ParentHistory extends StatefulWidget {
 
 class _ParentHistoryState extends State<ParentHistory> {
   final SmsManager _smsManager = new SmsManager();
+  Text userName;
+  String _userName;
   SMS sms;
+  @override
+  void initState() { 
+    super.initState();
+    getUserName();
+  }
   List<SMS> smsList;
   final messageController = new TextEditingController();
   final recipentController = new TextEditingController();
@@ -45,27 +52,27 @@ class _ParentHistoryState extends State<ParentHistory> {
                   padding: const EdgeInsets.all(6.0),
                   child: Material(
                     shape: RoundedRectangleBorder(borderRadius: BorderRadius.all(Radius.circular(10))),
-                    color: Colors.white70,
+                    color: Colors.black38,
                     child: ListTile(
                       title: Text('${message.message}'),
-                      leading: Text('${message.sender}:'),
-                      subtitle: Text('${message.dateTime}'),
+                      leading: userName,
+                      subtitle: Text('Sent on: ${message.dateTime}'),
                       trailing: Container(
-                        width: 115,
-                        child: Row(
+                        height: 115,
+                        child: Column(
                           children: <Widget>[
-                            IconButton(
-                                icon: Icon(
-                                  Icons.delete,
-                                  color: Colors.black,
-                                ),
-                                onPressed: () {
-                                  _smsManager.deleteAll();
-                                  setState(() {
-                                    // smsList.removeAt(index);
-                                  });
-                                }),
-                            SizedBox(width: 10),
+                            // IconButton(
+                            //     icon: Icon(
+                            //       Icons.delete,
+                            //       color: Colors.black,
+                            //     ),
+                            //     onPressed: () {
+                            //       _smsManager.deleteAll();
+                            //       setState(() {
+                            //         // smsList.removeAt(index);
+                            //       });
+                            //     }),
+                            // SizedBox(width: 10),
                             IconButton(icon: Icon(Icons.edit), onPressed: () {})
                           ],
                         ),
@@ -80,5 +87,17 @@ class _ParentHistoryState extends State<ParentHistory> {
         },
       ),
     );
+  }
+  Future getUserName() async {
+    SharedPreferences prefs = await SharedPreferences.getInstance();
+    setState(() {
+      _userName = prefs.getString('userName');
+      setState(() {
+        userName = new Text(
+          _userName.toUpperCase(),
+          style: TextStyle(fontFamily: 'Sans'),
+        );
+      });
+    });
   }
 }

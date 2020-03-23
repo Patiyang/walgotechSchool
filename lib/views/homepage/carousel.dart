@@ -26,6 +26,6 @@ class ImageCarousel extends StatelessWidget {
         autoplay: true,
         animationDuration: Duration(milliseconds: 1000),
       ),
-    );;
+    );
   }
 }

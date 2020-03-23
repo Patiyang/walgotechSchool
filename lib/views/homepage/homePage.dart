@@ -1,10 +1,10 @@
-import 'package:carousel_pro/carousel_pro.dart';
 import 'package:flutter/material.dart';
-
+import 'package:shared_preferences/shared_preferences.dart';
+import 'package:walgotech_final/helperClasses/error.dart';
+import 'package:walgotech_final/helperClasses/loading.dart';
 import 'package:walgotech_final/styling.dart';
-
+import 'package:walgotech_final/views/login/login.dart';
 import 'carousel.dart';
-import 'customdivider.dart';
 import 'modules.dart';
 
 class HomePage extends StatefulWidget {
@@ -16,20 +16,60 @@ class HomePage extends StatefulWidget {
 }
 
 class _HomePageState extends State<HomePage> {
-  _HomePageState();
+  String name = '';
+  @override
+  void initState() {
+    signInUser();
+    name = '';
+    super.initState();
+  }
+
+  // _HomePageState();
   @override
   Widget build(BuildContext context) {
+    return FutureBuilder(
+      future: signInUser(),
+      builder: (BuildContext context, AsyncSnapshot snapshot) {
+        if (snapshot.hasData && snapshot.connectionState == ConnectionState.done) {
+          name = snapshot.data;
+          print(snapshot.connectionState.toString());
+          return name.length > 0 ? getHomePage() : Login(loginPressed: login);
+        }
+        if (snapshot.hasError || snapshot.connectionState == ConnectionState.waiting) {
+          return Loading();
+        }
+        return ErrorLog();
+      },
+    );
+  }
+
+  void login() {
+    setState(() {
+      build(context);
+    });
+  }
+
+  Future signInUser() async {
+    name = await getUName();
+    if (name != null) {
+      if (name.length > 0) {}
+    } else {
+      name = '';
+    }
+    return name;
+  }
+
+  Widget getHomePage() {
     return SafeArea(
       child: Scaffold(
         appBar: AppBar(
           leading: Padding(
-            padding: const EdgeInsets.all(17.0),
+            padding: const EdgeInsets.all(10.0),
             child: CircleAvatar(
               backgroundImage: AssetImage('images/student.jpg'),
             ),
           ),
           title: Text(widget.title),
-          // automaticallyImplyLeading: false,
           centerTitle: true,
           elevation: 0,
           actions: <Widget>[
@@ -39,9 +79,6 @@ class _HomePageState extends State<HomePage> {
             )
           ],
         ),
-        // drawer: new Drawer(
-        //   child: DrawerItems(),
-        // ),
         body: Column(
           children: <Widget>[
             ImageCarousel(),
@@ -67,5 +104,10 @@ class _HomePageState extends State<HomePage> {
         ),
       ),
     );
+  }
+
+  getUName() async {
+    SharedPreferences preferences = await SharedPreferences.getInstance();
+    return preferences.getString('userName');
   }
 }

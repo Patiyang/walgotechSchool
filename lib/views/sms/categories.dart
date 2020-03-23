@@ -2,7 +2,8 @@ import 'package:curved_navigation_bar/curved_navigation_bar.dart';
 import 'package:flutter/material.dart';
 import 'package:walgotech_final/styling.dart';
 
-import 'paentsCategories.dart';
+import 'parents/parentsCategories.dart';
+
 
 class AllContactCategories extends StatefulWidget {
   @override
@@ -23,6 +24,7 @@ class _AllContactCategoriesState extends State<AllContactCategories> {
   Widget build(BuildContext context) {
     // var _selectedIndex;
     return Scaffold(
+      // backgroundColor: Colors.white,
       appBar: AppBar(
         elevation: .7,
         centerTitle: true,
@@ -37,14 +39,14 @@ class _AllContactCategoriesState extends State<AllContactCategories> {
         title: Text('SMS Categories'),
       ),
       bottomNavigationBar: CurvedNavigationBar(
-        color: Colors.black54,
+        color: accentColor,
         key: barKey,
         animationDuration: Duration(milliseconds: 150),
         index: 1,
         height: 45,
         animationCurve: Curves.easeInOut,
-        buttonBackgroundColor: Colors.black54,
-        backgroundColor: primaryColor,
+        buttonBackgroundColor: accentColor,
+        backgroundColor: Colors.white,
         items: <Widget>[
           Icon(Icons.face, size: 19,color: Colors.white),
           Icon(Icons.people, size: 19,color:Colors.white),
