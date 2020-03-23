@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
-import 'package:walgotech_final/homepage/homePage.dart';
 import 'package:walgotech_final/styling.dart';
+
+import 'views/homepage/homePage.dart';
 
 void main() => runApp(MyApp());
 

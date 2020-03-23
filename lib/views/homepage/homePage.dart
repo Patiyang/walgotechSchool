@@ -1,11 +1,11 @@
 import 'package:carousel_pro/carousel_pro.dart';
 import 'package:flutter/material.dart';
-import 'package:walgotech_final/homepage/drawer.dart';
-import 'package:walgotech_final/homepage/modules.dart';
+
 import 'package:walgotech_final/styling.dart';
 
 import 'carousel.dart';
 import 'customdivider.dart';
+import 'modules.dart';
 
 class HomePage extends StatefulWidget {
   final String title;

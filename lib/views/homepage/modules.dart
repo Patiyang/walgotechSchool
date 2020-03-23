@@ -1,6 +1,8 @@
 import 'package:flutter/material.dart';
-import 'package:walgotech_final/homepage/customdivider.dart';
 import 'package:walgotech_final/styling.dart';
+import 'package:walgotech_final/views/contacts/allContactCategories.dart';
+
+import 'customdivider.dart';
 
 class Modules extends StatelessWidget {
   @override
@@ -15,7 +17,11 @@ class Modules extends StatelessWidget {
           children: <Widget>[
             Row(
               children: <Widget>[
-                CircleAvatar(child: Icon(Icons.message, size: 35, color: accentColor), radius: 35, backgroundColor: primaryColor),
+                CircleAvatar(
+                  // child: Icon(Icons.message, size: 35, color: accentColor),
+                  radius: 35,
+                  backgroundImage: AssetImage('images/modules/registration.png'),
+                ),
                 HorizontalDIvider(),
                 Text('Registration & profiles', style: modules)
               ],
@@ -24,7 +30,9 @@ class Modules extends StatelessWidget {
             Row(
               children: <Widget>[
                 CircleAvatar(
-                    child: Icon(Icons.library_books, size: 35, color: accentColor), radius: 35, backgroundColor: primaryColor),
+                  radius: 35,
+                  backgroundImage: AssetImage('images/modules/exam.png'),
+                ),
                 HorizontalDIvider(),
                 Text('Exams', style: modules)
               ],
@@ -33,25 +41,39 @@ class Modules extends StatelessWidget {
             Row(
               children: <Widget>[
                 CircleAvatar(
-                    child: Icon(Icons.library_books, size: 35, color: accentColor), radius: 35, backgroundColor: primaryColor),
+                  radius: 35,
+                  backgroundImage: AssetImage('images/modules/finance.png'),
+                ),
                 HorizontalDIvider(),
                 Text('Accounts & Finance', style: modules)
               ],
             ),
             CustomDivider(),
-            Row(
-              children: <Widget>[
-                CircleAvatar(
-                    child: Icon(Icons.library_books, size: 35, color: accentColor), radius: 35, backgroundColor: primaryColor),
-                HorizontalDIvider(),
-                Text('SMS/Notifications', style: modules)
-              ],
+            GestureDetector(
+              onTap: () {
+                Navigator.push(context, MaterialPageRoute(builder: (_) => AllContactCategories()));
+              },
+              child: Row(
+                children: <Widget>[
+                  Hero(
+                    tag: 'contacts',
+                    child: CircleAvatar(
+                      radius: 35,
+                      backgroundImage: AssetImage('images/modules/msg.jpg'),
+                    ),
+                  ),
+                  HorizontalDIvider(),
+                  Text('SMS/Notifications', style: modules)
+                ],
+              ),
             ),
             CustomDivider(),
             Row(
               children: <Widget>[
                 CircleAvatar(
-                    child: Icon(Icons.library_books, size: 35, color: accentColor), radius: 35, backgroundColor: primaryColor),
+                  radius: 35,
+                  backgroundImage: AssetImage('images/modules/biometrics.png'),
+                ),
                 HorizontalDIvider(),
                 Text('Biometrics', style: modules)
               ],
@@ -60,7 +82,9 @@ class Modules extends StatelessWidget {
             Row(
               children: <Widget>[
                 CircleAvatar(
-                    child: Icon(Icons.library_books, size: 35, color: accentColor), radius: 35, backgroundColor: primaryColor),
+                  radius: 35,
+                  backgroundImage: AssetImage('images/modules/payroll.png'),
+                ),
                 HorizontalDIvider(),
                 Text('HR/Payroll', style: modules)
               ],
@@ -69,7 +93,9 @@ class Modules extends StatelessWidget {
             Row(
               children: <Widget>[
                 CircleAvatar(
-                    child: Icon(Icons.library_books, size: 35, color: accentColor), radius: 35, backgroundColor: primaryColor),
+                  radius: 35,
+                  backgroundImage: AssetImage('images/modules/tt.png'),
+                ),
                 HorizontalDIvider(),
                 Text('Time Table', style: modules)
               ],
@@ -78,7 +104,9 @@ class Modules extends StatelessWidget {
             Row(
               children: <Widget>[
                 CircleAvatar(
-                    child: Icon(Icons.library_books, size: 35, color: accentColor), radius: 35, backgroundColor: primaryColor),
+                  radius: 35,
+                  backgroundImage: AssetImage('images/modules/inventory.jpg'),
+                ),
                 HorizontalDIvider(),
                 Text('Inventory', style: modules)
               ],
@@ -87,7 +115,9 @@ class Modules extends StatelessWidget {
             Row(
               children: <Widget>[
                 CircleAvatar(
-                    child: Icon(Icons.library_books, size: 35, color: accentColor), radius: 35, backgroundColor: primaryColor),
+                  radius: 35,
+                  backgroundImage: AssetImage('images/modules/lib.png'),
+                ),
                 HorizontalDIvider(),
                 Text('Library', style: modules)
               ],
@@ -96,7 +126,9 @@ class Modules extends StatelessWidget {
             Row(
               children: <Widget>[
                 CircleAvatar(
-                    child: Icon(Icons.library_books, size: 35, color: accentColor), radius: 35, backgroundColor: primaryColor),
+                  radius: 35,
+                  backgroundImage: AssetImage('images/syllabus.png'),
+                ),
                 HorizontalDIvider(),
                 Text('Syllabus/Attendance', style: modules)
               ],
@@ -105,7 +137,9 @@ class Modules extends StatelessWidget {
             Row(
               children: <Widget>[
                 CircleAvatar(
-                    child: Icon(Icons.library_books, size: 35, color: accentColor), radius: 35, backgroundColor: primaryColor),
+                  radius: 35,
+                  backgroundImage: AssetImage('images/modules/studentsavings.png'),
+                ),
                 HorizontalDIvider(),
                 Text('Pocket Money/Club Savings', style: modules)
               ],
@@ -114,7 +148,9 @@ class Modules extends StatelessWidget {
             Row(
               children: <Widget>[
                 CircleAvatar(
-                    child: Icon(Icons.library_books, size: 35, color: accentColor), radius: 35, backgroundColor: primaryColor),
+                  radius: 35,
+                  backgroundImage: AssetImage('images/modules/discipline.png'),
+                ),
                 HorizontalDIvider(),
                 Text('Student Behaviour', style: modules)
               ],
