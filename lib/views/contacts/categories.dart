@@ -1,7 +1,6 @@
 import 'package:curved_navigation_bar/curved_navigation_bar.dart';
 import 'package:flutter/material.dart';
 import 'package:walgotech_final/styling.dart';
-import 'package:walgotech_final/views/contacts/formOne.dart';
 
 class AllContactCategories extends StatefulWidget {
   @override
@@ -13,6 +12,12 @@ class _AllContactCategoriesState extends State<AllContactCategories> {
   final barKey = GlobalKey();
 
   @override
+  @override
+  void initState() {
+    super.initState();
+    page = 1;
+  }
+
   Widget build(BuildContext context) {
     // var _selectedIndex;
     return Scaffold(
@@ -46,23 +51,17 @@ class _AllContactCategoriesState extends State<AllContactCategories> {
         onTap: (index) {
           debugPrint('current index is $index');
           setState(() {
-            page=index;
+            page = index;
           });
         },
       ),
-      body: Container(
-        child:page==0? Column(
-          children: <Widget>[
-            Center(child: Text(page.toString())),
-            RaisedButton(onPressed: () {
-
-              Navigator.push(context, MaterialPageRoute(builder: (_)=>FormOne()));
-            }),
-          ],
-        ):Container(
-          child: page==1?Container(child: Text('parents widget'),):Container(child: Text('dcdcdc'),),
-        )
-      ),
+      body: page == 0
+          ? Center(child: Text('Teachers\'s Page'))
+          : Container(
+              child: page == 1
+                  ? Container(child: Center(child: Text('Parents Page')))
+                  : Container(child: Center(child: Text('Staff Page'))),
+            ),
     );
   }
 }

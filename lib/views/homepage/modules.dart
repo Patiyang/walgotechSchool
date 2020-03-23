@@ -1,6 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:walgotech_final/styling.dart';
-import 'package:walgotech_final/views/contacts/allContactCategories.dart';
+import 'package:walgotech_final/views/contacts/categories.dart';
 
 import 'customdivider.dart';
 
