@@ -1,5 +1,4 @@
 import 'package:flutter/material.dart';
-import 'package:shared_preferences/shared_preferences.dart';
 import 'package:http/http.dart' show Client;
 import 'dart:convert';
 import 'package:walgotech_final/database/database.dart';
@@ -22,7 +21,7 @@ class _ParentsCategoryState extends State<ParentsCategory> {
   final recipentController = new TextEditingController();
   final formKey = new GlobalKey<FormState>();
   final recipent = <String>[];
-  List<Contacts> contactsList;
+  List<ParentsContacts> contactsList;
   static final individual = 'Individual Contacts';
   static final allParents = 'All Parents';
   static final form1 = 'Form1';
@@ -52,7 +51,6 @@ class _ParentsCategoryState extends State<ParentsCategory> {
 
   @override
   Widget build(BuildContext context) {
-    var selectedContacts;
     return Material(
       child: Padding(
         padding: const EdgeInsets.symmetric(vertical: 8.0),
@@ -138,7 +136,7 @@ class _ParentsCategoryState extends State<ParentsCategory> {
                                             shrinkWrap: true,
                                             itemCount: contactsList == null ? 0 : contactsList.length,
                                             itemBuilder: (BuildContext context, int index) {
-                                              Contacts contacts = contactsList[index];
+                                              ParentsContacts contacts = contactsList[index];
 
                                               return Text(contacts.motherNumber +
                                                   "," +
@@ -179,7 +177,7 @@ class _ParentsCategoryState extends State<ParentsCategory> {
                                             shrinkWrap: true,
                                             itemCount: contactsList == null ? 0 : contactsList.length,
                                             itemBuilder: (BuildContext context, int index) {
-                                              Contacts contacts = contactsList[index];
+                                              ParentsContacts contacts = contactsList[index];
                                               return Text(contacts.fatherNumber +
                                                   "," +
                                                   contacts.guardianNumber +
@@ -219,7 +217,7 @@ class _ParentsCategoryState extends State<ParentsCategory> {
                                             shrinkWrap: true,
                                             itemCount: contactsList == null ? 0 : contactsList.length,
                                             itemBuilder: (BuildContext context, int index) {
-                                              Contacts contacts = contactsList[index];
+                                              ParentsContacts contacts = contactsList[index];
                                               return Text(contacts.fatherNumber +
                                                   "," +
                                                   contacts.guardianNumber +
@@ -259,8 +257,9 @@ class _ParentsCategoryState extends State<ParentsCategory> {
                                             shrinkWrap: true,
                                             itemCount: contactsList == null ? 0 : contactsList.length,
                                             itemBuilder: (BuildContext context, int index) {
-                                              Contacts contacts = contactsList[index];
-                                              return Text(contacts.fatherNumber+contacts.guardianNumber +
+                                              ParentsContacts contacts = contactsList[index];
+                                              return Text(contacts.fatherNumber +
+                                                  contacts.guardianNumber +
                                                   "," +
                                                   contacts.motherNumber);
                                             },
@@ -297,7 +296,7 @@ class _ParentsCategoryState extends State<ParentsCategory> {
                                             shrinkWrap: true,
                                             itemCount: contactsList == null ? 0 : contactsList.length,
                                             itemBuilder: (BuildContext context, int index) {
-                                              Contacts contacts = contactsList[index];
+                                              ParentsContacts contacts = contactsList[index];
                                               return Text(contacts.fatherNumber +
                                                   "," +
                                                   contacts.guardianNumber +
@@ -402,7 +401,7 @@ class _ParentsCategoryState extends State<ParentsCategory> {
     final Map result = json.decode(response.body);
     if (response.statusCode == 200) {
       for (int i = 0; i < result['contacts'].length; i++) {
-        Contacts contacts = new Contacts(
+        ParentsContacts contacts = new ParentsContacts(
           fatherNumber: result['contacts'][i]['fatherphone'],
           motherNumber: result['contacts'][i]['motherphone'],
           guardianNumber: result['contacts'][i]['guardianphone'],

@@ -3,20 +3,20 @@ import 'package:shared_preferences/shared_preferences.dart';
 import 'package:walgotech_final/database/database.dart';
 import 'package:walgotech_final/models/sms.dart';
 
-class ParentHistory extends StatefulWidget {
+class TeachersHistory extends StatefulWidget {
   @override
-  _ParentHistoryState createState() => _ParentHistoryState();
+  _TeachersHistoryState createState() => _TeachersHistoryState();
 }
 
-class _ParentHistoryState extends State<ParentHistory> {
+class _TeachersHistoryState extends State<TeachersHistory> {
   final SmsManager _smsManager = new SmsManager();
   Text userName;
   String _userName;
   SMS sms;
   @override
   void initState() {
-    super.initState();
     getUserName();
+    super.initState();
   }
 
   List<SMS> smsList;
@@ -35,10 +35,10 @@ class _ParentHistoryState extends State<ParentHistory> {
             }),
         elevation: .2,
         centerTitle: true,
-        title: Text('Parents Messages History'),
+        title: Text('Teachers Messages History'),
       ),
       body: FutureBuilder(
-        future: _smsManager.getParentsSMSList(),
+        future: _smsManager.getTeachersSMSList(),
         builder: (BuildContext context, AsyncSnapshot snapshot) {
           if (snapshot.hasData) {
             smsList = snapshot.data;
@@ -79,7 +79,7 @@ class _ParentHistoryState extends State<ParentHistory> {
           return CircularProgressIndicator();
         },
       ),
-    );
+    );;
   }
 
   Future getUserName() async {
