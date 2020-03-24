@@ -15,8 +15,8 @@ class DBManagement {
         }));
     final Map result = json.decode(response.body);
     if (response.statusCode == 200) {
-      saveContacts(result['contacts']);
-      saveUName(result['userName']);
+     await saveContacts(result['contacts']);
+     await saveUName(result['userName']);
     } else {
       throw Exception('cannot add the user to pref list');
     }

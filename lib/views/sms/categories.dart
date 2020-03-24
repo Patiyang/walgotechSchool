@@ -1,9 +1,7 @@
 import 'package:curved_navigation_bar/curved_navigation_bar.dart';
 import 'package:flutter/material.dart';
 import 'package:walgotech_final/styling.dart';
-
 import 'parents/parentsCategories.dart';
-
 
 class AllContactCategories extends StatefulWidget {
   @override
@@ -13,8 +11,6 @@ class AllContactCategories extends StatefulWidget {
 class _AllContactCategoriesState extends State<AllContactCategories> {
   int page = 0;
   final barKey = GlobalKey();
-
-  @override
   @override
   void initState() {
     super.initState();
@@ -48,9 +44,9 @@ class _AllContactCategoriesState extends State<AllContactCategories> {
         buttonBackgroundColor: accentColor,
         backgroundColor: Colors.white,
         items: <Widget>[
-          Icon(Icons.face, size: 19,color: Colors.white),
-          Icon(Icons.people, size: 19,color:Colors.white),
-          Icon(Icons.group_work, size: 19,color:Colors.white)
+          Icon(Icons.face, size: 19, color: Colors.white),
+          Icon(Icons.people, size: 19, color: Colors.white),
+          Icon(Icons.group_work, size: 19, color: Colors.white)
         ],
         onTap: (index) {
           debugPrint('current index is $index');
@@ -63,7 +59,7 @@ class _AllContactCategoriesState extends State<AllContactCategories> {
           ? Center(child: Text('Teachers\'s Page'))
           : Container(
               child: page == 1
-                  ? Container(child: Center(child: ParentsCategory()))
+                  ? ParentsCategory()
                   : Container(child: Center(child: Text('Staff Page'))),
             ),
     );

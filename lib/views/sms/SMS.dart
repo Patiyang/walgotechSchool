@@ -6,12 +6,12 @@ import 'package:walgotech_final/styling.dart';
 
 import 'parents/parentsHistory.dart';
 
-class MessageModule extends StatefulWidget {
+class SendMessage extends StatefulWidget {
   @override
-  _FormOneState createState() => _FormOneState();
+  _SendMessageState createState() => _SendMessageState();
 }
 
-class _FormOneState extends State<MessageModule> {
+class _SendMessageState extends State<SendMessage> {
   final SmsManager _smsManager = new SmsManager();
   String _userName;
   Text userName;
@@ -61,7 +61,7 @@ class _FormOneState extends State<MessageModule> {
                     minWidth: MediaQuery.of(context).size.width * .6,
                     child: Text(
                       'send',
-                      style: categories,
+                      style: categoriesStyle,
                     ),
                     onPressed: () {
                       sendMessage(context);
@@ -76,7 +76,7 @@ class _FormOneState extends State<MessageModule> {
                       minWidth: MediaQuery.of(context).size.width * .6,
                       child: Text(
                         'View History',
-                        style: categories,
+                        style: categoriesStyle,
                       ),
                       onPressed: () {
                         Navigator.push(context, MaterialPageRoute(builder: (_)=>ParentHistory()));
@@ -90,19 +90,6 @@ class _FormOneState extends State<MessageModule> {
         ),
       ),
     );
-  }
-
-Future getUserName() async {
-    SharedPreferences prefs = await SharedPreferences.getInstance();
-    setState(() {
-      _userName = prefs.getString('userName');
-      setState(() {
-        userName = new Text(
-          _userName.toUpperCase(),
-          style: TextStyle(fontFamily: 'Sans'),
-        );
-      });
-    });
   }
   void sendMessage(BuildContext context) {
     if (formKey.currentState.validate()) {

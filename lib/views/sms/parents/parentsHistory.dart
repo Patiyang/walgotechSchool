@@ -3,7 +3,6 @@ import 'package:shared_preferences/shared_preferences.dart';
 import 'package:walgotech_final/database/database.dart';
 import 'package:walgotech_final/models/sms.dart';
 
-
 class ParentHistory extends StatefulWidget {
   @override
   _ParentHistoryState createState() => _ParentHistoryState();
@@ -15,10 +14,11 @@ class _ParentHistoryState extends State<ParentHistory> {
   String _userName;
   SMS sms;
   @override
-  void initState() { 
+  void initState() {
     super.initState();
     getUserName();
   }
+
   List<SMS> smsList;
   final messageController = new TextEditingController();
   final recipentController = new TextEditingController();
@@ -54,26 +54,19 @@ class _ParentHistoryState extends State<ParentHistory> {
                     shape: RoundedRectangleBorder(borderRadius: BorderRadius.all(Radius.circular(10))),
                     color: Colors.black38,
                     child: ListTile(
-                      title: Text('${message.message}'),
+                      title: Text('Message: ${message.message}'),
                       leading: userName,
-                      subtitle: Text('Sent on: ${message.dateTime}'),
+                      subtitle: Text('Sent on: \n${message.dateTime}'),
                       trailing: Container(
                         height: 115,
                         child: Column(
+                          mainAxisAlignment: MainAxisAlignment.start,
                           children: <Widget>[
-                            // IconButton(
-                            //     icon: Icon(
-                            //       Icons.delete,
-                            //       color: Colors.black,
-                            //     ),
-                            //     onPressed: () {
-                            //       _smsManager.deleteAll();
-                            //       setState(() {
-                            //         // smsList.removeAt(index);
-                            //       });
-                            //     }),
-                            // SizedBox(width: 10),
-                            IconButton(icon: Icon(Icons.edit), onPressed: () {})
+                            Text('Sent to:'),
+                            SizedBox(
+                              height: 15,
+                            ),
+                            Text('${message.recipent}'),
                           ],
                         ),
                       ),
@@ -88,6 +81,7 @@ class _ParentHistoryState extends State<ParentHistory> {
       ),
     );
   }
+
   Future getUserName() async {
     SharedPreferences prefs = await SharedPreferences.getInstance();
     setState(() {

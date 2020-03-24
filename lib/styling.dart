@@ -5,7 +5,7 @@ Color primaryColor = new Color(0xfff5f5f5);
 Color accentColor = new Color(0xff303030);
 
  TextStyle modules=new TextStyle(color: primaryColor, fontSize: 20);
- TextStyle categories = modules.copyWith(fontSize: 20,letterSpacing: .6);
+ TextStyle categoriesStyle = modules.copyWith(fontSize: 14,letterSpacing: .6);
 
 
 
