@@ -260,9 +260,7 @@ class _ParentsCategoryState extends State<ParentsCategory> {
                                             itemCount: contactsList == null ? 0 : contactsList.length,
                                             itemBuilder: (BuildContext context, int index) {
                                               Contacts contacts = contactsList[index];
-                                              return Text(contacts.fatherNumber +
-                                                  "," +
-                                                  contacts.guardianNumber +
+                                              return Text(contacts.fatherNumber+contacts.guardianNumber +
                                                   "," +
                                                   contacts.motherNumber);
                                             },
@@ -316,7 +314,6 @@ class _ParentsCategoryState extends State<ParentsCategory> {
                         ],
                       ),
                     ),
-                   
                     MaterialButton(
                         elevation: 0,
                         color: accentColor,
@@ -399,8 +396,8 @@ class _ParentsCategoryState extends State<ParentsCategory> {
   void saveContacts(BuildContext context) async {
     Client client = Client();
     final ContactsManager _contactsManager = new ContactsManager();
-
-    String url = 'http://10.0.2.2:8000/backend/operations/readAll.php';
+// String url = 'http://192.168.100.10:8000/backend/operations/readAll.php';
+    String url = 'http://192.168.100.10:8000/backend/operations/readAll.php';
     final response = await client.get(url);
     final Map result = json.decode(response.body);
     if (response.statusCode == 200) {

@@ -5,7 +5,7 @@ import 'package:walgotech_final/models/users.dart';
 
 class DBManagement {
   Client client = Client();
-  String url = 'http://10.0.2.2:8000/backend/operations/login.php';
+  String url = 'http://192.168.100.10:8000/backend/operations/login.php';
   Future<User> signInUser(String userName, String password) async {
     final response = await client.post(url,
         body: jsonEncode({
@@ -13,6 +13,7 @@ class DBManagement {
           'password': password,
         }));
     final Map result = json.decode(response.body);
+    print(response.statusCode);
     if (response.statusCode == 200) {
       await saveUName(result['userName']);
     } else {
