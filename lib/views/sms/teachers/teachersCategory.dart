@@ -44,189 +44,159 @@ class _TeachersCategoryState extends State<TeachersCategory> {
   @override
   Widget build(BuildContext context) {
     return Material(color: primaryColor,
-      child: Padding(
-        padding: const EdgeInsets.symmetric(vertical: 8.0),
-        child: Column(
-          children: <Widget>[
-            MaterialButton(
-                height: 50,
-                color: Colors.white54,
-                shape: RoundedRectangleBorder(borderRadius: BorderRadius.all(Radius.circular(5))),
+      child: SingleChildScrollView(
+              child: Padding(
+          padding: const EdgeInsets.symmetric(vertical: 8.0),
+          child: Column(
+            children: <Widget>[
+              
+
+              Form(
+                key: formKey,
                 child: Column(
-                  mainAxisAlignment: MainAxisAlignment.center,
                   children: <Widget>[
-                    Icon(
-                      Icons.refresh,
-                      size: 30,
-                    ),
-                    Text('Update Contacts')
-                  ],
-                ),
-                onPressed: () {
-                  saveContacts(context);
-                }),
-
-            Form(
-              key: formKey,
-              child: Column(
-                children: <Widget>[
-                  Padding(
-                    padding: const EdgeInsets.symmetric(vertical: 8.0),
-                    child: Padding(
-                      padding: const EdgeInsets.symmetric(horizontal: 8.0),
-                      child: Material(
-                        elevation: 0,
-                        color: Colors.black26,
-                        shape:
-                            RoundedRectangleBorder(borderRadius: BorderRadius.all(Radius.circular(6))),
-                        child: Padding(
-                          padding: const EdgeInsets.symmetric(horizontal: 8.0),
-                          child: DropdownButton(
-                            isExpanded: true,
-                            icon: Icon(
-                              Icons.arrow_downward,
-                              color: Colors.black26,
+                    Padding(
+                      padding: const EdgeInsets.symmetric(vertical: 8.0),
+                      child: Padding(
+                        padding: const EdgeInsets.symmetric(horizontal: 8.0),
+                        child: Material(
+                          elevation: 0,
+                          color: Colors.black26,
+                          shape:
+                              RoundedRectangleBorder(borderRadius: BorderRadius.all(Radius.circular(6))),
+                          child: Padding(
+                            padding: const EdgeInsets.symmetric(horizontal: 8.0),
+                            child: DropdownButton(
+                              isExpanded: true,
+                              icon: Icon(
+                                Icons.arrow_downward,
+                                color: Colors.black26,
+                              ),
+                              hint: Text('Select Category'),
+                              items: categoriesDropDown,
+                              onChanged: changeSelectedCategory,
+                              value: _currentCategory,
                             ),
-                            hint: Text('Select Category'),
-                            items: categoriesDropDown,
-                            onChanged: changeSelectedCategory,
-                            value: _currentCategory,
                           ),
                         ),
                       ),
                     ),
-                  ),
-                  Padding(
-                    padding: const EdgeInsets.all(8.0),
-                    child: Stack(
-                      children: <Widget>[
-                        Visibility(
-                          visible: _currentCategory == allTeachers,
-                          child: FutureBuilder(
-                            future: _teacherManager.getAllContacts(),
-                            builder: (BuildContext context, AsyncSnapshot snapshot) {
-                              if (snapshot.hasData) {
-                                contactsList = snapshot.data;
-                                return _currentCategory == individual
-                                    ? TextFormField(
-                                        maxLines: 6,
-                                        controller: recipentController,
-                                        validator: (v) => v.isNotEmpty ? null : 'recipents are empty',
-                                        decoration: InputDecoration(
-                                          enabled: true,
-                                          hintText: 'Type in Message',
-                                          border: OutlineInputBorder(),
-                                        ),
-                                      )
-                                    : Container(
-                                        decoration: BoxDecoration(border: Border.all()),
-                                        height: 150,
-                                        child: ListView.builder(
-                                          physics: BouncingScrollPhysics(),
-                                          shrinkWrap: true,
-                                          itemCount: contactsList == null ? 0 : contactsList.length,
-                                          itemBuilder: (BuildContext context, int index) {
-                                            TeacherContacts contacts = contactsList[index];
+                    Padding(
+                      padding: const EdgeInsets.all(8.0),
+                      child: Stack(
+                        children: <Widget>[
+                          Visibility(
+                            visible: _currentCategory == allTeachers,
+                            child: FutureBuilder(
+                              future: _teacherManager.getAllContacts(),
+                              builder: (BuildContext context, AsyncSnapshot snapshot) {
+                                if (snapshot.hasData) {
+                                  contactsList = snapshot.data;
+                                  return _currentCategory == individual
+                                      ? TextFormField(
+                                          maxLines: 6,
+                                          controller: recipentController,
+                                          validator: (v) => v.isNotEmpty ? null : 'recipents are empty',
+                                          decoration: InputDecoration(
+                                            enabled: true,
+                                            hintText: 'Type in Message',
+                                            border: OutlineInputBorder(),
+                                          ),
+                                        )
+                                      : Container(
+                                          decoration: BoxDecoration(border: Border.all()),
+                                          height: 150,
+                                          child: ListView.builder(
+                                            physics: BouncingScrollPhysics(),
+                                            shrinkWrap: true,
+                                            itemCount: contactsList == null ? 0 : contactsList.length,
+                                            itemBuilder: (BuildContext context, int index) {
+                                              TeacherContacts contacts = contactsList[index];
 
-                                            return Text(contacts.phoneNumber);
-                                          },
-                                        ),
-                                      );
-                              }
-                              return Loading();
-                            },
+                                              return Text(contacts.phoneNumber);
+                                            },
+                                          ),
+                                        );
+                                }
+                                return Loading();
+                              },
+                            ),
                           ),
-                        ),
-                      ],
-                    ),
-                  ),
-                  
-                  Padding(
-                    padding: const EdgeInsets.all(8.0),
-                    child: TextFormField(
-                      maxLines: 6,
-                      controller: recipentController,
-                      validator: (v) => v.isNotEmpty ? null : 'recipents are empty',
-                      decoration: InputDecoration(
-                        enabled: true,
-                        hintText: 'Type in Message',
-                        border: OutlineInputBorder(),
+                        ],
                       ),
                     ),
-                  ),
-                  MaterialButton(
-                    color: accentColor,
-                    elevation: 0,
-                    shape: RoundedRectangleBorder(borderRadius: BorderRadius.all(Radius.circular(10))),
-                    minWidth: MediaQuery.of(context).size.width * .6,
-                    child: Text(
-                      'send',
-                      style: categoriesStyle,
+                    
+                    Padding(
+                      padding: const EdgeInsets.all(8.0),
+                      child: TextFormField(
+                        maxLines: 6,
+                        controller: recipentController,
+                        validator: (v) => v.isNotEmpty ? null : 'recipents are empty',
+                        decoration: InputDecoration(
+                          enabled: true,
+                          hintText: 'Type in Message',
+                          border: OutlineInputBorder(),
+                        ),
+                      ),
                     ),
-                    onPressed: () {
-                      sendMessage(context);
-                    },
-                  ),
-                  // MaterialButton(
-                  //   color: accentColor,
-                  //   elevation: 0,
-                  //   shape: RoundedRectangleBorder(borderRadius: BorderRadius.all(Radius.circular(10))),
-                  //   minWidth: MediaQuery.of(context).size.width * .6,
-                  //   child: Text(
-                  //     'Delete',
-                  //     style: categoriesStyle,
-                  //   ),
-                  //   onPressed: () {
-                  //     delete();
-                  //   },
-                  // ),
-                  Padding(
-                    padding: const EdgeInsets.all(4.0),
-                    child: MaterialButton(
+                    MaterialButton(
                       color: accentColor,
                       elevation: 0,
-                      shape:
-                          RoundedRectangleBorder(borderRadius: BorderRadius.all(Radius.circular(10))),
+                      shape: RoundedRectangleBorder(borderRadius: BorderRadius.all(Radius.circular(10))),
                       minWidth: MediaQuery.of(context).size.width * .6,
                       child: Text(
-                        'View History',
+                        'send',
                         style: categoriesStyle,
                       ),
                       onPressed: () {
-                        Navigator.push(context, MaterialPageRoute(builder: (_) => TeachersHistory()));
+                        sendMessage(context);
                       },
                     ),
-                  ),
-                ],
-              ),
-            )
-            // SendMessage()
-          ],
+                    // MaterialButton(
+                    //   color: accentColor,
+                    //   elevation: 0,
+                    //   shape: RoundedRectangleBorder(borderRadius: BorderRadius.all(Radius.circular(10))),
+                    //   minWidth: MediaQuery.of(context).size.width * .6,
+                    //   child: Text(
+                    //     'Delete',
+                    //     style: categoriesStyle,
+                    //   ),
+                    //   onPressed: () {
+                    //     delete();
+                    //   },
+                    // ),
+                    Padding(
+                      padding: const EdgeInsets.all(4.0),
+                      child: MaterialButton(
+                        color: accentColor,
+                        elevation: 0,
+                        shape:
+                            RoundedRectangleBorder(borderRadius: BorderRadius.all(Radius.circular(10))),
+                        minWidth: MediaQuery.of(context).size.width * .6,
+                        child: Text(
+                          'View History',
+                          style: categoriesStyle,
+                        ),
+                        onPressed: () {
+                          Navigator.push(context, MaterialPageRoute(builder: (_) => TeachersHistory()));
+                        },
+                      ),
+                    ),
+                  ],
+                ),
+              )
+              // SendMessage()
+            ],
+          ),
         ),
       ),
     );
   }
 
-  void saveContacts(BuildContext context) async {
-    Client client = Client();
-    final TeacherManager _contactsManager = new TeacherManager();
-// String url = 'http://192.168.100.10:8000/backend/operations/readAll.php';
-    String url = 'http://192.168.100.10:8000/backend/operations/readAllTeachers.php';
-    final response = await client.get(url);
-    final Map result = json.decode(response.body);
-    if (response.statusCode == 200) {
-      for (int i = 0; i < result['teachers'].length; i++) {
-        TeacherContacts contacts = new TeacherContacts(
-          phoneNumber: result['teachers'][i]['phone'],
-          firstName: result['teachers'][i]['firstName'],
-          lastName: result['teachers'][i]['lastName'],
-        );
-        print(contacts.firstName);
-        _contactsManager.addContacts(contacts).then((contact) => print('$contact has been added'));
-      }
-    } else {
-      throw Exception('unable to add contact');
-    }
+  
+
+  void saveClass(BuildContext context)async{
+
   }
 
   void delete() {
@@ -243,7 +213,7 @@ class _TeachersCategoryState extends State<TeachersCategory> {
           recipent: _currentCategory,
           dateTime: DateTime.now().toString(),
         );
-        _smsManager.insertSMS(sms).then((id) =>
+        _smsManager.insertTeacherSMS(sms).then((id) =>
             {messageController.clear(), recipentController.clear(), print('message added to DB $id')});
       }
     }

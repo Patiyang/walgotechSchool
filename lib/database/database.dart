@@ -1,15 +1,15 @@
 import 'dart:async';
 import 'package:path/path.dart';
 import 'package:sqflite/sqflite.dart';
+import 'package:walgotech_final/models/classes.dart';
 import 'package:walgotech_final/models/contacts.dart';
 import 'package:walgotech_final/models/sms.dart';
 
 Database db;
 
-
 class SmsManager {
   Database _database;
-  static const databaseName = 'messages.db';
+  static const databaseName = 'shule1.db';
   static const number = 'number';
   static const parentsMesage = 'parentMessages';
   static const teacherMessage = 'teacherMessages';
@@ -38,6 +38,7 @@ class SmsManager {
     await openDB();
     return await _database.insert(SmsManager.parentsMesage, sms.toMap());
   }
+
   Future<int> insertTeacherSMS(SMS sms) async {
     await openDB();
     return await _database.insert(SmsManager.teacherMessage, sms.toMap());
@@ -56,6 +57,7 @@ class SmsManager {
       );
     });
   }
+
   Future<List<SMS>> getTeachersSMSList() async {
     await openDB();
     final List<Map<String, dynamic>> sms = await _database.query(SmsManager.teacherMessage);
@@ -97,9 +99,9 @@ class SmsManager {
 
 class ParentsContactsManager {
   Database _database;
-  static const databaseName = 'messages.db';
+  static const databaseName = 'shule1.db';
   static const id = 'id';
-  static const tableName = 'parentsContacts';
+  static const tableName = 'parentContacts';
   static const motherNumber = 'motherNumber';
   static const fatherNumber = 'fatherNumber';
   static const guardianNumber = 'guardianNumber';
@@ -107,12 +109,12 @@ class ParentsContactsManager {
 
   Future openDB() async {
     if (_database == null) {
-      _database = await openDatabase(join(await getDatabasesPath(), ParentsContactsManager.databaseName),
-          version: 1, onCreate: (Database db, int version) async {
-        await db.execute("CREATE TABLE parentsContacts ("
-            "id INTEGER PRIMARYKEY,"
-            "fatherNumber TEXT,"
+      _database = await openDatabase(join(await getDatabasesPath(), ParentsContactsManager.databaseName), version: 1,
+          onCreate: (Database db, int version) async {
+        await db.execute("CREATE TABLE parentContacts ("
+            "id INTEGER PRIMARY KEY,"
             "motherNumber TEXT,"
+            "fatherNumber TEXT,"
             "guardianNumber TEXT,"
             "form TEXT"
             ")");
@@ -122,7 +124,7 @@ class ParentsContactsManager {
 
   Future<int> addParentsContacts(ParentsContacts contact) async {
     await openDB();
-    return await _database.insert('parentsContacts', contact.toMap());
+    return await _database.insert(ParentsContactsManager.tableName, contact.toMap());
   }
 
   Future<List<ParentsContacts>> getAllContacts() async {
@@ -150,7 +152,8 @@ class ParentsContactsManager {
       );
     });
   }
-   Future<List<ParentsContacts>> getFormTwo() async {
+
+  Future<List<ParentsContacts>> getFormTwo() async {
     await openDB();
     final List<Map<String, dynamic>> formTwocontacts =
         await _database.query(ParentsContactsManager.tableName, where: 'form = ("Form2")');
@@ -163,6 +166,7 @@ class ParentsContactsManager {
       );
     });
   }
+
   Future<List<ParentsContacts>> getFormThree() async {
     await openDB();
     final List<Map<String, dynamic>> formThreecontacts =
@@ -176,6 +180,7 @@ class ParentsContactsManager {
       );
     });
   }
+
   Future<List<ParentsContacts>> getFormFour() async {
     await openDB();
     final List<Map<String, dynamic>> formFourcontacts =
@@ -189,26 +194,32 @@ class ParentsContactsManager {
       );
     });
   }
+
   Future<void> deleteAll() async {
     await openDB();
     await _database.delete(tableName);
   }
+
+  Future<void> query() async {
+    await openDB();
+    await _database.rawQuery("SELECT * FROM parentsContacts");
+  }
 }
 
-class TeacherManager{
-   Database _database;
-  static const databaseName = 'messaging.db';
+class TeacherManager {
+  Database _database;
+  static const databaseName = 'school.db';
   static const id = 'id';
-  static const tableName = 'teachers';
+  static const tableName = 'teacherContacts';
   static const phoneNumber = 'phoneNumber';
   static const firstName = 'firstName';
   static const lastName = 'lastName';
- 
- Future openDB() async {
+
+  Future openDB() async {
     if (_database == null) {
-      _database = await openDatabase(join(await getDatabasesPath(), TeacherManager.databaseName),
-          version: 1, onCreate: (Database db, int version) async {
-        await db.execute("CREATE TABLE teachers ("
+      _database = await openDatabase(join(await getDatabasesPath(), TeacherManager.databaseName), version: 1,
+          onCreate: (Database db, int version) async {
+        await db.execute("CREATE TABLE teacherContacts ("
             "id INTEGER PRIMARYKEY,"
             "firstName TEXT,"
             "lastName TEXT,"
@@ -217,9 +228,10 @@ class TeacherManager{
       });
     }
   }
+
   Future<int> addContacts(TeacherContacts contact) async {
     await openDB();
-    return await _database.insert('teachers', contact.toMap());
+    return await _database.insert(TeacherManager.tableName, contact.toMap());
   }
 
   Future<List<TeacherContacts>> getAllContacts() async {
@@ -227,10 +239,35 @@ class TeacherManager{
     final List<Map<String, dynamic>> contacts = await _database.query(TeacherManager.tableName);
     return List.generate(contacts.length, (i) {
       return TeacherContacts(
-          firstName: contacts[i][TeacherManager.firstName],
-          lastName: contacts[i][TeacherManager.lastName],
-          phoneNumber: contacts[i][TeacherManager.phoneNumber],
-          );
+        firstName: contacts[i][TeacherManager.firstName],
+        lastName: contacts[i][TeacherManager.lastName],
+        phoneNumber: contacts[i][TeacherManager.phoneNumber],
+      );
     });
+  }
+}
+
+class ClassesManager {
+  Database _database;
+  static const databaseName = 'school.db';
+  static const id = 'id';
+  static const className = 'class';
+  static const tableName = 'classes';
+
+  Future openDB() async {
+    if (_database == null) {
+      _database = await openDatabase(join(await getDatabasesPath(), ClassesManager.databaseName), version: 1,
+          onCreate: (Database db, int version) async {
+        await db.execute("CREATE TABLE classes ("
+            "id INTEGER PRIMARYKEY,"
+            "classes TEXT"
+            ")");
+      });
+    }
+  }
+
+  Future<int> addClass(CurrentClasses currentClasses) async {
+    await openDB();
+    return await _database.insert(tableName, currentClasses.toMap());
   }
 }

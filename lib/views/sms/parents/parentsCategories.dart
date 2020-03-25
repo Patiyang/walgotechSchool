@@ -1,7 +1,5 @@
 import 'package:flutter/material.dart';
-import 'package:http/http.dart' show Client;
 import 'package:shared_preferences/shared_preferences.dart';
-import 'dart:convert';
 import 'package:walgotech_final/database/database.dart';
 import 'package:walgotech_final/helperClasses/loading.dart';
 import 'package:walgotech_final/models/contacts.dart';
@@ -63,23 +61,6 @@ class _ParentsCategoryState extends State<ParentsCategory> {
           physics: BouncingScrollPhysics(),
           child: Column(
             children: <Widget>[
-              MaterialButton(
-                  height: 50,
-                  color: Colors.white54,
-                  shape: RoundedRectangleBorder(borderRadius: BorderRadius.all(Radius.circular(5))),
-                  child: Column(
-                    mainAxisAlignment: MainAxisAlignment.center,
-                    children: <Widget>[
-                      Icon(
-                        Icons.refresh,
-                        size: 30,
-                      ),
-                      Text('Update Contacts')
-                    ],
-                  ),
-                  onPressed: () {
-                    saveContacts(context);
-                  }),
 
               Form(
                 key: formKey,
@@ -92,8 +73,7 @@ class _ParentsCategoryState extends State<ParentsCategory> {
                         child: Material(
                           elevation: 0,
                           color: Colors.black26,
-                          shape:
-                              RoundedRectangleBorder(borderRadius: BorderRadius.all(Radius.circular(6))),
+                          shape: RoundedRectangleBorder(borderRadius: BorderRadius.all(Radius.circular(6))),
                           child: Padding(
                             padding: const EdgeInsets.symmetric(horizontal: 8.0),
                             child: DropdownButton(
@@ -263,10 +243,8 @@ class _ParentsCategoryState extends State<ParentsCategory> {
                                             itemCount: contactsList == null ? 0 : contactsList.length,
                                             itemBuilder: (BuildContext context, int index) {
                                               ParentsContacts contacts = contactsList[index];
-                                              return Text(contacts.fatherNumber +
-                                                  contacts.guardianNumber +
-                                                  "," +
-                                                  contacts.motherNumber);
+                                              return Text(
+                                                  contacts.fatherNumber + contacts.guardianNumber + "," + contacts.motherNumber);
                                             },
                                           ),
                                         );
@@ -330,8 +308,7 @@ class _ParentsCategoryState extends State<ParentsCategory> {
                               'Send to both parents',
                               style: categoriesStyle,
                             ),
-                            shape: RoundedRectangleBorder(
-                                borderRadius: BorderRadius.all(Radius.circular(10))),
+                            shape: RoundedRectangleBorder(borderRadius: BorderRadius.all(Radius.circular(10))),
                             onPressed: () {
                               setState(() {});
                             })),
@@ -361,26 +338,25 @@ class _ParentsCategoryState extends State<ParentsCategory> {
                         sendMessage(context);
                       },
                     ),
-                    // MaterialButton(
-                    //   color: accentColor,
-                    //   elevation: 0,
-                    //   shape: RoundedRectangleBorder(borderRadius: BorderRadius.all(Radius.circular(10))),
-                    //   minWidth: MediaQuery.of(context).size.width * .6,
-                    //   child: Text(
-                    //     'Delete',
-                    //     style: categoriesStyle,
-                    //   ),
-                    //   onPressed: () {
-                    //     delete();
-                    //   },
-                    // ),
+                    MaterialButton(
+                      color: accentColor,
+                      elevation: 0,
+                      shape: RoundedRectangleBorder(borderRadius: BorderRadius.all(Radius.circular(10))),
+                      minWidth: MediaQuery.of(context).size.width * .6,
+                      child: Text(
+                        'Delete',
+                        style: categoriesStyle,
+                      ),
+                      onPressed: () {
+                        delete();
+                      },
+                    ),
                     Padding(
                       padding: const EdgeInsets.all(8.0),
                       child: MaterialButton(
                         color: accentColor,
                         elevation: 0,
-                        shape:
-                            RoundedRectangleBorder(borderRadius: BorderRadius.all(Radius.circular(10))),
+                        shape: RoundedRectangleBorder(borderRadius: BorderRadius.all(Radius.circular(10))),
                         minWidth: MediaQuery.of(context).size.width * .6,
                         child: Text(
                           'View History',
@@ -402,30 +378,8 @@ class _ParentsCategoryState extends State<ParentsCategory> {
     );
   }
 
-  void saveContacts(BuildContext context) async {
-    Client client = Client();
-    final ParentsContactsManager parentsContactManager = new ParentsContactsManager();
-    String url = 'http://10.0.2.2:8000/backend/operations/readAll.php';
-    // String url = 'http://192.168.100.10:8000/backend/operations/readAll.php';
-    final response = await client.get(url);
-    final Map result = json.decode(response.body);
-    if (response.statusCode == 200) {
-      for (int i = 0; i < result['contacts'].length; i++) {
-        ParentsContacts contacts = new ParentsContacts(
-          fatherNumber: result['contacts'][i]['fatherphone'],
-          motherNumber: result['contacts'][i]['motherphone'],
-          guardianNumber: result['contacts'][i]['guardianphone'],
-          form: result['contacts'][i]['form'],
-        );
-        print(contacts.form);
-        parentsContactManager
-            .addParentsContacts(contacts)
-            .then((contact) => print('$contact has been added'));
-      }
-    } else {
-      throw Exception('unable to add contact');
-    }
-  }
+ 
+  void saveClasses() async {}
 
   void delete() {
     final ParentsContactsManager _contactsManager = new ParentsContactsManager();
@@ -441,8 +395,9 @@ class _ParentsCategoryState extends State<ParentsCategory> {
           recipent: _currentCategory,
           dateTime: DateTime.now().toString(),
         );
-        _smsManager.insertSMS(sms).then((id) =>
-            {messageController.clear(), recipentController.clear(), print('message added to DB $id')});
+        _smsManager
+            .insertSMS(sms)
+            .then((id) => {messageController.clear(), recipentController.clear(), print('message added to DB $id')});
       }
     }
   }

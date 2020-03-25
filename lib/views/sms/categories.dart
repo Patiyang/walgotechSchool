@@ -1,6 +1,8 @@
 import 'package:curved_navigation_bar/curved_navigation_bar.dart';
 import 'package:flutter/material.dart';
 import 'package:walgotech_final/styling.dart';
+import 'package:walgotech_final/views/sms/settings/settings.dart';
+import 'package:walgotech_final/views/sms/subordinateStaff/subordinatecategory.dart';
 import 'package:walgotech_final/views/sms/teachers/teachersCategory.dart';
 import 'parents/parentsCategories.dart';
 
@@ -15,7 +17,7 @@ class _AllContactCategoriesState extends State<AllContactCategories> {
   @override
   void initState() {
     super.initState();
-    page = 1;
+    page = 0;
   }
 
   Widget build(BuildContext context) {
@@ -23,9 +25,7 @@ class _AllContactCategoriesState extends State<AllContactCategories> {
     return Scaffold(
       backgroundColor: primaryColor,
       appBar: AppBar(
-        actions: <Widget>[
-          
-        ],
+        actions: <Widget>[],
         elevation: .7,
         centerTitle: true,
         leading: Padding(
@@ -42,7 +42,7 @@ class _AllContactCategoriesState extends State<AllContactCategories> {
         color: accentColor,
         key: barKey,
         animationDuration: Duration(milliseconds: 150),
-        index: 1,
+        index: 0,
         height: 45,
         animationCurve: Curves.easeInOut,
         buttonBackgroundColor: accentColor,
@@ -50,7 +50,8 @@ class _AllContactCategoriesState extends State<AllContactCategories> {
         items: <Widget>[
           Icon(Icons.face, size: 19, color: Colors.white),
           Icon(Icons.people, size: 19, color: Colors.white),
-          Icon(Icons.group_work, size: 19, color: Colors.white)
+          Icon(Icons.group_work, size: 19, color: Colors.white),
+          Icon(Icons.settings, size: 19, color: Colors.white)
         ],
         onTap: (index) {
           debugPrint('current index is $index');
@@ -64,7 +65,10 @@ class _AllContactCategoriesState extends State<AllContactCategories> {
           : Container(
               child: page == 1
                   ? ParentsCategory()
-                  : Container(child: Center(child: Text('Staff Page'))),
+                  : Container(
+                      child: page == 2
+                          ? SubOrdinateCategory()
+                          : Settings()),
             ),
     );
   }
