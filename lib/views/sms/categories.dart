@@ -1,9 +1,9 @@
 import 'package:curved_navigation_bar/curved_navigation_bar.dart';
 import 'package:flutter/material.dart';
 import 'package:walgotech_final/styling.dart';
+import 'package:walgotech_final/views/sms/parents/parentsHistory.dart';
 import 'package:walgotech_final/views/sms/settings/settings.dart';
 import 'package:walgotech_final/views/sms/subordinateStaff/subordinatecategory.dart';
-import 'package:walgotech_final/views/sms/teachers/teachersCategory.dart';
 import 'parents/parentsCategories.dart';
 
 class AllContactCategories extends StatefulWidget {
@@ -12,6 +12,8 @@ class AllContactCategories extends StatefulWidget {
 }
 
 class _AllContactCategoriesState extends State<AllContactCategories> {
+  String bal;
+  Text balance;
   int page = 0;
   final barKey = GlobalKey();
   @override
@@ -25,7 +27,13 @@ class _AllContactCategoriesState extends State<AllContactCategories> {
     return Scaffold(
       backgroundColor: primaryColor,
       appBar: AppBar(
-        actions: <Widget>[],
+        actions: <Widget>[
+          Center(
+              child: Text(
+            'Balance:',
+            style: TextStyle(fontSize: 20, color: Colors.green),
+          ))
+        ],
         elevation: .7,
         centerTitle: true,
         leading: Padding(
@@ -36,7 +44,7 @@ class _AllContactCategoriesState extends State<AllContactCategories> {
                 backgroundImage: AssetImage('images/modules/msg.jpg'),
               )),
         ),
-        title: Text('SMS Categories'),
+        title: Text('SMS Management'),
       ),
       bottomNavigationBar: CurvedNavigationBar(
         color: accentColor,
@@ -61,15 +69,13 @@ class _AllContactCategoriesState extends State<AllContactCategories> {
         },
       ),
       body: page == 0
-          ?ParentsCategory() 
+          ? Messaging()
           : Container(
-              child: page == 1
-                  ? TeachersCategory()
-                  : Container(
-                      child: page == 2
-                          ? SubOrdinateCategory()
-                          : Settings()),
+              child: page == 1 ? ParentHistory() : Container(child: page == 2 ? SubOrdinateCategory() : Settings()),
             ),
     );
   }
+
+  getUserBalance() {}
+  checkstringlength() {}
 }

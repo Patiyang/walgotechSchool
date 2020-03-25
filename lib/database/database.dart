@@ -10,7 +10,7 @@ Database db;
 
 class SmsManager {
   Database _database;
-  static const databaseName = 'shule1.db';
+  static const databaseName = 'SMS.DB';
   static const number = 'number';
   static const parentsMesage = 'parentMessages';
   static const teacherMessage = 'teacherMessages';
@@ -247,12 +247,13 @@ class TeacherManager {
     });
   }
 }
+
 // ==============================CLASSES==================================
 class ClassesManager {
   Database _database;
-  static const databaseName = 'school.db';
+  static const databaseName = 'shule.db';
   static const id = 'id';
-  static const className = 'class';
+  static const className = 'classes';
   static const tableName = 'classes';
 
   Future openDB() async {
@@ -277,27 +278,24 @@ class ClassesManager {
     final List<Map<String, dynamic>> classes = await _database.query(ClassesManager.tableName);
     return List.generate(classes.length, (c) {
       return CurrentClasses(
-        id: classes[c][ClassesManager.id],
         registeredClasses: classes[c][ClassesManager.className],
       );
     });
   }
 }
 
-
-
 // ===========================STREAMS==============================
 class StreamsManager {
   Database _database;
-  static const databaseName = 'school.db';
+  static const databaseName = 'shule2.db';
   static const streamName = 'streamName';
   static const tableName = 'streams';
 
   Future openDB() async {
     if (_database == null) {
-      _database = await openDatabase(join(await getDatabasesPath(), ClassesManager.databaseName), version: 1,
+      _database = await openDatabase(join(await getDatabasesPath(), StreamsManager.databaseName), version: 1,
           onCreate: (Database db, int version) async {
-        await db.execute("CREATE TABLE streams ("
+        await db.execute("CREATE TABLE stream ("
             "streams TEXT"
             ")");
       });
@@ -307,5 +305,15 @@ class StreamsManager {
   Future<int> addStream(CurrentStreams contact) async {
     await openDB();
     return await _database.insert(StreamsManager.tableName, contact.toMap());
+  }
+
+Future<List<CurrentClasses>> getallStreams() async {
+    await openDB();
+    final List<Map<String, dynamic>> classes = await _database.query(StreamsManager.tableName);
+    return List.generate(classes.length, (c) {
+      return CurrentClasses(
+        registeredClasses: classes[c][ClassesManager.className],
+      );
+    });
   }
 }

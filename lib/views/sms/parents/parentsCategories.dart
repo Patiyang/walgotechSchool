@@ -7,43 +7,33 @@ import 'package:walgotech_final/models/sms.dart';
 import 'package:walgotech_final/views/sms/parents/parentsHistory.dart';
 import '../../../styling.dart';
 
-class ParentsCategory extends StatefulWidget {
+class Messaging extends StatefulWidget {
   @override
-  _ParentsCategoryState createState() => _ParentsCategoryState();
+  _MessagingState createState() => _MessagingState();
 }
 
-class _ParentsCategoryState extends State<ParentsCategory> {
+class _MessagingState extends State<Messaging> {
   final ParentsContactsManager _contactsManager = ParentsContactsManager();
   Text userName;
   String _userName;
+  List<String> classes;
   SMS sms;
   final SmsManager _smsManager = new SmsManager();
   final messageController = new TextEditingController();
   final recipentController = new TextEditingController();
   final formKey = new GlobalKey<FormState>();
-  final recipent = <String>[];
+  String recipent;
   List<ParentsContacts> contactsList;
   static final individual = 'Individual Contacts';
   static final allParents = 'All Parents';
-  static final form1 = 'Form1';
-  static final form2 = 'Form2';
-  static final form3 = 'Form3';
-  static final form4 = 'Form4';
-
-//drop down variables
   List<DropdownMenuItem<String>> categoriesDropDown = <DropdownMenuItem<String>>[];
-  List<String> parentsCategories = <String>[
-    'Individual Contacts',
-    'All Parents',
-    'Form4',
-    'Form3',
-    'Form2',
-    'Form1',
-  ];
+  List<String> parentsCategories;
   String _currentCategory = 'category';
   void initState() {
     _currentCategory = allParents;
-    print(parentsCategories);
+    getContactList();
+    print(parentsCategories.toString());
+    parentsCategories = [individual,allParents];
     super.initState();
     categoriesDropDown = _getCategoriesDropDown();
     _getCategories();
@@ -61,7 +51,6 @@ class _ParentsCategoryState extends State<ParentsCategory> {
           physics: BouncingScrollPhysics(),
           child: Column(
             children: <Widget>[
-
               Form(
                 key: formKey,
                 child: Column(
@@ -91,6 +80,22 @@ class _ParentsCategoryState extends State<ParentsCategory> {
                         ),
                       ),
                     ),
+                    Visibility(
+                        visible: _currentCategory == 'Form1' ||
+                            _currentCategory == 'Form1' ||
+                            _currentCategory == 'Form3' ||
+                            _currentCategory == 'Form4',
+                        child: MaterialButton(
+                            elevation: 0,
+                            color: accentColor,
+                            child: Text(
+                              'Send to both parents',
+                              style: categoriesStyle,
+                            ),
+                            shape: RoundedRectangleBorder(borderRadius: BorderRadius.all(Radius.circular(10))),
+                            onPressed: () {
+                              setState(() {});
+                            })),
                     Padding(
                       padding: const EdgeInsets.all(8.0),
                       child: Stack(
@@ -137,7 +142,7 @@ class _ParentsCategoryState extends State<ParentsCategory> {
                             ),
                           ),
                           Visibility(
-                            visible: _currentCategory == form1,
+                            visible: _currentCategory == 'Form1',
                             child: FutureBuilder(
                               future: _contactsManager.getFormOne(),
                               builder: (BuildContext context, AsyncSnapshot snapshot) {
@@ -177,7 +182,7 @@ class _ParentsCategoryState extends State<ParentsCategory> {
                             ),
                           ),
                           Visibility(
-                            visible: _currentCategory == form2,
+                            visible: _currentCategory == 'Form2',
                             child: FutureBuilder(
                               future: _contactsManager.getFormTwo(),
                               builder: (BuildContext context, AsyncSnapshot snapshot) {
@@ -217,7 +222,7 @@ class _ParentsCategoryState extends State<ParentsCategory> {
                             ),
                           ),
                           Visibility(
-                            visible: _currentCategory == form3,
+                            visible: _currentCategory == 'Form3',
                             child: FutureBuilder(
                               future: _contactsManager.getFormThree(),
                               builder: (BuildContext context, AsyncSnapshot snapshot) {
@@ -254,7 +259,7 @@ class _ParentsCategoryState extends State<ParentsCategory> {
                             ),
                           ),
                           Visibility(
-                            visible: _currentCategory == form4,
+                            visible: _currentCategory == 'Form4',
                             child: FutureBuilder(
                               future: _contactsManager.getFormFour(),
                               builder: (BuildContext context, AsyncSnapshot snapshot) {
@@ -296,22 +301,6 @@ class _ParentsCategoryState extends State<ParentsCategory> {
                         ],
                       ),
                     ),
-                    Visibility(
-                        visible: _currentCategory == form1 ||
-                            _currentCategory == form1 ||
-                            _currentCategory == form3 ||
-                            _currentCategory == form4,
-                        child: MaterialButton(
-                            elevation: 0,
-                            color: accentColor,
-                            child: Text(
-                              'Send to both parents',
-                              style: categoriesStyle,
-                            ),
-                            shape: RoundedRectangleBorder(borderRadius: BorderRadius.all(Radius.circular(10))),
-                            onPressed: () {
-                              setState(() {});
-                            })),
                     Padding(
                       padding: const EdgeInsets.all(8.0),
                       child: TextFormField(
@@ -325,46 +314,69 @@ class _ParentsCategoryState extends State<ParentsCategory> {
                         ),
                       ),
                     ),
-                    MaterialButton(
-                      color: accentColor,
-                      elevation: 0,
-                      shape: RoundedRectangleBorder(borderRadius: BorderRadius.all(Radius.circular(10))),
-                      minWidth: MediaQuery.of(context).size.width * .6,
-                      child: Text(
-                        'Send',
-                        style: categoriesStyle,
-                      ),
-                      onPressed: () {
-                        sendMessage(context);
-                      },
-                    ),
-                    MaterialButton(
-                      color: accentColor,
-                      elevation: 0,
-                      shape: RoundedRectangleBorder(borderRadius: BorderRadius.all(Radius.circular(10))),
-                      minWidth: MediaQuery.of(context).size.width * .6,
-                      child: Text(
-                        'Delete',
-                        style: categoriesStyle,
-                      ),
-                      onPressed: () {
-                        delete();
-                      },
-                    ),
+                    
+                    // MaterialButton(
+                    //   color: accentColor,
+                    //   elevation: 0,
+                    //   shape: RoundedRectangleBorder(borderRadius: BorderRadius.all(Radius.circular(10))),
+                    //   minWidth: MediaQuery.of(context).size.width * .6,
+                    //   child: Text(
+                    //     'Delete',
+                    //     style: categoriesStyle,
+                    //   ),
+                    //   onPressed: () {
+                    //     delete();
+                    //   },
+                    // ),
+                    // Padding(
+                    //   padding: const EdgeInsets.all(8.0),
+                    //   child: MaterialButton(
+                    //     color: accentColor,
+                    //     elevation: 0,
+                    //     shape: RoundedRectangleBorder(borderRadius: BorderRadius.all(Radius.circular(10))),
+                    //     minWidth: MediaQuery.of(context).size.width * .6,
+                    //     child: Text(
+                    //       'View History',
+                    //       style: categoriesStyle,
+                    //     ),
+                    //     onPressed: () {
+                    //       Navigator.push(context, MaterialPageRoute(builder: (_) => ParentHistory()));
+                    //     },
+                    //   ),
+                    // ),
+                    Divider(),
                     Padding(
                       padding: const EdgeInsets.all(8.0),
-                      child: MaterialButton(
-                        color: accentColor,
-                        elevation: 0,
-                        shape: RoundedRectangleBorder(borderRadius: BorderRadius.all(Radius.circular(10))),
-                        minWidth: MediaQuery.of(context).size.width * .6,
-                        child: Text(
-                          'View History',
-                          style: categoriesStyle,
+                      child: Container(
+                          alignment: Alignment.topLeft,
+                          child: Column(
+                            crossAxisAlignment: CrossAxisAlignment.stretch,
+                            children: <Widget>[
+                              Text('Sending: Messages', style: categoryTextStyle.copyWith(color: accentColor, fontSize: 17)),
+                              Text(
+                                'Sending to: Contacts',
+                                style: categoryTextStyle.copyWith(color: accentColor, fontSize: 17),
+                              ),
+                            ],
+                          )),
+                    ),
+                    SizedBox(height: 10,),
+                    Padding(
+                      padding: const EdgeInsets.all(8.0),
+                      child: Container(alignment: Alignment.bottomRight,
+                        child: MaterialButton(
+                          color: accentColor,
+                          elevation: 0,
+                          shape: RoundedRectangleBorder(borderRadius: BorderRadius.all(Radius.circular(10))),
+                          minWidth: MediaQuery.of(context).size.width * .3,
+                          child: Text(
+                            'Send',
+                            style: categoriesStyle,
+                          ),
+                          onPressed: () {
+                            sendMessage(context);
+                          },
                         ),
-                        onPressed: () {
-                          Navigator.push(context, MaterialPageRoute(builder: (_) => ParentHistory()));
-                        },
                       ),
                     ),
                   ],
@@ -378,7 +390,6 @@ class _ParentsCategoryState extends State<ParentsCategory> {
     );
   }
 
- 
   void saveClasses() async {}
 
   void delete() {
@@ -447,5 +458,11 @@ class _ParentsCategoryState extends State<ParentsCategory> {
       });
     });
   }
-  
+
+  Future getContactList() async {
+    SharedPreferences prefs = await SharedPreferences.getInstance();
+    setState(() {
+      parentsCategories = prefs.getStringList('streams');
+    });
+  }
 }

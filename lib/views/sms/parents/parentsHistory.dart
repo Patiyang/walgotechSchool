@@ -3,6 +3,7 @@ import 'package:shared_preferences/shared_preferences.dart';
 import 'package:walgotech_final/database/database.dart';
 import 'package:walgotech_final/helperClasses/loading.dart';
 import 'package:walgotech_final/models/sms.dart';
+import 'package:walgotech_final/styling.dart';
 
 class ParentHistory extends StatefulWidget {
   @override
@@ -28,16 +29,7 @@ class _ParentHistoryState extends State<ParentHistory> {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      appBar: AppBar(
-        leading: IconButton(
-            icon: Icon(Icons.arrow_back_ios),
-            onPressed: () {
-              Navigator.pop(context);
-            }),
-        elevation: .2,
-        centerTitle: true,
-        title: Text('Parents Messages History'),
-      ),
+      backgroundColor: primaryColor,
       body: FutureBuilder(
         future: _smsManager.getParentsSMSList(),
         builder: (BuildContext context, AsyncSnapshot snapshot) {
@@ -55,7 +47,7 @@ class _ParentHistoryState extends State<ParentHistory> {
                     shape: RoundedRectangleBorder(borderRadius: BorderRadius.all(Radius.circular(10))),
                     color: Colors.black38,
                     child: ListTile(
-                      title: Text('Message: ${message.message}'),
+                      title: Text('Message: ${message.message}',style: TextStyle(color: Colors.black),),
                       leading: userName,
                       subtitle: Text('Sent on: \n${message.dateTime}'),
                       trailing: Container(

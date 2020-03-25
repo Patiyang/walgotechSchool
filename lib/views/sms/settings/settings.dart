@@ -1,11 +1,10 @@
 import 'package:flutter/material.dart';
 import 'package:fluttertoast/fluttertoast.dart';
-import 'package:walgotech_final/models/classes.dart';
+import 'package:shared_preferences/shared_preferences.dart';
 import 'package:walgotech_final/models/contacts.dart';
 import 'dart:convert';
 import 'package:http/http.dart' show Client;
 import 'package:walgotech_final/database/database.dart';
-import 'package:walgotech_final/models/streams.dart';
 
 class Settings extends StatefulWidget {
   @override
@@ -13,6 +12,7 @@ class Settings extends StatefulWidget {
 }
 
 class _SettingsState extends State<Settings> {
+  Client client = Client();
   @override
   Widget build(BuildContext context) {
     return Container(
@@ -67,10 +67,8 @@ class _SettingsState extends State<Settings> {
   }
 
   saveParentContacts(BuildContext context) async {
-    Client client = Client();
     final ParentsContactsManager parentsContactManager = new ParentsContactsManager();
-    String url = 'http://10.0.2.2:8000/backend/operations/readAll.php';
-    // String url = 'http://192.168.100.10:8000/backend/operations/readAll.php';
+    String url = 'http://192.168.100.10:8000/backend/operations/readAll.php';
     final response = await client.get(url);
     final Map result = json.decode(response.body);
     if (response.statusCode == 200) {
@@ -90,7 +88,6 @@ class _SettingsState extends State<Settings> {
   }
 
   saveTeacherContacts(BuildContext context) async {
-    Client client = Client();
     final TeacherManager _contactsManager = new TeacherManager();
     String url = 'http://192.168.100.10:8000/backend/operations/readAllTeachers.php';
     final response = await client.get(url);
@@ -112,42 +109,42 @@ class _SettingsState extends State<Settings> {
   }
 
   saveClasses(BuildContext context) async {
-    Client client = Client();
-    final ClassesManager classesManager = new ClassesManager();
+    List<String> classes = [];
     String url = 'http://192.168.100.10:8000/backend/operations/readClass.php';
     final response = await client.get(url);
     final Map result = json.decode(response.body);
     print(response.statusCode);
     if (response.statusCode == 200) {
       for (int i = 0; i < result['classes'].length; i++) {
-        CurrentClasses classes = new CurrentClasses(
-          id: result['classes'][i]['no'],
-          registeredClasses: result['classes'][i]['className'],
-        );
-        print(classes.id);
-        classesManager
-            .addClass(classes)
-            .then((classes) => print('$classes has been added'))
-            .then((_) => Fluttertoast.showToast(msg: 'Classes Successfuly synced'));
+        classes.add(result['classes'][i]['className']);
       }
+      SharedPreferences prefs = await SharedPreferences.getInstance();
+      await prefs.setStringList('classList', classes);
+      classes = prefs.getStringList('classList');
+      print(classes);
+      return context;
+    } else {
+      throw Exception('failed to add classes');
     }
   }
 
   saveStreams(BuildContext context) async {
-    Client client = Client();
-    final StreamsManager streamsManager = new StreamsManager();
+    List<String> streams = [];
     String url = 'http://192.168.100.10:8000/backend/operations/readStream.php';
     final response = await client.get(url);
     final Map result = json.decode(response.body);
     print(response.statusCode);
     if (response.statusCode == 200) {
-      for (int i = 0; i < result['streams'][i]['StreamName'].length; i++) {
-        CurrentStreams currentStreams = new CurrentStreams(
-          streamName: result['streams'][i]['StreamName'],
-        );
-        print(currentStreams.streamName);
-        streamsManager.addStream(currentStreams).then((_) => print('$currentStreams has been added'));
+      for (int i = 0; i < result['streams'].length; i++) {
+        streams.add(result['streams'][i]['StreamName']);
       }
+      SharedPreferences prefs = await SharedPreferences.getInstance();
+      await prefs.setStringList('streams', streams);
+      streams = prefs.getStringList('streams');
+      print(streams);
+      return context;
+    } else {
+      throw Exception('failed to add classes');
     }
   }
 }
