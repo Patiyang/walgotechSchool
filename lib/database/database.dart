@@ -4,6 +4,7 @@ import 'package:sqflite/sqflite.dart';
 import 'package:walgotech_final/models/classes.dart';
 import 'package:walgotech_final/models/contacts.dart';
 import 'package:walgotech_final/models/sms.dart';
+import 'package:walgotech_final/models/streams.dart';
 
 Database db;
 
@@ -246,7 +247,7 @@ class TeacherManager {
     });
   }
 }
-
+// ==============================CLASSES==================================
 class ClassesManager {
   Database _database;
   static const databaseName = 'school.db';
@@ -269,5 +270,42 @@ class ClassesManager {
   Future<int> addClass(CurrentClasses currentClasses) async {
     await openDB();
     return await _database.insert(tableName, currentClasses.toMap());
+  }
+
+  Future<List<CurrentClasses>> getallClasses() async {
+    await openDB();
+    final List<Map<String, dynamic>> classes = await _database.query(ClassesManager.tableName);
+    return List.generate(classes.length, (c) {
+      return CurrentClasses(
+        id: classes[c][ClassesManager.id],
+        registeredClasses: classes[c][ClassesManager.className],
+      );
+    });
+  }
+}
+
+
+
+// ===========================STREAMS==============================
+class StreamsManager {
+  Database _database;
+  static const databaseName = 'school.db';
+  static const streamName = 'streamName';
+  static const tableName = 'streams';
+
+  Future openDB() async {
+    if (_database == null) {
+      _database = await openDatabase(join(await getDatabasesPath(), ClassesManager.databaseName), version: 1,
+          onCreate: (Database db, int version) async {
+        await db.execute("CREATE TABLE streams ("
+            "streams TEXT"
+            ")");
+      });
+    }
+  }
+
+  Future<int> addStream(CurrentStreams contact) async {
+    await openDB();
+    return await _database.insert(StreamsManager.tableName, contact.toMap());
   }
 }

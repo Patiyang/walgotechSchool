@@ -61,10 +61,10 @@ class _AllContactCategoriesState extends State<AllContactCategories> {
         },
       ),
       body: page == 0
-          ? TeachersCategory()
+          ?ParentsCategory() 
           : Container(
               child: page == 1
-                  ? ParentsCategory()
+                  ? TeachersCategory()
                   : Container(
                       child: page == 2
                           ? SubOrdinateCategory()

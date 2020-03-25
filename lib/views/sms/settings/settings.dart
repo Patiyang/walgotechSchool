@@ -5,6 +5,7 @@ import 'package:walgotech_final/models/contacts.dart';
 import 'dart:convert';
 import 'package:http/http.dart' show Client;
 import 'package:walgotech_final/database/database.dart';
+import 'package:walgotech_final/models/streams.dart';
 
 class Settings extends StatefulWidget {
   @override
@@ -54,8 +55,9 @@ class _SettingsState extends State<Settings> {
                       Text('Update Classes')
                     ],
                   ),
-                  onPressed: () {
-                    saveClasses(context);
+                  onPressed: () async {
+                    await saveClasses(context);
+                    await saveStreams(context);
                   }),
             ],
           ),
@@ -106,8 +108,6 @@ class _SettingsState extends State<Settings> {
             .then((contact) => print(' $contact has been added'))
             .then((_) => Fluttertoast.showToast(msg: 'Contacts Updated Successfully'));
       }
-    } else {
-      throw Exception('unable to add contact');
     }
   }
 
@@ -128,7 +128,25 @@ class _SettingsState extends State<Settings> {
         classesManager
             .addClass(classes)
             .then((classes) => print('$classes has been added'))
-            .then((_) => Fluttertoast.showToast(msg: 'Classes Successfuly sunced'));
+            .then((_) => Fluttertoast.showToast(msg: 'Classes Successfuly synced'));
+      }
+    }
+  }
+
+  saveStreams(BuildContext context) async {
+    Client client = Client();
+    final StreamsManager streamsManager = new StreamsManager();
+    String url = 'http://192.168.100.10:8000/backend/operations/readStream.php';
+    final response = await client.get(url);
+    final Map result = json.decode(response.body);
+    print(response.statusCode);
+    if (response.statusCode == 200) {
+      for (int i = 0; i < result['streams'][i]['StreamName'].length; i++) {
+        CurrentStreams currentStreams = new CurrentStreams(
+          streamName: result['streams'][i]['StreamName'],
+        );
+        print(currentStreams.streamName);
+        streamsManager.addStream(currentStreams).then((_) => print('$currentStreams has been added'));
       }
     }
   }

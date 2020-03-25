@@ -12,7 +12,10 @@ class CurrentClasses {
   });
 
   Map<String, dynamic> toMap() {
-    return {ClassesManager.id: id, ClassesManager.className: registeredClasses};
+    return {
+      ClassesManager.id: id,
+      ClassesManager.className: registeredClasses,
+    };
   }
 
   factory CurrentClasses.fromJson(Map<String, dynamic> json) {
