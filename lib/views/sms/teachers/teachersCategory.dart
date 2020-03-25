@@ -14,7 +14,7 @@ class TeachersCategory extends StatefulWidget {
 }
 
 class _TeachersCategoryState extends State<TeachersCategory> {
-  final ContactsManager _contactsManager = ContactsManager();
+  final TeacherManager _teacherManager = TeacherManager();
   SMS sms;
   final SmsManager _smsManager = new SmsManager();
   final messageController = new TextEditingController();
@@ -43,215 +43,165 @@ class _TeachersCategoryState extends State<TeachersCategory> {
 
   @override
   Widget build(BuildContext context) {
-    return Material(
+    return Material(color: primaryColor,
       child: Padding(
         padding: const EdgeInsets.symmetric(vertical: 8.0),
-        child: SingleChildScrollView(
-          physics: BouncingScrollPhysics(),
-          child: Column(
-            children: <Widget>[
-              MaterialButton(
-                  height: 50,
-                  color: Colors.white54,
-                  shape: RoundedRectangleBorder(borderRadius: BorderRadius.all(Radius.circular(5))),
-                  child: Column(
-                    mainAxisAlignment: MainAxisAlignment.center,
-                    children: <Widget>[
-                      Icon(
-                        Icons.refresh,
-                        size: 30,
-                      ),
-                      Text('Update Contacts')
-                    ],
-                  ),
-                  onPressed: () {
-                    saveContacts(context);
-                  }),
-
-              Form(
-                key: formKey,
+        child: Column(
+          children: <Widget>[
+            MaterialButton(
+                height: 50,
+                color: Colors.white54,
+                shape: RoundedRectangleBorder(borderRadius: BorderRadius.all(Radius.circular(5))),
                 child: Column(
+                  mainAxisAlignment: MainAxisAlignment.center,
                   children: <Widget>[
-                    Padding(
-                      padding: const EdgeInsets.symmetric(vertical: 8.0),
-                      child: Padding(
-                        padding: const EdgeInsets.symmetric(horizontal: 8.0),
-                        child: Material(
-                          elevation: 0,
-                          color: Colors.black26,
-                          shape:
-                              RoundedRectangleBorder(borderRadius: BorderRadius.all(Radius.circular(6))),
-                          child: Padding(
-                            padding: const EdgeInsets.symmetric(horizontal: 8.0),
-                            child: DropdownButton(
-                              isExpanded: true,
-                              icon: Icon(
-                                Icons.arrow_downward,
-                                color: Colors.black26,
-                              ),
-                              hint: Text('Select Category'),
-                              items: categoriesDropDown,
-                              onChanged: changeSelectedCategory,
-                              value: _currentCategory,
-                            ),
-                          ),
-                        ),
-                      ),
+                    Icon(
+                      Icons.refresh,
+                      size: 30,
                     ),
-                    Padding(
-                      padding: const EdgeInsets.all(8.0),
-                      child: Stack(
-                        children: <Widget>[
-                          Visibility(
-                            visible: _currentCategory == allTeachers,
-                            child: FutureBuilder(
-                              future: _contactsManager.getAllContacts(),
-                              builder: (BuildContext context, AsyncSnapshot snapshot) {
-                                if (snapshot.hasData) {
-                                  contactsList = snapshot.data;
-                                  return _currentCategory == individual
-                                      ? TextFormField(
-                                          maxLines: 6,
-                                          controller: recipentController,
-                                          validator: (v) => v.isNotEmpty ? null : 'recipents are empty',
-                                          decoration: InputDecoration(
-                                            enabled: true,
-                                            hintText: 'Type in Message',
-                                            border: OutlineInputBorder(),
-                                          ),
-                                        )
-                                      : Container(
-                                          decoration: BoxDecoration(border: Border.all()),
-                                          height: 150,
-                                          child: ListView.builder(
-                                            physics: BouncingScrollPhysics(),
-                                            shrinkWrap: true,
-                                            itemCount: contactsList == null ? 0 : contactsList.length,
-                                            itemBuilder: (BuildContext context, int index) {
-                                              TeacherContacts contacts = contactsList[index];
-
-                                              return Text(contacts.phoneNumber);
-                                            },
-                                          ),
-                                        );
-                                }
-                                return Loading();
-                              },
-                            ),
-                          ),
-                          Visibility(
-                            visible: _currentCategory == individual,
-                            child: FutureBuilder(
-                              future: _contactsManager.getFormOne(),
-                              builder: (BuildContext context, AsyncSnapshot snapshot) {
-                                if (snapshot.hasData) {
-                                  contactsList = snapshot.data;
-                                  return _currentCategory == individual
-                                      ? TextFormField(
-                                          maxLines: 6,
-                                          controller: recipentController,
-                                          validator: (v) => v.isNotEmpty ? null : 'recipents are empty',
-                                          decoration: InputDecoration(
-                                            enabled: true,
-                                            hintText: 'Type in Message',
-                                            border: OutlineInputBorder(),
-                                          ),
-                                        )
-                                      : Container(
-                                          decoration: BoxDecoration(border: Border.all()),
-                                          height: 150,
-                                          child: ListView.builder(
-                                            physics: BouncingScrollPhysics(),
-                                            shrinkWrap: true,
-                                            itemCount: contactsList == null ? 0 : contactsList.length,
-                                            itemBuilder: (BuildContext context, int index) {
-                                              TeacherContacts contacts = contactsList[index];
-                                              return Text(contacts.phoneNumber);
-                                            },
-                                          ),
-                                        );
-                                }
-                                return Loading();
-                              },
-                            ),
-                          ),
-                        ],
-                      ),
-                    ),
-                    MaterialButton(
-                        elevation: 0,
-                        color: accentColor,
-                        child: Text(
-                          'Send to both parents',
-                          style: categoriesStyle,
-                        ),
-                        shape:
-                            RoundedRectangleBorder(borderRadius: BorderRadius.all(Radius.circular(10))),
-                        onPressed: () {
-                          setState(() {});
-                        }),
-                    Padding(
-                      padding: const EdgeInsets.all(8.0),
-                      child: TextFormField(
-                        maxLines: 6,
-                        controller: recipentController,
-                        validator: (v) => v.isNotEmpty ? null : 'recipents are empty',
-                        decoration: InputDecoration(
-                          enabled: true,
-                          hintText: 'Type in Message',
-                          border: OutlineInputBorder(),
-                        ),
-                      ),
-                    ),
-                    MaterialButton(
-                      color: accentColor,
-                      elevation: 0,
-                      shape: RoundedRectangleBorder(borderRadius: BorderRadius.all(Radius.circular(10))),
-                      minWidth: MediaQuery.of(context).size.width * .6,
-                      child: Text(
-                        'send',
-                        style: categoriesStyle,
-                      ),
-                      onPressed: () {
-                        sendMessage(context);
-                      },
-                    ),
-                    MaterialButton(
-                      color: accentColor,
-                      elevation: 0,
-                      shape: RoundedRectangleBorder(borderRadius: BorderRadius.all(Radius.circular(10))),
-                      minWidth: MediaQuery.of(context).size.width * .6,
-                      child: Text(
-                        'Delete',
-                        style: categoriesStyle,
-                      ),
-                      onPressed: () {
-                        delete();
-                      },
-                    ),
-                    Padding(
-                      padding: const EdgeInsets.all(8.0),
-                      child: MaterialButton(
-                        color: accentColor,
-                        elevation: 0,
-                        shape:
-                            RoundedRectangleBorder(borderRadius: BorderRadius.all(Radius.circular(10))),
-                        minWidth: MediaQuery.of(context).size.width * .6,
-                        child: Text(
-                          'View History',
-                          style: categoriesStyle,
-                        ),
-                        onPressed: () {
-                          Navigator.push(context, MaterialPageRoute(builder: (_) => TeachersHistory()));
-                        },
-                      ),
-                    ),
+                    Text('Update Contacts')
                   ],
                 ),
-              )
-              // SendMessage()
-            ],
-          ),
+                onPressed: () {
+                  saveContacts(context);
+                }),
+
+            Form(
+              key: formKey,
+              child: Column(
+                children: <Widget>[
+                  Padding(
+                    padding: const EdgeInsets.symmetric(vertical: 8.0),
+                    child: Padding(
+                      padding: const EdgeInsets.symmetric(horizontal: 8.0),
+                      child: Material(
+                        elevation: 0,
+                        color: Colors.black26,
+                        shape:
+                            RoundedRectangleBorder(borderRadius: BorderRadius.all(Radius.circular(6))),
+                        child: Padding(
+                          padding: const EdgeInsets.symmetric(horizontal: 8.0),
+                          child: DropdownButton(
+                            isExpanded: true,
+                            icon: Icon(
+                              Icons.arrow_downward,
+                              color: Colors.black26,
+                            ),
+                            hint: Text('Select Category'),
+                            items: categoriesDropDown,
+                            onChanged: changeSelectedCategory,
+                            value: _currentCategory,
+                          ),
+                        ),
+                      ),
+                    ),
+                  ),
+                  Padding(
+                    padding: const EdgeInsets.all(8.0),
+                    child: Stack(
+                      children: <Widget>[
+                        Visibility(
+                          visible: _currentCategory == allTeachers,
+                          child: FutureBuilder(
+                            future: _teacherManager.getAllContacts(),
+                            builder: (BuildContext context, AsyncSnapshot snapshot) {
+                              if (snapshot.hasData) {
+                                contactsList = snapshot.data;
+                                return _currentCategory == individual
+                                    ? TextFormField(
+                                        maxLines: 6,
+                                        controller: recipentController,
+                                        validator: (v) => v.isNotEmpty ? null : 'recipents are empty',
+                                        decoration: InputDecoration(
+                                          enabled: true,
+                                          hintText: 'Type in Message',
+                                          border: OutlineInputBorder(),
+                                        ),
+                                      )
+                                    : Container(
+                                        decoration: BoxDecoration(border: Border.all()),
+                                        height: 150,
+                                        child: ListView.builder(
+                                          physics: BouncingScrollPhysics(),
+                                          shrinkWrap: true,
+                                          itemCount: contactsList == null ? 0 : contactsList.length,
+                                          itemBuilder: (BuildContext context, int index) {
+                                            TeacherContacts contacts = contactsList[index];
+
+                                            return Text(contacts.phoneNumber);
+                                          },
+                                        ),
+                                      );
+                              }
+                              return Loading();
+                            },
+                          ),
+                        ),
+                      ],
+                    ),
+                  ),
+                  
+                  Padding(
+                    padding: const EdgeInsets.all(8.0),
+                    child: TextFormField(
+                      maxLines: 6,
+                      controller: recipentController,
+                      validator: (v) => v.isNotEmpty ? null : 'recipents are empty',
+                      decoration: InputDecoration(
+                        enabled: true,
+                        hintText: 'Type in Message',
+                        border: OutlineInputBorder(),
+                      ),
+                    ),
+                  ),
+                  MaterialButton(
+                    color: accentColor,
+                    elevation: 0,
+                    shape: RoundedRectangleBorder(borderRadius: BorderRadius.all(Radius.circular(10))),
+                    minWidth: MediaQuery.of(context).size.width * .6,
+                    child: Text(
+                      'send',
+                      style: categoriesStyle,
+                    ),
+                    onPressed: () {
+                      sendMessage(context);
+                    },
+                  ),
+                  // MaterialButton(
+                  //   color: accentColor,
+                  //   elevation: 0,
+                  //   shape: RoundedRectangleBorder(borderRadius: BorderRadius.all(Radius.circular(10))),
+                  //   minWidth: MediaQuery.of(context).size.width * .6,
+                  //   child: Text(
+                  //     'Delete',
+                  //     style: categoriesStyle,
+                  //   ),
+                  //   onPressed: () {
+                  //     delete();
+                  //   },
+                  // ),
+                  Padding(
+                    padding: const EdgeInsets.all(4.0),
+                    child: MaterialButton(
+                      color: accentColor,
+                      elevation: 0,
+                      shape:
+                          RoundedRectangleBorder(borderRadius: BorderRadius.all(Radius.circular(10))),
+                      minWidth: MediaQuery.of(context).size.width * .6,
+                      child: Text(
+                        'View History',
+                        style: categoriesStyle,
+                      ),
+                      onPressed: () {
+                        Navigator.push(context, MaterialPageRoute(builder: (_) => TeachersHistory()));
+                      },
+                    ),
+                  ),
+                ],
+              ),
+            )
+            // SendMessage()
+          ],
         ),
       ),
     );
@@ -270,7 +220,6 @@ class _TeachersCategoryState extends State<TeachersCategory> {
           phoneNumber: result['teachers'][i]['phone'],
           firstName: result['teachers'][i]['firstName'],
           lastName: result['teachers'][i]['lastName'],
-          
         );
         print(contacts.firstName);
         _contactsManager.addContacts(contacts).then((contact) => print('$contact has been added'));
@@ -281,8 +230,8 @@ class _TeachersCategoryState extends State<TeachersCategory> {
   }
 
   void delete() {
-    final ContactsManager _contactsManager = new ContactsManager();
-    _contactsManager.deleteAll();
+    final TeacherManager teacherManager = new TeacherManager();
+    teacherManager.getAllContacts();
   }
 
   void sendMessage(BuildContext context) {
@@ -295,7 +244,7 @@ class _TeachersCategoryState extends State<TeachersCategory> {
           dateTime: DateTime.now().toString(),
         );
         _smsManager.insertSMS(sms).then((id) =>
-            {messageController.clear(), recipentController.clear(), print('Student added to DB $id')});
+            {messageController.clear(), recipentController.clear(), print('message added to DB $id')});
       }
     }
   }

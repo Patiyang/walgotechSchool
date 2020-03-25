@@ -16,19 +16,19 @@ class ParentsContacts {
 
   Map<String, dynamic> toMap() {
     return {
-      ContactsManager.fatherNumber: fatherNumber,
-      ContactsManager.motherNumber: motherNumber,
-      ContactsManager.guardianNumber: guardianNumber,
-      ContactsManager.form: form
+      ParentsContactsManager.fatherNumber: fatherNumber,
+      ParentsContactsManager.motherNumber: motherNumber,
+      ParentsContactsManager.guardianNumber: guardianNumber,
+      ParentsContactsManager.form: form
     };
   }
 
   factory ParentsContacts.fromJson(Map<String, dynamic> json) {
     return new ParentsContacts(
-        fatherNumber: json[ContactsManager.fatherNumber],
-        motherNumber: json[ContactsManager.motherNumber],
-        guardianNumber: json[ContactsManager.guardianNumber],
-        form: json[ContactsManager.form]);
+        fatherNumber: json[ParentsContactsManager.fatherNumber],
+        motherNumber: json[ParentsContactsManager.motherNumber],
+        guardianNumber: json[ParentsContactsManager.guardianNumber],
+        form: json[ParentsContactsManager.form]);
   }
 }
 

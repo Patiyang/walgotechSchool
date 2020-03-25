@@ -79,7 +79,7 @@ class _TeachersHistoryState extends State<TeachersHistory> {
           return CircularProgressIndicator();
         },
       ),
-    );;
+    );
   }
 
   Future getUserName() async {

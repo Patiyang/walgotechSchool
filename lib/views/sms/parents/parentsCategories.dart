@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:http/http.dart' show Client;
+import 'package:shared_preferences/shared_preferences.dart';
 import 'dart:convert';
 import 'package:walgotech_final/database/database.dart';
 import 'package:walgotech_final/helperClasses/loading.dart';
@@ -14,7 +15,9 @@ class ParentsCategory extends StatefulWidget {
 }
 
 class _ParentsCategoryState extends State<ParentsCategory> {
-  final ContactsManager _contactsManager = ContactsManager();
+  final ParentsContactsManager _contactsManager = ParentsContactsManager();
+  Text userName;
+  String _userName;
   SMS sms;
   final SmsManager _smsManager = new SmsManager();
   final messageController = new TextEditingController();
@@ -46,12 +49,14 @@ class _ParentsCategoryState extends State<ParentsCategory> {
     super.initState();
     categoriesDropDown = _getCategoriesDropDown();
     _getCategories();
+    getUserName();
     changeSelectedCategory(_currentCategory);
   }
 
   @override
   Widget build(BuildContext context) {
     return Material(
+      color: primaryColor,
       child: Padding(
         padding: const EdgeInsets.symmetric(vertical: 8.0),
         child: SingleChildScrollView(
@@ -313,18 +318,23 @@ class _ParentsCategoryState extends State<ParentsCategory> {
                         ],
                       ),
                     ),
-                    MaterialButton(
-                        elevation: 0,
-                        color: accentColor,
-                        child: Text(
-                          'Send to both parents',
-                          style: categoriesStyle,
-                        ),
-                        shape:
-                            RoundedRectangleBorder(borderRadius: BorderRadius.all(Radius.circular(10))),
-                        onPressed: () {
-                          setState(() {});
-                        }),
+                    Visibility(
+                        visible: _currentCategory == form1 ||
+                            _currentCategory == form1 ||
+                            _currentCategory == form3 ||
+                            _currentCategory == form4,
+                        child: MaterialButton(
+                            elevation: 0,
+                            color: accentColor,
+                            child: Text(
+                              'Send to both parents',
+                              style: categoriesStyle,
+                            ),
+                            shape: RoundedRectangleBorder(
+                                borderRadius: BorderRadius.all(Radius.circular(10))),
+                            onPressed: () {
+                              setState(() {});
+                            })),
                     Padding(
                       padding: const EdgeInsets.all(8.0),
                       child: TextFormField(
@@ -344,26 +354,26 @@ class _ParentsCategoryState extends State<ParentsCategory> {
                       shape: RoundedRectangleBorder(borderRadius: BorderRadius.all(Radius.circular(10))),
                       minWidth: MediaQuery.of(context).size.width * .6,
                       child: Text(
-                        'send',
+                        'Send',
                         style: categoriesStyle,
                       ),
                       onPressed: () {
                         sendMessage(context);
                       },
                     ),
-                    MaterialButton(
-                      color: accentColor,
-                      elevation: 0,
-                      shape: RoundedRectangleBorder(borderRadius: BorderRadius.all(Radius.circular(10))),
-                      minWidth: MediaQuery.of(context).size.width * .6,
-                      child: Text(
-                        'Delete',
-                        style: categoriesStyle,
-                      ),
-                      onPressed: () {
-                        delete();
-                      },
-                    ),
+                    // MaterialButton(
+                    //   color: accentColor,
+                    //   elevation: 0,
+                    //   shape: RoundedRectangleBorder(borderRadius: BorderRadius.all(Radius.circular(10))),
+                    //   minWidth: MediaQuery.of(context).size.width * .6,
+                    //   child: Text(
+                    //     'Delete',
+                    //     style: categoriesStyle,
+                    //   ),
+                    //   onPressed: () {
+                    //     delete();
+                    //   },
+                    // ),
                     Padding(
                       padding: const EdgeInsets.all(8.0),
                       child: MaterialButton(
@@ -394,9 +404,9 @@ class _ParentsCategoryState extends State<ParentsCategory> {
 
   void saveContacts(BuildContext context) async {
     Client client = Client();
-    final ContactsManager _contactsManager = new ContactsManager();
-// String url = 'http://192.168.100.10:8000/backend/operations/readAll.php';
-    String url = 'http://192.168.100.10:8000/backend/operations/readAll.php';
+    final ParentsContactsManager parentsContactManager = new ParentsContactsManager();
+    String url = 'http://10.0.2.2:8000/backend/operations/readAll.php';
+    // String url = 'http://192.168.100.10:8000/backend/operations/readAll.php';
     final response = await client.get(url);
     final Map result = json.decode(response.body);
     if (response.statusCode == 200) {
@@ -408,7 +418,9 @@ class _ParentsCategoryState extends State<ParentsCategory> {
           form: result['contacts'][i]['form'],
         );
         print(contacts.form);
-        _contactsManager.addContacts(contacts).then((contact) => print('$contact has been added'));
+        parentsContactManager
+            .addParentsContacts(contacts)
+            .then((contact) => print('$contact has been added'));
       }
     } else {
       throw Exception('unable to add contact');
@@ -416,7 +428,7 @@ class _ParentsCategoryState extends State<ParentsCategory> {
   }
 
   void delete() {
-    final ContactsManager _contactsManager = new ContactsManager();
+    final ParentsContactsManager _contactsManager = new ParentsContactsManager();
     _contactsManager.deleteAll();
   }
 
@@ -425,12 +437,12 @@ class _ParentsCategoryState extends State<ParentsCategory> {
       if (sms == null) {
         SMS sms = new SMS(
           message: messageController.text,
-          sender: recipentController.text,
+          sender: _userName,
           recipent: _currentCategory,
           dateTime: DateTime.now().toString(),
         );
         _smsManager.insertSMS(sms).then((id) =>
-            {messageController.clear(), recipentController.clear(), print('Student added to DB $id')});
+            {messageController.clear(), recipentController.clear(), print('message added to DB $id')});
       }
     }
   }
@@ -465,6 +477,19 @@ class _ParentsCategoryState extends State<ParentsCategory> {
     setState(() {
       _currentCategory = selectedCategory;
       print(_currentCategory);
+    });
+  }
+
+  Future getUserName() async {
+    SharedPreferences prefs = await SharedPreferences.getInstance();
+    setState(() {
+      _userName = prefs.getString('userName');
+      setState(() {
+        userName = new Text(
+          _userName.toUpperCase(),
+          style: TextStyle(fontFamily: 'Sans'),
+        );
+      });
     });
   }
 }

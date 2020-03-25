@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 import 'package:walgotech_final/database/database.dart';
+import 'package:walgotech_final/helperClasses/loading.dart';
 import 'package:walgotech_final/models/sms.dart';
 
 class ParentHistory extends StatefulWidget {
@@ -76,7 +77,7 @@ class _ParentHistoryState extends State<ParentHistory> {
               },
             );
           }
-          return CircularProgressIndicator();
+          return Loading();
         },
       ),
     );

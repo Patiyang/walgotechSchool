@@ -21,8 +21,11 @@ class _AllContactCategoriesState extends State<AllContactCategories> {
   Widget build(BuildContext context) {
     // var _selectedIndex;
     return Scaffold(
-      // backgroundColor: Colors.white,
+      backgroundColor: primaryColor,
       appBar: AppBar(
+        actions: <Widget>[
+          
+        ],
         elevation: .7,
         centerTitle: true,
         leading: Padding(
@@ -43,7 +46,7 @@ class _AllContactCategoriesState extends State<AllContactCategories> {
         height: 45,
         animationCurve: Curves.easeInOut,
         buttonBackgroundColor: accentColor,
-        backgroundColor: Colors.white,
+        backgroundColor: primaryColor,
         items: <Widget>[
           Icon(Icons.face, size: 19, color: Colors.white),
           Icon(Icons.people, size: 19, color: Colors.white),
@@ -57,7 +60,7 @@ class _AllContactCategoriesState extends State<AllContactCategories> {
         },
       ),
       body: page == 0
-          ? Center(child: TeachersCategory())
+          ? TeachersCategory()
           : Container(
               child: page == 1
                   ? ParentsCategory()

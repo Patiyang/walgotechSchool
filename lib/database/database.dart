@@ -9,9 +9,9 @@ Database db;
 
 class SmsManager {
   Database _database;
-  static const databaseName = 'messaging.db';
+  static const databaseName = 'messages.db';
   static const number = 'number';
-  static const parentMesage = 'messages';
+  static const parentsMesage = 'parentMessages';
   static const teacherMessage = 'teacherMessages';
   static const id = 'id';
   static const message = 'message';
@@ -23,7 +23,7 @@ class SmsManager {
     if (_database == null) {
       _database = await openDatabase(join(await getDatabasesPath(), SmsManager.databaseName), version: 1,
           onCreate: (Database db, int version) async {
-        await db.execute("CREATE TABLE messages ("
+        await db.execute("CREATE TABLE parentMessages ("
             "id INTEGER PRIMARYKEY,"
             "message TEXT,"
             "sender TEXT,"
@@ -36,7 +36,7 @@ class SmsManager {
 
   Future<int> insertSMS(SMS sms) async {
     await openDB();
-    return await _database.insert(SmsManager.parentMesage, sms.toMap());
+    return await _database.insert(SmsManager.parentsMesage, sms.toMap());
   }
   Future<int> insertTeacherSMS(SMS sms) async {
     await openDB();
@@ -45,7 +45,7 @@ class SmsManager {
 
   Future<List<SMS>> getParentsSMSList() async {
     await openDB();
-    final List<Map<String, dynamic>> sms = await _database.query(SmsManager.teacherMessage);
+    final List<Map<String, dynamic>> sms = await _database.query(SmsManager.parentsMesage);
     return List.generate(sms.length, (i) {
       return SMS(
         id: sms[i][SmsManager.id],
@@ -58,7 +58,7 @@ class SmsManager {
   }
   Future<List<SMS>> getTeachersSMSList() async {
     await openDB();
-    final List<Map<String, dynamic>> sms = await _database.query(SmsManager.parentMesage);
+    final List<Map<String, dynamic>> sms = await _database.query(SmsManager.teacherMessage);
     return List.generate(sms.length, (i) {
       return SMS(
         id: sms[i][SmsManager.id],
@@ -73,7 +73,7 @@ class SmsManager {
   Future<int> updateSMS(SMS sms) async {
     await openDB();
     return await _database.update(
-      SmsManager.parentMesage,
+      SmsManager.parentsMesage,
       sms.toMap(),
       where: "id = ?",
       whereArgs: [id],
@@ -83,7 +83,7 @@ class SmsManager {
   Future<void> deleteSMS(int id) async {
     await openDB();
     await _database.delete(
-      SmsManager.parentMesage,
+      SmsManager.parentsMesage,
       where: "id = ?",
       whereArgs: [id],
     );
@@ -91,15 +91,15 @@ class SmsManager {
 
   Future<void> deleteAll() async {
     await openDB();
-    await _database.delete(parentMesage);
+    await _database.delete(parentsMesage);
   }
 }
 
-class ContactsManager {
+class ParentsContactsManager {
   Database _database;
-  static const databaseName = 'messaging.db';
+  static const databaseName = 'messages.db';
   static const id = 'id';
-  static const tableName = 'contacts';
+  static const tableName = 'parentsContacts';
   static const motherNumber = 'motherNumber';
   static const fatherNumber = 'fatherNumber';
   static const guardianNumber = 'guardianNumber';
@@ -107,9 +107,9 @@ class ContactsManager {
 
   Future openDB() async {
     if (_database == null) {
-      _database = await openDatabase(join(await getDatabasesPath(), ContactsManager.databaseName),
+      _database = await openDatabase(join(await getDatabasesPath(), ParentsContactsManager.databaseName),
           version: 1, onCreate: (Database db, int version) async {
-        await db.execute("CREATE TABLE contacts ("
+        await db.execute("CREATE TABLE parentsContacts ("
             "id INTEGER PRIMARYKEY,"
             "fatherNumber TEXT,"
             "motherNumber TEXT,"
@@ -120,72 +120,72 @@ class ContactsManager {
     }
   }
 
-  Future<int> addContacts(ParentsContacts contact) async {
+  Future<int> addParentsContacts(ParentsContacts contact) async {
     await openDB();
-    return await _database.insert('contacts', contact.toMap());
+    return await _database.insert('parentsContacts', contact.toMap());
   }
 
   Future<List<ParentsContacts>> getAllContacts() async {
     await openDB();
-    final List<Map<String, dynamic>> contacts = await _database.query(ContactsManager.tableName);
+    final List<Map<String, dynamic>> contacts = await _database.query(ParentsContactsManager.tableName);
     return List.generate(contacts.length, (i) {
       return ParentsContacts(
-          fatherNumber: contacts[i][ContactsManager.fatherNumber],
-          motherNumber: contacts[i][ContactsManager.motherNumber],
-          guardianNumber: contacts[i][ContactsManager.guardianNumber],
-          form: contacts[i][ContactsManager.form]);
+          fatherNumber: contacts[i][ParentsContactsManager.fatherNumber],
+          motherNumber: contacts[i][ParentsContactsManager.motherNumber],
+          guardianNumber: contacts[i][ParentsContactsManager.guardianNumber],
+          form: contacts[i][ParentsContactsManager.form]);
     });
   }
 
   Future<List<ParentsContacts>> getFormOne() async {
     await openDB();
     final List<Map<String, dynamic>> formOnecontacts =
-        await _database.query(ContactsManager.tableName, where: 'form = ("Form1")');
+        await _database.query(ParentsContactsManager.tableName, where: 'form = ("Form1")');
     return List.generate(formOnecontacts.length, (i) {
       return ParentsContacts(
-        fatherNumber: formOnecontacts[i][ContactsManager.fatherNumber],
-        form: formOnecontacts[i][ContactsManager.form],
-        guardianNumber: formOnecontacts[i][ContactsManager.guardianNumber],
-        motherNumber: formOnecontacts[i][ContactsManager.motherNumber],
+        fatherNumber: formOnecontacts[i][ParentsContactsManager.fatherNumber],
+        form: formOnecontacts[i][ParentsContactsManager.form],
+        guardianNumber: formOnecontacts[i][ParentsContactsManager.guardianNumber],
+        motherNumber: formOnecontacts[i][ParentsContactsManager.motherNumber],
       );
     });
   }
    Future<List<ParentsContacts>> getFormTwo() async {
     await openDB();
     final List<Map<String, dynamic>> formTwocontacts =
-        await _database.query(ContactsManager.tableName, where: 'form = ("Form2")');
+        await _database.query(ParentsContactsManager.tableName, where: 'form = ("Form2")');
     return List.generate(formTwocontacts.length, (i) {
       return ParentsContacts(
-        fatherNumber: formTwocontacts[i][ContactsManager.fatherNumber],
-        form: formTwocontacts[i][ContactsManager.form],
-        guardianNumber: formTwocontacts[i][ContactsManager.guardianNumber],
-        motherNumber: formTwocontacts[i][ContactsManager.motherNumber],
+        fatherNumber: formTwocontacts[i][ParentsContactsManager.fatherNumber],
+        form: formTwocontacts[i][ParentsContactsManager.form],
+        guardianNumber: formTwocontacts[i][ParentsContactsManager.guardianNumber],
+        motherNumber: formTwocontacts[i][ParentsContactsManager.motherNumber],
       );
     });
   }
   Future<List<ParentsContacts>> getFormThree() async {
     await openDB();
     final List<Map<String, dynamic>> formThreecontacts =
-        await _database.query(ContactsManager.tableName, where: 'form = ("Form3")');
+        await _database.query(ParentsContactsManager.tableName, where: 'form = ("Form3")');
     return List.generate(formThreecontacts.length, (i) {
       return ParentsContacts(
-        fatherNumber: formThreecontacts[i][ContactsManager.fatherNumber],
-        form: formThreecontacts[i][ContactsManager.form],
-        guardianNumber: formThreecontacts[i][ContactsManager.guardianNumber],
-        motherNumber: formThreecontacts[i][ContactsManager.motherNumber],
+        fatherNumber: formThreecontacts[i][ParentsContactsManager.fatherNumber],
+        form: formThreecontacts[i][ParentsContactsManager.form],
+        guardianNumber: formThreecontacts[i][ParentsContactsManager.guardianNumber],
+        motherNumber: formThreecontacts[i][ParentsContactsManager.motherNumber],
       );
     });
   }
   Future<List<ParentsContacts>> getFormFour() async {
     await openDB();
     final List<Map<String, dynamic>> formFourcontacts =
-        await _database.query(ContactsManager.tableName, where: 'form = ("Form4")');
+        await _database.query(ParentsContactsManager.tableName, where: 'form = ("Form4")');
     return List.generate(formFourcontacts.length, (i) {
       return ParentsContacts(
-        fatherNumber: formFourcontacts[i][ContactsManager.fatherNumber],
-        form: formFourcontacts[i][ContactsManager.form],
-        guardianNumber: formFourcontacts[i][ContactsManager.guardianNumber],
-        motherNumber: formFourcontacts[i][ContactsManager.motherNumber],
+        fatherNumber: formFourcontacts[i][ParentsContactsManager.fatherNumber],
+        form: formFourcontacts[i][ParentsContactsManager.form],
+        guardianNumber: formFourcontacts[i][ParentsContactsManager.guardianNumber],
+        motherNumber: formFourcontacts[i][ParentsContactsManager.motherNumber],
       );
     });
   }
@@ -206,7 +206,7 @@ class TeacherManager{
  
  Future openDB() async {
     if (_database == null) {
-      _database = await openDatabase(join(await getDatabasesPath(), ContactsManager.databaseName),
+      _database = await openDatabase(join(await getDatabasesPath(), TeacherManager.databaseName),
           version: 1, onCreate: (Database db, int version) async {
         await db.execute("CREATE TABLE teachers ("
             "id INTEGER PRIMARYKEY,"
@@ -224,7 +224,7 @@ class TeacherManager{
 
   Future<List<TeacherContacts>> getAllContacts() async {
     await openDB();
-    final List<Map<String, dynamic>> contacts = await _database.query(ContactsManager.tableName);
+    final List<Map<String, dynamic>> contacts = await _database.query(TeacherManager.tableName);
     return List.generate(contacts.length, (i) {
       return TeacherContacts(
           firstName: contacts[i][TeacherManager.firstName],
