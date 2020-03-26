@@ -136,7 +136,8 @@ class SmsManager {
           fatherNumber: contacts[i][ParentsContactsManager.fatherNumber],
           motherNumber: contacts[i][ParentsContactsManager.motherNumber],
           guardianNumber: contacts[i][ParentsContactsManager.guardianNumber],
-          form: contacts[i][ParentsContactsManager.form]);
+          form: contacts[i][ParentsContactsManager.form],
+          admission: contacts[i][ParentsContactsManager.admission]);
     });
   }
 
@@ -150,6 +151,7 @@ class SmsManager {
         form: formOnecontacts[i][ParentsContactsManager.form],
         guardianNumber: formOnecontacts[i][ParentsContactsManager.guardianNumber],
         motherNumber: formOnecontacts[i][ParentsContactsManager.motherNumber],
+        admission: formOnecontacts[i][ParentsContactsManager.admission]
       );
     });
   }
@@ -164,6 +166,7 @@ class SmsManager {
         form: formTwocontacts[i][ParentsContactsManager.form],
         guardianNumber: formTwocontacts[i][ParentsContactsManager.guardianNumber],
         motherNumber: formTwocontacts[i][ParentsContactsManager.motherNumber],
+        admission: formTwocontacts[i][ParentsContactsManager.admission],
       );
     });
   }
@@ -178,6 +181,7 @@ class SmsManager {
         form: formThreecontacts[i][ParentsContactsManager.form],
         guardianNumber: formThreecontacts[i][ParentsContactsManager.guardianNumber],
         motherNumber: formThreecontacts[i][ParentsContactsManager.motherNumber],
+        admission: formThreecontacts[i][ParentsContactsManager.admission]
       );
     });
   }
@@ -192,9 +196,25 @@ class SmsManager {
         form: formFourcontacts[i][ParentsContactsManager.form],
         guardianNumber: formFourcontacts[i][ParentsContactsManager.guardianNumber],
         motherNumber: formFourcontacts[i][ParentsContactsManager.motherNumber],
+        admission: formFourcontacts[i][ParentsContactsManager.admission]
       );
     });
   }
+ Future<List<ParentsContacts>> getStreams() async {
+    await openDB();
+    final List<Map<String, dynamic>> streamsContacts =
+        await _database.query(ParentsContactsManager.tableName, where: 'streams = ?' );
+    return List.generate(streamsContacts.length, (i) {
+      return ParentsContacts(
+        fatherNumber: streamsContacts[i][ParentsContactsManager.fatherNumber],
+        form: streamsContacts[i][ParentsContactsManager.form],
+        guardianNumber: streamsContacts[i][ParentsContactsManager.guardianNumber],
+        motherNumber: streamsContacts[i][ParentsContactsManager.motherNumber],
+        admission: streamsContacts[i][ParentsContactsManager.admission]
+      );
+    });
+  }
+
 
   Future<List<SubOrdinateContact>> getSubordinateContacts() async {
     await openDB();
@@ -236,6 +256,7 @@ class ParentsContactsManager {
   static const fatherNumber = 'fatherNumber';
   static const guardianNumber = 'guardianNumber';
   static const form = 'form';
+  static const admission = 'admission';
 
   Future<void> deleteAll() async {
     await openDB();
@@ -268,6 +289,11 @@ class StreamsManager {
   static const id = 'id';
   static const streams = 'streams';
   static const tableName = 'streams';
+}
+
+class StreamClassManager {
+  static const streams = 'streams';
+  static const classes = 'classes';
 }
 
 //==============================SUBORDINATE==================================

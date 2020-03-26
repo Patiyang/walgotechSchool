@@ -21,11 +21,13 @@ class _MessagingState extends State<Messaging> {
   final formKey = new GlobalKey<FormState>();
   List<DropdownMenuItem<String>> classesDropDown = <DropdownMenuItem<String>>[];
   List<DropdownMenuItem<String>> streamsDropDown = <DropdownMenuItem<String>>[];
+  List<DropdownMenuItem<String>> streamclassDD = <DropdownMenuItem<String>>[];
   List<ParentsContacts> contactsList;
   List<TeacherContacts> teachersContact;
   List<SubOrdinateContact> subordinateContact;
   List<CurrentClasses> classes = <CurrentClasses>[];
   List<CurrentStreams> streams = <CurrentStreams>[];
+  List<StreamsClasses> classStreams = <StreamsClasses>[];
 
   String recipent;
   Text userName;
@@ -83,7 +85,7 @@ class _MessagingState extends State<Messaging> {
                               hint: Text('Select Category'),
                               items: classesDropDown,
                               onChanged: changeSelectedCategory,
-                              value: _currentClass,
+                              value: null,
                             ),
                           ),
                         ),
@@ -108,7 +110,7 @@ class _MessagingState extends State<Messaging> {
                               hint: Text('Select Stream'),
                               items: streamsDropDown,
                               onChanged: changeSelectedStream,
-                              value: _currentStream,
+                              value: null,
                             ),
                           ),
                         ),
@@ -291,6 +293,83 @@ class _MessagingState extends State<Messaging> {
                               },
                             ),
                           ),
+                          for(int i=0;i<streams.length;i++)
+                          Visibility(
+                            visible: _currentStream == streams[i].streams,
+                            child: FutureBuilder(
+                              future: _smsManager.getStreams(),
+                              builder: (BuildContext context, AsyncSnapshot snapshot) {
+                                if (snapshot.hasData) {
+                                  contactsList = snapshot.data;
+                                  return _currentClass == individual
+                                      ? TextFormField(
+                                          maxLines: 6,
+                                          controller: messageController,
+                                          validator: (v) => v.isNotEmpty ? null : 'recipents are empty',
+                                          decoration: InputDecoration(
+                                            enabled: true,
+                                            hintText: 'Type in Message',
+                                            border: OutlineInputBorder(),
+                                          ),
+                                        )
+                                      : Container(
+                                          decoration: BoxDecoration(border: Border.all()),
+                                          height: 150,
+                                          child: ListView.builder(
+                                            physics: BouncingScrollPhysics(),
+                                            shrinkWrap: true,
+                                            itemCount: contactsList == null ? 0 : contactsList.length,
+                                            itemBuilder: (BuildContext context, int index) {
+                                              ParentsContacts contacts = contactsList[index];
+                                              return Text(contacts.motherNumber +
+                                                  "," +
+                                                  contacts.motherNumber +
+                                                  "," +
+                                                  contacts.guardianNumber);
+                                            },
+                                          ),
+                                        );
+                                }
+                                return Loading();
+                              },
+                            ),
+                          ),
+                          Visibility(
+                            visible: _currentClass == allParents,
+                            child: FutureBuilder(
+                              future: _smsManager.getParentContacts(),
+                              builder: (BuildContext context, AsyncSnapshot snapshot) {
+                                if (snapshot.hasData) {
+                                  contactsList = snapshot.data;
+                                  return _currentClass == individual
+                                      ? TextFormField(
+                                          maxLines: 6,
+                                          controller: messageController,
+                                          validator: (v) => v.isNotEmpty ? null : 'Message cannot be empty',
+                                          decoration: InputDecoration(
+                                            enabled: true,
+                                            hintText: 'Type in Message',
+                                            border: OutlineInputBorder(),
+                                          ),
+                                        )
+                                      : Container(
+                                          decoration: BoxDecoration(border: Border.all()),
+                                          height: 150,
+                                          child: ListView.builder(
+                                            physics: BouncingScrollPhysics(),
+                                            shrinkWrap: true,
+                                            itemCount: subordinateContact == null ? 0 : subordinateContact.length,
+                                            itemBuilder: (BuildContext context, int index) {
+                                              SubOrdinateContact subOrdinate = subordinateContact[index];
+                                              return Text(subOrdinate.phone);
+                                            },
+                                          ),
+                                        );
+                                }
+                                return Loading();
+                              },
+                            ),
+                          ),
                           Visibility(
                             visible: _currentClass == subordinate,
                             child: FutureBuilder(
@@ -302,10 +381,46 @@ class _MessagingState extends State<Messaging> {
                                       ? TextFormField(
                                           maxLines: 6,
                                           controller: messageController,
+                                          validator: (v) => v.isNotEmpty ? null : 'Message cannot be empty',
+                                          decoration: InputDecoration(
+                                            enabled: true,
+                                            hintText: 'Send to SubOrdinate',
+                                            border: OutlineInputBorder(),
+                                          ),
+                                        )
+                                      : Container(
+                                          decoration: BoxDecoration(border: Border.all()),
+                                          height: 150,
+                                          child: ListView.builder(
+                                            physics: BouncingScrollPhysics(),
+                                            shrinkWrap: true,
+                                            itemCount: subordinateContact == null ? 0 : subordinateContact.length,
+                                            itemBuilder: (BuildContext context, int index) {
+                                              SubOrdinateContact subOrdinate = subordinateContact[index];
+                                              return Text(subOrdinate.phone);
+                                            },
+                                          ),
+                                        );
+                                }
+                                return Loading();
+                              },
+                            ),
+                          ),
+                          Visibility(
+                            visible: _currentClass == teachers,
+                            child: FutureBuilder(
+                              future: _smsManager.getAllTeacherContacts(),
+                              builder: (BuildContext context, AsyncSnapshot snapshot) {
+                                if (snapshot.hasData) {
+                                  teachersContact = snapshot.data;
+                                  return _currentClass == individual
+                                      ? TextFormField(
+                                          maxLines: 6,
+                                          controller: messageController,
                                           validator: (v) => v.isNotEmpty ? null : 'recipents are empty',
                                           decoration: InputDecoration(
                                             enabled: true,
-                                            hintText: 'Type in Message',
+                                            hintText: 'Send to teachers',
                                             border: OutlineInputBorder(),
                                           ),
                                         )
@@ -435,9 +550,8 @@ class _MessagingState extends State<Messaging> {
     List<DropdownMenuItem<String>> dropDownItems = new List();
     for (int i = 0; i < classes.length; i++) {
       setState(() {
-        if (classes.length == 0 || classes == null) {
-          Text('Absent');
-        }
+        
+
         dropDownItems.insert(
             0,
             DropdownMenuItem(
@@ -472,9 +586,6 @@ class _MessagingState extends State<Messaging> {
     List<DropdownMenuItem<String>> dropDownItems = new List();
     for (int i = 0; i < streams.length; i++) {
       setState(() {
-        if (streams.length == 0 || streams == null) {
-          Text('Absent');
-        }
         dropDownItems.insert(
             0,
             DropdownMenuItem(
@@ -488,7 +599,6 @@ class _MessagingState extends State<Messaging> {
 
   _getStreams() async {
     List<CurrentStreams> data = await _smsManager.getallStreams();
-
     setState(() {
       streams = data;
       streamsDropDown = _getStreamsDropDown();
@@ -521,12 +631,14 @@ class _MessagingState extends State<Messaging> {
     var alerts = new AlertDialog(
       shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(20)),
       content: Container(
-        
         alignment: Alignment.center,
         width: 320,
         height: 100,
         child: Center(
-          child: Text('Are you sure you want to send the message?'.toUpperCase(),textAlign: TextAlign.center,),
+          child: Text(
+            'Are you sure you want to send the message?'.toUpperCase(),
+            textAlign: TextAlign.center,
+          ),
         ),
       ),
       actions: <Widget>[
@@ -552,7 +664,8 @@ class _MessagingState extends State<Messaging> {
             Navigator.pop(context);
           },
           icon: Icon(
-            Icons.cancel,color: accentColor,
+            Icons.cancel,
+            color: accentColor,
           ),
           label: Text(
             'Cancel',

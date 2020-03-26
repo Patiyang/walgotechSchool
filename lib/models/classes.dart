@@ -3,17 +3,14 @@ import 'package:flutter/foundation.dart';
 import 'package:walgotech_final/database/database.dart';
 
 class CurrentClasses {
-
   String registeredClasses;
 
   CurrentClasses({
-    
     @required this.registeredClasses,
   });
 
   Map<String, dynamic> toMap() {
     return {
-      
       ClassesManager.className: registeredClasses,
     };
   }
@@ -42,5 +39,16 @@ class CurrentStreams {
     return new CurrentStreams(
       streams: json[StreamsManager.streams],
     );
+  }
+}
+
+class StreamsClasses {
+ 
+  String classes;
+
+  StreamsClasses({ @required this.classes});
+
+  Map<String, dynamic> toMap() {
+    return {StreamClassManager.classes: classes};
   }
 }
