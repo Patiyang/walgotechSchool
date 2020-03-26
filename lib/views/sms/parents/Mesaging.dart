@@ -36,12 +36,6 @@ class _MessagingState extends State<Messaging> {
   int totalMessages = 1;
   int totalContacts = 1;
 
-  static final individual = 'Individual Contacts';
-  static final allParents = 'All Parents';
-  static final teachers = 'All Teachers';
-  static final subordinate = 'All Subordinate';
-
-  List<String> additionalCategories = [individual, allParents, teachers, subordinate];
   String _currentClass = 'category';
   String _currentStream = 'stream';
   @override
@@ -101,16 +95,22 @@ class _MessagingState extends State<Messaging> {
                           shape: RoundedRectangleBorder(borderRadius: BorderRadius.all(Radius.circular(6))),
                           child: Padding(
                             padding: const EdgeInsets.symmetric(horizontal: 8.0),
-                            child: DropdownButton(
-                              isExpanded: true,
-                              icon: Icon(
-                                Icons.arrow_downward,
-                                color: Colors.black26,
+                            child: Visibility(
+                              visible: _currentClass == classes[0].registeredClasses ||
+                                  _currentClass == classes[1].registeredClasses ||
+                                  _currentClass == classes[2].registeredClasses ||
+                                  _currentClass == classes[3].registeredClasses,
+                              child: DropdownButton(
+                                isExpanded: true,
+                                icon: Icon(
+                                  Icons.arrow_downward,
+                                  color: Colors.black26,
+                                ),
+                                hint: Text('Select Stream'),
+                                items: streamsDropDown,
+                                onChanged: changeSelectedStream,
+                                value: null,
                               ),
-                              hint: Text('Select Stream'),
-                              items: streamsDropDown,
-                              onChanged: changeSelectedStream,
-                              value: null,
                             ),
                           ),
                         ),
@@ -140,7 +140,7 @@ class _MessagingState extends State<Messaging> {
                               builder: (BuildContext context, AsyncSnapshot snapshot) {
                                 if (snapshot.hasData) {
                                   contactsList = snapshot.data;
-                                  return _currentClass == individual
+                                  return _currentClass == classes[4].registeredClasses
                                       ? TextFormField(
                                           maxLines: 6,
                                           controller: messageController,
@@ -180,7 +180,7 @@ class _MessagingState extends State<Messaging> {
                               builder: (BuildContext context, AsyncSnapshot snapshot) {
                                 if (snapshot.hasData) {
                                   contactsList = snapshot.data;
-                                  return _currentClass == individual
+                                  return _currentClass == classes[4].registeredClasses
                                       ? TextFormField(
                                           maxLines: 6,
                                           controller: messageController,
@@ -220,7 +220,7 @@ class _MessagingState extends State<Messaging> {
                               builder: (BuildContext context, AsyncSnapshot snapshot) {
                                 if (snapshot.hasData) {
                                   contactsList = snapshot.data;
-                                  return _currentClass == individual
+                                  return _currentClass == classes[4].registeredClasses
                                       ? TextFormField(
                                           maxLines: 6,
                                           controller: messageController,
@@ -260,7 +260,7 @@ class _MessagingState extends State<Messaging> {
                               builder: (BuildContext context, AsyncSnapshot snapshot) {
                                 if (snapshot.hasData) {
                                   contactsList = snapshot.data;
-                                  return _currentClass == individual
+                                  return _currentClass == classes[4].registeredClasses
                                       ? TextFormField(
                                           maxLines: 6,
                                           controller: messageController,
@@ -293,55 +293,55 @@ class _MessagingState extends State<Messaging> {
                               },
                             ),
                           ),
-                          for(int i=0;i<streams.length;i++)
-                          Visibility(
-                            visible: _currentStream == streams[i].streams,
-                            child: FutureBuilder(
-                              future: _smsManager.getStreams(),
-                              builder: (BuildContext context, AsyncSnapshot snapshot) {
-                                if (snapshot.hasData) {
-                                  contactsList = snapshot.data;
-                                  return _currentClass == individual
-                                      ? TextFormField(
-                                          maxLines: 6,
-                                          controller: messageController,
-                                          validator: (v) => v.isNotEmpty ? null : 'recipents are empty',
-                                          decoration: InputDecoration(
-                                            enabled: true,
-                                            hintText: 'Type in Message',
-                                            border: OutlineInputBorder(),
-                                          ),
-                                        )
-                                      : Container(
-                                          decoration: BoxDecoration(border: Border.all()),
-                                          height: 150,
-                                          child: ListView.builder(
-                                            physics: BouncingScrollPhysics(),
-                                            shrinkWrap: true,
-                                            itemCount: contactsList == null ? 0 : contactsList.length,
-                                            itemBuilder: (BuildContext context, int index) {
-                                              ParentsContacts contacts = contactsList[index];
-                                              return Text(contacts.motherNumber +
-                                                  "," +
-                                                  contacts.motherNumber +
-                                                  "," +
-                                                  contacts.guardianNumber);
-                                            },
-                                          ),
-                                        );
-                                }
-                                return Loading();
-                              },
+                          for (int i = 0; i < streams.length; i++)
+                            Visibility(
+                              visible: _currentStream == streams[i].streams,
+                              child: FutureBuilder(
+                                future: _smsManager.getStreams(),
+                                builder: (BuildContext context, AsyncSnapshot snapshot) {
+                                  if (snapshot.hasData) {
+                                    contactsList = snapshot.data;
+                                    return _currentClass == classes[4].registeredClasses
+                                        ? TextFormField(
+                                            maxLines: 6,
+                                            controller: messageController,
+                                            validator: (v) => v.isNotEmpty ? null : 'recipents are empty',
+                                            decoration: InputDecoration(
+                                              enabled: true,
+                                              hintText: 'Type in Message',
+                                              border: OutlineInputBorder(),
+                                            ),
+                                          )
+                                        : Container(
+                                            decoration: BoxDecoration(border: Border.all()),
+                                            height: 150,
+                                            child: ListView.builder(
+                                              physics: BouncingScrollPhysics(),
+                                              shrinkWrap: true,
+                                              itemCount: contactsList == null ? 0 : contactsList.length,
+                                              itemBuilder: (BuildContext context, int index) {
+                                                ParentsContacts contacts = contactsList[index];
+                                                return Text(contacts.motherNumber +
+                                                    "," +
+                                                    contacts.motherNumber +
+                                                    "," +
+                                                    contacts.guardianNumber);
+                                              },
+                                            ),
+                                          );
+                                  }
+                                  return Loading();
+                                },
+                              ),
                             ),
-                          ),
                           Visibility(
-                            visible: _currentClass == allParents,
+                            visible: _currentClass == classes[5].registeredClasses,
                             child: FutureBuilder(
                               future: _smsManager.getParentContacts(),
                               builder: (BuildContext context, AsyncSnapshot snapshot) {
                                 if (snapshot.hasData) {
                                   contactsList = snapshot.data;
-                                  return _currentClass == individual
+                                  return _currentClass == classes[4].registeredClasses
                                       ? TextFormField(
                                           maxLines: 6,
                                           controller: messageController,
@@ -371,13 +371,13 @@ class _MessagingState extends State<Messaging> {
                             ),
                           ),
                           Visibility(
-                            visible: _currentClass == subordinate,
+                            visible: _currentClass == classes[7].registeredClasses,
                             child: FutureBuilder(
                               future: _smsManager.getSubordinateContacts(),
                               builder: (BuildContext context, AsyncSnapshot snapshot) {
                                 if (snapshot.hasData) {
                                   subordinateContact = snapshot.data;
-                                  return _currentClass == individual
+                                  return _currentClass == classes[4].registeredClasses
                                       ? TextFormField(
                                           maxLines: 6,
                                           controller: messageController,
@@ -407,13 +407,13 @@ class _MessagingState extends State<Messaging> {
                             ),
                           ),
                           Visibility(
-                            visible: _currentClass == teachers,
+                            visible: _currentClass == classes[6].registeredClasses,
                             child: FutureBuilder(
                               future: _smsManager.getAllTeacherContacts(),
                               builder: (BuildContext context, AsyncSnapshot snapshot) {
                                 if (snapshot.hasData) {
                                   teachersContact = snapshot.data;
-                                  return _currentClass == individual
+                                  return _currentClass == classes[4].registeredClasses
                                       ? TextFormField(
                                           maxLines: 6,
                                           controller: messageController,
@@ -478,8 +478,6 @@ class _MessagingState extends State<Messaging> {
                       padding: const EdgeInsets.all(8.0),
                       child: Container(
                         alignment: Alignment.topLeft,
-
-
 
                         // child: Column(
                         //   crossAxisAlignment: CrossAxisAlignment.stretch,
@@ -553,8 +551,6 @@ class _MessagingState extends State<Messaging> {
     List<DropdownMenuItem<String>> dropDownItems = new List();
     for (int i = 0; i < classes.length; i++) {
       setState(() {
-        
-
         dropDownItems.insert(
             0,
             DropdownMenuItem(
