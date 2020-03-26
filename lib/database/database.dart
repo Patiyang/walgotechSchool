@@ -96,12 +96,12 @@ class SmsManager {
     return await _database.insert(StreamsManager.tableName, contact.toMap());
   }
 
-  Future<List<CurrentClasses>> getallStreams() async {
+  Future<List<CurrentStreams>> getallStreams() async {
     await openDB();
-    final List<Map<String, dynamic>> classes = await _database.query(StreamsManager.tableName);
-    return List.generate(classes.length, (c) {
-      return CurrentClasses(
-        registeredClasses: classes[c][ClassesManager.className],
+    final List<Map<String, dynamic>> streams = await _database.query(StreamsManager.tableName);
+    return List.generate(streams.length, (s) {
+      return CurrentStreams(
+        streams: streams[s][StreamsManager.streams],
       );
     });
   }

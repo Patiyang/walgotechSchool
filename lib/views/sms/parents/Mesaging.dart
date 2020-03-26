@@ -17,11 +17,14 @@ class _MessagingState extends State<Messaging> {
   final messageController = new TextEditingController();
   // final recipentController = new TextEditingController();
   final formKey = new GlobalKey<FormState>();
-  List<DropdownMenuItem<String>> categoriesDropDown = <DropdownMenuItem<String>>[];
+  List<DropdownMenuItem<String>> classesDropDown = <DropdownMenuItem<String>>[];
+  List<DropdownMenuItem<String>> streamsDropDown = <DropdownMenuItem<String>>[];
   List<ParentsContacts> contactsList;
   List<TeacherContacts> teachersContact;
   List<SubOrdinateContact> subordinateContact;
   List<CurrentClasses> classes = <CurrentClasses>[];
+  List<CurrentStreams> streams = <CurrentStreams>[];
+  
   String recipent;
   Text userName;
   String _userName;
@@ -34,16 +37,16 @@ class _MessagingState extends State<Messaging> {
   static final teachers = 'All Teachers';
   static final subordinate = 'All Subordinate';
 
-  // List<String> messageCategories = [individual, allParents, teachers, subordinate];
-  String _currentCategory = 'category';
+  List<String> additionalCategories = [individual, allParents, teachers, subordinate];
+  String _currentClass = 'category';
+  String _currentStream = 'stream';
   @override
   void initState() {
     super.initState();
-    _currentCategory = allParents;
-    categoriesDropDown = _getClassesDropDown();
-    _getCategories();
+    _getClasses();
+    _getStreams();
     getUserName();
-    changeSelectedCategory(_currentCategory);
+    // changeSelectedCategory(_currentClass);
   }
 
   @override
@@ -77,9 +80,34 @@ class _MessagingState extends State<Messaging> {
                                 color: Colors.black26,
                               ),
                               hint: Text('Select Category'),
-                              items: categoriesDropDown,
+                              items: classesDropDown,
                               onChanged: changeSelectedCategory,
-                              value: _currentCategory,
+                              value: _currentClass,
+                            ),
+                          ),
+                        ),
+                      ),
+                    ),
+                    Padding(
+                      padding: const EdgeInsets.symmetric(vertical: 8.0),
+                      child: Padding(
+                        padding: const EdgeInsets.symmetric(horizontal: 8.0),
+                        child: Material(
+                          elevation: 0,
+                          color: Colors.black26,
+                          shape: RoundedRectangleBorder(borderRadius: BorderRadius.all(Radius.circular(6))),
+                          child: Padding(
+                            padding: const EdgeInsets.symmetric(horizontal: 8.0),
+                            child: DropdownButton(
+                              isExpanded: true,
+                              icon: Icon(
+                                Icons.arrow_downward,
+                                color: Colors.black26,
+                              ),
+                              hint: Text('Select Stream'),
+                              items: streamsDropDown,
+                              onChanged: changeSelectedStream,
+                              value: _currentStream,
                             ),
                           ),
                         ),
@@ -103,13 +131,13 @@ class _MessagingState extends State<Messaging> {
                       child: Stack(
                         children: <Widget>[
                           Visibility(
-                            visible: _currentCategory == allParents,
+                            visible: _currentClass == allParents,
                             child: FutureBuilder(
                               future: _smsManager.getParentContacts(),
                               builder: (BuildContext context, AsyncSnapshot snapshot) {
                                 if (snapshot.hasData) {
                                   contactsList = snapshot.data;
-                                  return _currentCategory == individual
+                                  return _currentClass == individual
                                       ? TextFormField(
                                           maxLines: 6,
                                           controller: messageController,
@@ -146,13 +174,13 @@ class _MessagingState extends State<Messaging> {
                             ),
                           ),
                           Visibility(
-                            visible: _currentCategory == teachers,
+                            visible: _currentClass == teachers,
                             child: FutureBuilder(
                               future: _smsManager.getAllTeacherContacts(),
                               builder: (BuildContext context, AsyncSnapshot snapshot) {
                                 if (snapshot.hasData) {
                                   teachersContact = snapshot.data;
-                                  return _currentCategory == individual
+                                  return _currentClass == individual
                                       ? TextFormField(
                                           maxLines: 6,
                                           controller: messageController,
@@ -182,13 +210,13 @@ class _MessagingState extends State<Messaging> {
                             ),
                           ),
                           Visibility(
-                            visible: _currentCategory == subordinate,
+                            visible: _currentClass == subordinate,
                             child: FutureBuilder(
                               future: _smsManager.getSubordinateContacts(),
                               builder: (BuildContext context, AsyncSnapshot snapshot) {
                                 if (snapshot.hasData) {
                                   subordinateContact = snapshot.data;
-                                  return _currentCategory == individual
+                                  return _currentClass == individual
                                       ? TextFormField(
                                           maxLines: 6,
                                           controller: messageController,
@@ -322,7 +350,7 @@ class _MessagingState extends State<Messaging> {
         SMS sms = new SMS(
           message: messageController.text.toString(),
           sender: _userName,
-          recipent: _currentCategory,
+          recipent: _currentClass+" "+_currentStream,
           dateTime: DateTime.now().toString(),
         );
         _smsManager.insertSMS(sms).then((id) => {
@@ -332,13 +360,12 @@ class _MessagingState extends State<Messaging> {
     }
   }
 
-  
-
+// =====================================classes dd menu====================
   List<DropdownMenuItem<String>> _getClassesDropDown() {
     List<DropdownMenuItem<String>> dropDownItems = new List();
     for (int i = 0; i < classes.length; i++) {
       setState(() {
-        if (classes.length == 0 || categoriesStyle == null) {
+        if (classes.length == 0 || classes == null) {
           Text('Absent');
         }
         dropDownItems.insert(
@@ -352,20 +379,58 @@ class _MessagingState extends State<Messaging> {
     return dropDownItems;
   }
 
-  _getCategories() async {
+  _getClasses() async {
     List<CurrentClasses> data = await _smsManager.getallClasses();
 
     setState(() {
       classes = data;
-      categoriesDropDown = _getClassesDropDown();
-      _currentCategory = classes[0].registeredClasses;
+      classesDropDown = _getClassesDropDown();
+      _currentClass = classes[0].registeredClasses;
+      print(_currentClass);
     });
   }
 
-  changeSelectedCategory(String selectedCategory) {
+  changeSelectedCategory(String selectedClass) {
     setState(() {
-      _currentCategory = selectedCategory;
-      print(_currentCategory);
+      _currentClass = selectedClass;
+      print(_currentClass);
+    });
+  }
+
+//=======================================streams dd menu============================
+  List<DropdownMenuItem<String>> _getStreamsDropDown() {
+    List<DropdownMenuItem<String>> dropDownItems = new List();
+    for (int i = 0; i < streams.length; i++) {
+      setState(() {
+        if (streams.length == 0 || streams == null) {
+          Text('Absent');
+        }
+        dropDownItems.insert(
+            0,
+            DropdownMenuItem(
+              child: Text(streams[i].streams),
+              value: streams[i].streams,
+            ));
+      });
+    }
+    return dropDownItems;
+  }
+
+  _getStreams() async {
+    List<CurrentStreams> data = await _smsManager.getallStreams();
+
+    setState(() {
+      streams = data;
+      streamsDropDown = _getStreamsDropDown();
+      _currentStream = streams[0].streams;
+      print(_currentStream);
+    });
+  }
+
+  changeSelectedStream(String selectedStream) {
+    setState(() {
+      _currentStream = selectedStream;
+      print(_currentStream);
     });
   }
 
