@@ -1,10 +1,10 @@
 import 'package:curved_navigation_bar/curved_navigation_bar.dart';
 import 'package:flutter/material.dart';
 import 'package:walgotech_final/styling.dart';
+import 'package:walgotech_final/views/sms/parents/Mesaging.dart';
 import 'package:walgotech_final/views/sms/parents/parentsHistory.dart';
 import 'package:walgotech_final/views/sms/settings/settings.dart';
 import 'package:walgotech_final/views/sms/subordinateStaff/subordinatecategory.dart';
-import 'parents/parentsCategories.dart';
 
 class AllContactCategories extends StatefulWidget {
   @override
@@ -44,7 +44,7 @@ class _AllContactCategoriesState extends State<AllContactCategories> {
                 backgroundImage: AssetImage('images/modules/msg.jpg'),
               )),
         ),
-        title: Text('SMS Management'),
+        
       ),
       bottomNavigationBar: CurvedNavigationBar(
         color: accentColor,

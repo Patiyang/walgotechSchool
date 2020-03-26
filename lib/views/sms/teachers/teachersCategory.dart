@@ -206,13 +206,13 @@ class _TeachersCategoryState extends State<TeachersCategory> {
     if (formKey.currentState.validate()) {
       if (sms == null) {
         SMS sms = new SMS(
-          message: messageController.text,
+          message: messageController.text.toString(),
           sender: recipentController.text,
           recipent: _currentCategory,
           dateTime: DateTime.now().toString(),
         );
         _smsManager.insertTeacherSMS(sms).then((id) =>
-            {messageController.clear(), recipentController.clear(), print('message added to DB $id')});
+            { recipentController.clear(), print('message added to DB $id')});
       }
     }
   }

@@ -4,7 +4,6 @@ import 'package:walgotech_final/database/database.dart';
 import 'package:walgotech_final/helperClasses/loading.dart';
 import 'package:walgotech_final/models/contacts.dart';
 import 'package:walgotech_final/models/sms.dart';
-import 'package:walgotech_final/views/sms/parents/parentsHistory.dart';
 import '../../../styling.dart';
 
 class Messaging extends StatefulWidget {
@@ -14,29 +13,30 @@ class Messaging extends StatefulWidget {
 
 class _MessagingState extends State<Messaging> {
   final ParentsContactsManager _contactsManager = ParentsContactsManager();
-  Text userName;
-  String _userName;
-  List<String> classes;
-  SMS sms;
   final SmsManager _smsManager = new SmsManager();
   final messageController = new TextEditingController();
   final recipentController = new TextEditingController();
   final formKey = new GlobalKey<FormState>();
-  String recipent;
+  List<DropdownMenuItem<String>> categoriesDropDown = <DropdownMenuItem<String>>[];
   List<ParentsContacts> contactsList;
+  String recipent;
+  Text userName;
+  String _userName;
+  SMS sms;
+
   static final individual = 'Individual Contacts';
   static final allParents = 'All Parents';
-  List<DropdownMenuItem<String>> categoriesDropDown = <DropdownMenuItem<String>>[];
-  List<String> parentsCategories;
+
+  List<String> parentsCategories = [];
   String _currentCategory = 'category';
+  @override
   void initState() {
+    super.initState();
     _currentCategory = allParents;
     getContactList();
-    print(parentsCategories.toString());
-    parentsCategories = [individual,allParents];
-    super.initState();
     categoriesDropDown = _getCategoriesDropDown();
     _getCategories();
+    parentsCategories = [];
     getUserName();
     changeSelectedCategory(_currentCategory);
   }
@@ -305,7 +305,7 @@ class _MessagingState extends State<Messaging> {
                       padding: const EdgeInsets.all(8.0),
                       child: TextFormField(
                         maxLines: 6,
-                        controller: recipentController,
+                        controller: messageController,
                         validator: (v) => v.isNotEmpty ? null : 'recipents are empty',
                         decoration: InputDecoration(
                           enabled: true,
@@ -314,7 +314,7 @@ class _MessagingState extends State<Messaging> {
                         ),
                       ),
                     ),
-                    
+
                     // MaterialButton(
                     //   color: accentColor,
                     //   elevation: 0,
@@ -353,17 +353,17 @@ class _MessagingState extends State<Messaging> {
                             crossAxisAlignment: CrossAxisAlignment.stretch,
                             children: <Widget>[
                               Text('Sending: Messages', style: categoryTextStyle.copyWith(color: accentColor, fontSize: 17)),
-                              Text(
-                                'Sending to: Contacts',
-                                style: categoryTextStyle.copyWith(color: accentColor, fontSize: 17),
-                              ),
+                              Text('Sending to: Contacts', style: categoryTextStyle.copyWith(color: accentColor, fontSize: 17)),
                             ],
                           )),
                     ),
-                    SizedBox(height: 10,),
+                    SizedBox(
+                      height: 10,
+                    ),
                     Padding(
                       padding: const EdgeInsets.all(8.0),
-                      child: Container(alignment: Alignment.bottomRight,
+                      child: Container(
+                        alignment: Alignment.bottomRight,
                         child: MaterialButton(
                           color: accentColor,
                           elevation: 0,
@@ -394,28 +394,30 @@ class _MessagingState extends State<Messaging> {
 
   void delete() {
     final ParentsContactsManager _contactsManager = new ParentsContactsManager();
-    _contactsManager.deleteAll();
+    final SmsManager smsManager = new SmsManager();
+    // _contactsManager.deleteAll();
+    smsManager.deleteAll();
   }
 
   void sendMessage(BuildContext context) {
     if (formKey.currentState.validate()) {
       if (sms == null) {
         SMS sms = new SMS(
-          message: messageController.text,
+          message: messageController.text.toString(),
           sender: _userName,
           recipent: _currentCategory,
           dateTime: DateTime.now().toString(),
         );
-        _smsManager
-            .insertSMS(sms)
-            .then((id) => {messageController.clear(), recipentController.clear(), print('message added to DB $id')});
+        _smsManager.insertSMS(sms).then((id) => {
+              messageController.clear(),
+              recipentController.clear(),
+            });
       }
     }
   }
 
   List<DropdownMenuItem<String>> _getCategoriesDropDown() {
     List<DropdownMenuItem<String>> dropDownItems = new List();
-    print(parentsCategories.length);
     for (int i = 0; i < parentsCategories.length; i++) {
       setState(() {
         if (parentsCategories.length == 0 || categoriesStyle == null) {
@@ -461,8 +463,10 @@ class _MessagingState extends State<Messaging> {
 
   Future getContactList() async {
     SharedPreferences prefs = await SharedPreferences.getInstance();
+    parentsCategories = prefs.getStringList('streams');
     setState(() {
       parentsCategories = prefs.getStringList('streams');
+      print(parentsCategories);
     });
   }
 }
