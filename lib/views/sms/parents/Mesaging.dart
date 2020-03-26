@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:fluttertoast/fluttertoast.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 import 'package:walgotech_final/database/database.dart';
 import 'package:walgotech_final/helperClasses/loading.dart';
@@ -16,6 +17,7 @@ class _MessagingState extends State<Messaging> {
   final SmsManager _smsManager = new SmsManager();
   final messageController = new TextEditingController();
   // final recipentController = new TextEditingController();
+  final key = new GlobalKey<ScaffoldState>();
   final formKey = new GlobalKey<FormState>();
   List<DropdownMenuItem<String>> classesDropDown = <DropdownMenuItem<String>>[];
   List<DropdownMenuItem<String>> streamsDropDown = <DropdownMenuItem<String>>[];
@@ -24,7 +26,7 @@ class _MessagingState extends State<Messaging> {
   List<SubOrdinateContact> subordinateContact;
   List<CurrentClasses> classes = <CurrentClasses>[];
   List<CurrentStreams> streams = <CurrentStreams>[];
-  
+
   String recipent;
   Text userName;
   String _userName;
@@ -46,7 +48,6 @@ class _MessagingState extends State<Messaging> {
     _getClasses();
     _getStreams();
     getUserName();
-    // changeSelectedCategory(_currentClass);
   }
 
   @override
@@ -131,55 +132,12 @@ class _MessagingState extends State<Messaging> {
                       child: Stack(
                         children: <Widget>[
                           Visibility(
-                            visible: _currentClass == allParents,
+                            visible: _currentClass == classes[0].registeredClasses,
                             child: FutureBuilder(
-                              future: _smsManager.getParentContacts(),
+                              future: _smsManager.getFormOne(),
                               builder: (BuildContext context, AsyncSnapshot snapshot) {
                                 if (snapshot.hasData) {
                                   contactsList = snapshot.data;
-                                  return _currentClass == individual
-                                      ? TextFormField(
-                                          maxLines: 6,
-                                          controller: messageController,
-                                          validator: (v) => v.isNotEmpty ? null : 'recipents are empty',
-                                          decoration: InputDecoration(
-                                            enabled: true,
-                                            hintText: 'Type in Message',
-                                            border: OutlineInputBorder(),
-                                          ),
-                                        )
-                                      : Padding(
-                                          padding: const EdgeInsets.all(8.0),
-                                          child: Container(
-                                            decoration: BoxDecoration(border: Border.all()),
-                                            height: 150,
-                                            child: ListView.builder(
-                                              physics: BouncingScrollPhysics(),
-                                              shrinkWrap: true,
-                                              itemCount: contactsList == null ? 0 : contactsList.length,
-                                              itemBuilder: (BuildContext context, int index) {
-                                                ParentsContacts contacts = contactsList[index];
-                                                return Text(contacts.motherNumber +
-                                                    "," +
-                                                    contacts.motherNumber +
-                                                    "," +
-                                                    contacts.guardianNumber);
-                                              },
-                                            ),
-                                          ),
-                                        );
-                                }
-                                return Loading();
-                              },
-                            ),
-                          ),
-                          Visibility(
-                            visible: _currentClass == teachers,
-                            child: FutureBuilder(
-                              future: _smsManager.getAllTeacherContacts(),
-                              builder: (BuildContext context, AsyncSnapshot snapshot) {
-                                if (snapshot.hasData) {
-                                  teachersContact = snapshot.data;
                                   return _currentClass == individual
                                       ? TextFormField(
                                           maxLines: 6,
@@ -197,10 +155,134 @@ class _MessagingState extends State<Messaging> {
                                           child: ListView.builder(
                                             physics: BouncingScrollPhysics(),
                                             shrinkWrap: true,
-                                            itemCount: teachersContact == null ? 0 : teachersContact.length,
+                                            itemCount: contactsList == null ? 0 : contactsList.length,
                                             itemBuilder: (BuildContext context, int index) {
-                                              TeacherContacts teacherContact = teachersContact[index];
-                                              return Text(teacherContact.phoneNumber);
+                                              ParentsContacts contacts = contactsList[index];
+                                              return Text(contacts.motherNumber +
+                                                  "," +
+                                                  contacts.motherNumber +
+                                                  "," +
+                                                  contacts.guardianNumber);
+                                            },
+                                          ),
+                                        );
+                                }
+                                return Loading();
+                              },
+                            ),
+                          ),
+                          Visibility(
+                            visible: _currentClass == classes[1].registeredClasses,
+                            child: FutureBuilder(
+                              future: _smsManager.getFormTwo(),
+                              builder: (BuildContext context, AsyncSnapshot snapshot) {
+                                if (snapshot.hasData) {
+                                  contactsList = snapshot.data;
+                                  return _currentClass == individual
+                                      ? TextFormField(
+                                          maxLines: 6,
+                                          controller: messageController,
+                                          validator: (v) => v.isNotEmpty ? null : 'recipents are empty',
+                                          decoration: InputDecoration(
+                                            enabled: true,
+                                            hintText: 'Type in Message',
+                                            border: OutlineInputBorder(),
+                                          ),
+                                        )
+                                      : Container(
+                                          decoration: BoxDecoration(border: Border.all()),
+                                          height: 150,
+                                          child: ListView.builder(
+                                            physics: BouncingScrollPhysics(),
+                                            shrinkWrap: true,
+                                            itemCount: contactsList == null ? 0 : contactsList.length,
+                                            itemBuilder: (BuildContext context, int index) {
+                                              ParentsContacts contacts = contactsList[index];
+                                              return Text(contacts.motherNumber +
+                                                  "," +
+                                                  contacts.motherNumber +
+                                                  "," +
+                                                  contacts.guardianNumber);
+                                            },
+                                          ),
+                                        );
+                                }
+                                return Loading();
+                              },
+                            ),
+                          ),
+                          Visibility(
+                            visible: _currentClass == classes[2].registeredClasses,
+                            child: FutureBuilder(
+                              future: _smsManager.getFormThree(),
+                              builder: (BuildContext context, AsyncSnapshot snapshot) {
+                                if (snapshot.hasData) {
+                                  contactsList = snapshot.data;
+                                  return _currentClass == individual
+                                      ? TextFormField(
+                                          maxLines: 6,
+                                          controller: messageController,
+                                          validator: (v) => v.isNotEmpty ? null : 'recipents are empty',
+                                          decoration: InputDecoration(
+                                            enabled: true,
+                                            hintText: 'Type in Message',
+                                            border: OutlineInputBorder(),
+                                          ),
+                                        )
+                                      : Container(
+                                          decoration: BoxDecoration(border: Border.all()),
+                                          height: 150,
+                                          child: ListView.builder(
+                                            physics: BouncingScrollPhysics(),
+                                            shrinkWrap: true,
+                                            itemCount: contactsList == null ? 0 : contactsList.length,
+                                            itemBuilder: (BuildContext context, int index) {
+                                              ParentsContacts contacts = contactsList[index];
+                                              return Text(contacts.motherNumber +
+                                                  "," +
+                                                  contacts.motherNumber +
+                                                  "," +
+                                                  contacts.guardianNumber);
+                                            },
+                                          ),
+                                        );
+                                }
+                                return Loading();
+                              },
+                            ),
+                          ),
+                          Visibility(
+                            visible: _currentClass == classes[3].registeredClasses,
+                            child: FutureBuilder(
+                              future: _smsManager.getFormFour(),
+                              builder: (BuildContext context, AsyncSnapshot snapshot) {
+                                if (snapshot.hasData) {
+                                  contactsList = snapshot.data;
+                                  return _currentClass == individual
+                                      ? TextFormField(
+                                          maxLines: 6,
+                                          controller: messageController,
+                                          validator: (v) => v.isNotEmpty ? null : 'recipents are empty',
+                                          decoration: InputDecoration(
+                                            enabled: true,
+                                            hintText: 'Type in Message',
+                                            border: OutlineInputBorder(),
+                                          ),
+                                        )
+                                      : Container(
+                                          decoration: BoxDecoration(border: Border.all()),
+                                          height: 150,
+                                          child: ListView.builder(
+                                            physics: BouncingScrollPhysics(),
+                                            shrinkWrap: true,
+                                            itemCount: contactsList == null ? 0 : contactsList.length,
+                                            itemBuilder: (BuildContext context, int index) {
+                                              ParentsContacts contacts = contactsList[index];
+                                              return Text(contacts.motherNumber +
+                                                  "," +
+                                                  contacts.motherNumber +
+                                                  "," +
+                                                  contacts.guardianNumber);
                                             },
                                           ),
                                         );
@@ -275,22 +357,7 @@ class _MessagingState extends State<Messaging> {
                     //     delete();
                     //   },
                     // ),
-                    // Padding(
-                    //   padding: const EdgeInsets.all(8.0),
-                    //   child: MaterialButton(
-                    //     color: accentColor,
-                    //     elevation: 0,
-                    //     shape: RoundedRectangleBorder(borderRadius: BorderRadius.all(Radius.circular(10))),
-                    //     minWidth: MediaQuery.of(context).size.width * .6,
-                    //     child: Text(
-                    //       'View History',
-                    //       style: categoriesStyle,
-                    //     ),
-                    //     onPressed: () {
-                    //       Navigator.push(context, MaterialPageRoute(builder: (_) => ParentHistory()));
-                    //     },
-                    //   ),
-                    // ),
+                    //
                     Divider(),
                     Padding(
                       padding: const EdgeInsets.all(8.0),
@@ -322,7 +389,11 @@ class _MessagingState extends State<Messaging> {
                             style: categoriesStyle,
                           ),
                           onPressed: () {
-                            sendMessage(context);
+                            if (messageController.text.isNotEmpty) {
+                              messageAlert();
+                            } else if (messageController.text.isEmpty) {
+                              Fluttertoast.showToast(msg: 'Your message is blank');
+                            }
                           },
                         ),
                       ),
@@ -330,7 +401,6 @@ class _MessagingState extends State<Messaging> {
                   ],
                 ),
               )
-              // SendMessage()
             ],
           ),
         ),
@@ -350,7 +420,7 @@ class _MessagingState extends State<Messaging> {
         SMS sms = new SMS(
           message: messageController.text.toString(),
           sender: _userName,
-          recipent: _currentClass+" "+_currentStream,
+          recipent: _currentClass + " " + _currentStream,
           dateTime: DateTime.now().toString(),
         );
         _smsManager.insertSMS(sms).then((id) => {
@@ -445,5 +515,54 @@ class _MessagingState extends State<Messaging> {
         );
       });
     });
+  }
+
+  void messageAlert() {
+    var alerts = new AlertDialog(
+      shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(20)),
+      content: Container(
+        
+        alignment: Alignment.center,
+        width: 320,
+        height: 100,
+        child: Center(
+          child: Text('Are you sure you want to send the message?'.toUpperCase(),textAlign: TextAlign.center,),
+        ),
+      ),
+      actions: <Widget>[
+        FlatButton.icon(
+          onPressed: () {
+            sendMessage(context);
+            Fluttertoast.showToast(msg: 'Message Sent successfuly');
+            Navigator.pop(context);
+          },
+          icon: Icon(
+            Icons.check,
+            color: accentColor,
+          ),
+          label: Text(
+            'Done',
+            style: categoriesStyle.copyWith(color: accentColor),
+          ),
+          shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(20)),
+        ),
+        FlatButton.icon(
+          onPressed: () {
+            messageController.clear();
+            Navigator.pop(context);
+          },
+          icon: Icon(
+            Icons.cancel,color: accentColor,
+          ),
+          label: Text(
+            'Cancel',
+            style: categoriesStyle.copyWith(color: accentColor),
+          ),
+          shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(20)),
+        ),
+      ],
+    );
+
+    showDialog(context: context, builder: (_) => alerts);
   }
 }

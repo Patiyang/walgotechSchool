@@ -140,47 +140,6 @@ class SmsManager {
     });
   }
 
-  Future<List<SubOrdinateContact>> getSubordinateContacts() async {
-    await openDB();
-    final List<Map<String, dynamic>> contacts = await _database.query(SubOrdinateManager.tableName);
-    return List.generate(contacts.length, (i) {
-      return SubOrdinateContact(
-        firstName: contacts[i][SubOrdinateManager.firstName],
-        lastName: contacts[i][SubOrdinateManager.lastName],
-        phone: contacts[i][SubOrdinateManager.phone],
-      );
-    });
-  }
-
-  Future<List<SMS>> getParentsSMSList() async {
-    await openDB();
-    final List<Map<String, dynamic>> sms = await _database.query(SmsManager.messageTable);
-    return List.generate(sms.length, (i) {
-      return SMS(
-        id: sms[i][SmsManager.id],
-        message: sms[i][SmsManager.message],
-        sender: sms[i][SmsManager.sender],
-        dateTime: sms[i][SmsManager.date],
-        recipent: sms[i][SmsManager.recipent],
-      );
-    });
-  }
-
-  Future<void> deleteAll() async {
-    await openDB();
-    await _database.delete(messageTable);
-  }
-}
-
-class ParentsContactsManager {
-  Database _database;
-  static const id = 'id';
-  static const tableName = 'parentContacts';
-  static const motherNumber = 'motherNumber';
-  static const fatherNumber = 'fatherNumber';
-  static const guardianNumber = 'guardianNumber';
-  static const form = 'form';
-
   Future<List<ParentsContacts>> getFormOne() async {
     await openDB();
     final List<Map<String, dynamic>> formOnecontacts =
@@ -236,6 +195,47 @@ class ParentsContactsManager {
       );
     });
   }
+
+  Future<List<SubOrdinateContact>> getSubordinateContacts() async {
+    await openDB();
+    final List<Map<String, dynamic>> contacts = await _database.query(SubOrdinateManager.tableName);
+    return List.generate(contacts.length, (i) {
+      return SubOrdinateContact(
+        firstName: contacts[i][SubOrdinateManager.firstName],
+        lastName: contacts[i][SubOrdinateManager.lastName],
+        phone: contacts[i][SubOrdinateManager.phone],
+      );
+    });
+  }
+
+  Future<List<SMS>> getParentsSMSList() async {
+    await openDB();
+    final List<Map<String, dynamic>> sms = await _database.query(SmsManager.messageTable);
+    return List.generate(sms.length, (i) {
+      return SMS(
+        id: sms[i][SmsManager.id],
+        message: sms[i][SmsManager.message],
+        sender: sms[i][SmsManager.sender],
+        dateTime: sms[i][SmsManager.date],
+        recipent: sms[i][SmsManager.recipent],
+      );
+    });
+  }
+
+  Future<void> deleteAll() async {
+    await openDB();
+    await _database.delete(messageTable);
+  }
+}
+
+class ParentsContactsManager {
+  Database _database;
+  static const id = 'id';
+  static const tableName = 'parentContacts';
+  static const motherNumber = 'motherNumber';
+  static const fatherNumber = 'fatherNumber';
+  static const guardianNumber = 'guardianNumber';
+  static const form = 'form';
 
   Future<void> deleteAll() async {
     await openDB();
