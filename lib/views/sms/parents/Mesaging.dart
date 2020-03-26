@@ -27,16 +27,14 @@ class _MessagingState extends State<Messaging> {
   static final individual = 'Individual Contacts';
   static final allParents = 'All Parents';
 
-  List<String> parentsCategories = [];
+  List<String> parentsCategories = [individual,allParents];
   String _currentCategory = 'category';
   @override
   void initState() {
     super.initState();
     _currentCategory = allParents;
-    getContactList();
     categoriesDropDown = _getCategoriesDropDown();
     _getCategories();
-    parentsCategories = [];
     getUserName();
     changeSelectedCategory(_currentCategory);
   }
@@ -81,10 +79,7 @@ class _MessagingState extends State<Messaging> {
                       ),
                     ),
                     Visibility(
-                        visible: _currentCategory == 'Form1' ||
-                            _currentCategory == 'Form1' ||
-                            _currentCategory == 'Form3' ||
-                            _currentCategory == 'Form4',
+                        visible: _currentCategory.isNotEmpty ,
                         child: MaterialButton(
                             elevation: 0,
                             color: accentColor,
@@ -141,163 +136,163 @@ class _MessagingState extends State<Messaging> {
                               },
                             ),
                           ),
-                          Visibility(
-                            visible: _currentCategory == 'Form1',
-                            child: FutureBuilder(
-                              future: _contactsManager.getFormOne(),
-                              builder: (BuildContext context, AsyncSnapshot snapshot) {
-                                if (snapshot.hasData) {
-                                  contactsList = snapshot.data;
-                                  return _currentCategory == individual
-                                      ? TextFormField(
-                                          maxLines: 6,
-                                          controller: recipentController,
-                                          validator: (v) => v.isNotEmpty ? null : 'recipents are empty',
-                                          decoration: InputDecoration(
-                                            enabled: true,
-                                            hintText: 'Type in Message',
-                                            border: OutlineInputBorder(),
-                                          ),
-                                        )
-                                      : Container(
-                                          decoration: BoxDecoration(border: Border.all()),
-                                          height: 150,
-                                          child: ListView.builder(
-                                            physics: BouncingScrollPhysics(),
-                                            shrinkWrap: true,
-                                            itemCount: contactsList == null ? 0 : contactsList.length,
-                                            itemBuilder: (BuildContext context, int index) {
-                                              ParentsContacts contacts = contactsList[index];
-                                              return Text(contacts.fatherNumber +
-                                                  "," +
-                                                  contacts.guardianNumber +
-                                                  "," +
-                                                  contacts.motherNumber);
-                                            },
-                                          ),
-                                        );
-                                }
-                                return Loading();
-                              },
-                            ),
-                          ),
-                          Visibility(
-                            visible: _currentCategory == 'Form2',
-                            child: FutureBuilder(
-                              future: _contactsManager.getFormTwo(),
-                              builder: (BuildContext context, AsyncSnapshot snapshot) {
-                                if (snapshot.hasData) {
-                                  contactsList = snapshot.data;
-                                  return _currentCategory == individual
-                                      ? TextFormField(
-                                          maxLines: 6,
-                                          controller: recipentController,
-                                          validator: (v) => v.isNotEmpty ? null : 'recipents are empty',
-                                          decoration: InputDecoration(
-                                            enabled: true,
-                                            hintText: 'Type in Message',
-                                            border: OutlineInputBorder(),
-                                          ),
-                                        )
-                                      : Container(
-                                          decoration: BoxDecoration(border: Border.all()),
-                                          height: 150,
-                                          child: ListView.builder(
-                                            physics: BouncingScrollPhysics(),
-                                            shrinkWrap: true,
-                                            itemCount: contactsList == null ? 0 : contactsList.length,
-                                            itemBuilder: (BuildContext context, int index) {
-                                              ParentsContacts contacts = contactsList[index];
-                                              return Text(contacts.fatherNumber +
-                                                  "," +
-                                                  contacts.guardianNumber +
-                                                  "," +
-                                                  contacts.motherNumber);
-                                            },
-                                          ),
-                                        );
-                                }
-                                return Loading();
-                              },
-                            ),
-                          ),
-                          Visibility(
-                            visible: _currentCategory == 'Form3',
-                            child: FutureBuilder(
-                              future: _contactsManager.getFormThree(),
-                              builder: (BuildContext context, AsyncSnapshot snapshot) {
-                                if (snapshot.hasData) {
-                                  contactsList = snapshot.data;
-                                  return _currentCategory == individual
-                                      ? TextFormField(
-                                          maxLines: 6,
-                                          controller: recipentController,
-                                          validator: (v) => v.isNotEmpty ? null : 'recipents are empty',
-                                          decoration: InputDecoration(
-                                            enabled: true,
-                                            hintText: 'Type in Message',
-                                            border: OutlineInputBorder(),
-                                          ),
-                                        )
-                                      : Container(
-                                          decoration: BoxDecoration(border: Border.all()),
-                                          height: 150,
-                                          child: ListView.builder(
-                                            physics: BouncingScrollPhysics(),
-                                            shrinkWrap: true,
-                                            itemCount: contactsList == null ? 0 : contactsList.length,
-                                            itemBuilder: (BuildContext context, int index) {
-                                              ParentsContacts contacts = contactsList[index];
-                                              return Text(
-                                                  contacts.fatherNumber + contacts.guardianNumber + "," + contacts.motherNumber);
-                                            },
-                                          ),
-                                        );
-                                }
-                                return Loading();
-                              },
-                            ),
-                          ),
-                          Visibility(
-                            visible: _currentCategory == 'Form4',
-                            child: FutureBuilder(
-                              future: _contactsManager.getFormFour(),
-                              builder: (BuildContext context, AsyncSnapshot snapshot) {
-                                if (snapshot.hasData) {
-                                  contactsList = snapshot.data;
-                                  return _currentCategory == individual
-                                      ? TextFormField(
-                                          maxLines: 6,
-                                          controller: recipentController,
-                                          validator: (v) => v.isNotEmpty ? null : 'recipents are empty',
-                                          decoration: InputDecoration(
-                                            enabled: true,
-                                            hintText: 'Type in Message',
-                                            border: OutlineInputBorder(),
-                                          ),
-                                        )
-                                      : Container(
-                                          decoration: BoxDecoration(border: Border.all()),
-                                          height: 150,
-                                          child: ListView.builder(
-                                            physics: BouncingScrollPhysics(),
-                                            shrinkWrap: true,
-                                            itemCount: contactsList == null ? 0 : contactsList.length,
-                                            itemBuilder: (BuildContext context, int index) {
-                                              ParentsContacts contacts = contactsList[index];
-                                              return Text(contacts.fatherNumber +
-                                                  "," +
-                                                  contacts.guardianNumber +
-                                                  "," +
-                                                  contacts.motherNumber);
-                                            },
-                                          ),
-                                        );
-                                }
-                                return Loading();
-                              },
-                            ),
-                          ),
+                          // Visibility(
+                          //   visible: _currentCategory == 'Form1',
+                          //   child: FutureBuilder(
+                          //     future: _contactsManager.getFormOne(),
+                          //     builder: (BuildContext context, AsyncSnapshot snapshot) {
+                          //       if (snapshot.hasData) {
+                          //         contactsList = snapshot.data;
+                          //         return _currentCategory == individual
+                          //             ? TextFormField(
+                          //                 maxLines: 6,
+                          //                 controller: recipentController,
+                          //                 validator: (v) => v.isNotEmpty ? null : 'recipents are empty',
+                          //                 decoration: InputDecoration(
+                          //                   enabled: true,
+                          //                   hintText: 'Type in Message',
+                          //                   border: OutlineInputBorder(),
+                          //                 ),
+                          //               )
+                          //             : Container(
+                          //                 decoration: BoxDecoration(border: Border.all()),
+                          //                 height: 150,
+                          //                 child: ListView.builder(
+                          //                   physics: BouncingScrollPhysics(),
+                          //                   shrinkWrap: true,
+                          //                   itemCount: contactsList == null ? 0 : contactsList.length,
+                          //                   itemBuilder: (BuildContext context, int index) {
+                          //                     ParentsContacts contacts = contactsList[index];
+                          //                     return Text(contacts.fatherNumber +
+                          //                         "," +
+                          //                         contacts.guardianNumber +
+                          //                         "," +
+                          //                         contacts.motherNumber);
+                          //                   },
+                          //                 ),
+                          //               );
+                          //       }
+                          //       return Loading();
+                          //     },
+                          //   ),
+                          // ),
+                          // Visibility(
+                          //   visible: _currentCategory == 'Form2',
+                          //   child: FutureBuilder(
+                          //     future: _contactsManager.getFormTwo(),
+                          //     builder: (BuildContext context, AsyncSnapshot snapshot) {
+                          //       if (snapshot.hasData) {
+                          //         contactsList = snapshot.data;
+                          //         return _currentCategory == individual
+                          //             ? TextFormField(
+                          //                 maxLines: 6,
+                          //                 controller: recipentController,
+                          //                 validator: (v) => v.isNotEmpty ? null : 'recipents are empty',
+                          //                 decoration: InputDecoration(
+                          //                   enabled: true,
+                          //                   hintText: 'Type in Message',
+                          //                   border: OutlineInputBorder(),
+                          //                 ),
+                          //               )
+                          //             : Container(
+                          //                 decoration: BoxDecoration(border: Border.all()),
+                          //                 height: 150,
+                          //                 child: ListView.builder(
+                          //                   physics: BouncingScrollPhysics(),
+                          //                   shrinkWrap: true,
+                          //                   itemCount: contactsList == null ? 0 : contactsList.length,
+                          //                   itemBuilder: (BuildContext context, int index) {
+                          //                     ParentsContacts contacts = contactsList[index];
+                          //                     return Text(contacts.fatherNumber +
+                          //                         "," +
+                          //                         contacts.guardianNumber +
+                          //                         "," +
+                          //                         contacts.motherNumber);
+                          //                   },
+                          //                 ),
+                          //               );
+                          //       }
+                          //       return Loading();
+                          //     },
+                          //   ),
+                          // ),
+                          // Visibility(
+                          //   visible: _currentCategory == 'Form3',
+                          //   child: FutureBuilder(
+                          //     future: _contactsManager.getFormThree(),
+                          //     builder: (BuildContext context, AsyncSnapshot snapshot) {
+                          //       if (snapshot.hasData) {
+                          //         contactsList = snapshot.data;
+                          //         return _currentCategory == individual
+                          //             ? TextFormField(
+                          //                 maxLines: 6,
+                          //                 controller: recipentController,
+                          //                 validator: (v) => v.isNotEmpty ? null : 'recipents are empty',
+                          //                 decoration: InputDecoration(
+                          //                   enabled: true,
+                          //                   hintText: 'Type in Message',
+                          //                   border: OutlineInputBorder(),
+                          //                 ),
+                          //               )
+                          //             : Container(
+                          //                 decoration: BoxDecoration(border: Border.all()),
+                          //                 height: 150,
+                          //                 child: ListView.builder(
+                          //                   physics: BouncingScrollPhysics(),
+                          //                   shrinkWrap: true,
+                          //                   itemCount: contactsList == null ? 0 : contactsList.length,
+                          //                   itemBuilder: (BuildContext context, int index) {
+                          //                     ParentsContacts contacts = contactsList[index];
+                          //                     return Text(
+                          //                         contacts.fatherNumber + contacts.guardianNumber + "," + contacts.motherNumber);
+                          //                   },
+                          //                 ),
+                          //               );
+                          //       }
+                          //       return Loading();
+                          //     },
+                          //   ),
+                          // ),
+                          // Visibility(
+                          //   visible: _currentCategory == 'Form4',
+                          //   child: FutureBuilder(
+                          //     future: _contactsManager.getFormFour(),
+                          //     builder: (BuildContext context, AsyncSnapshot snapshot) {
+                          //       if (snapshot.hasData) {
+                          //         contactsList = snapshot.data;
+                          //         return _currentCategory == individual
+                          //             ? TextFormField(
+                          //                 maxLines: 6,
+                          //                 controller: recipentController,
+                          //                 validator: (v) => v.isNotEmpty ? null : 'recipents are empty',
+                          //                 decoration: InputDecoration(
+                          //                   enabled: true,
+                          //                   hintText: 'Type in Message',
+                          //                   border: OutlineInputBorder(),
+                          //                 ),
+                          //               )
+                          //             : Container(
+                          //                 decoration: BoxDecoration(border: Border.all()),
+                          //                 height: 150,
+                          //                 child: ListView.builder(
+                          //                   physics: BouncingScrollPhysics(),
+                          //                   shrinkWrap: true,
+                          //                   itemCount: contactsList == null ? 0 : contactsList.length,
+                          //                   itemBuilder: (BuildContext context, int index) {
+                          //                     ParentsContacts contacts = contactsList[index];
+                          //                     return Text(contacts.fatherNumber +
+                          //                         "," +
+                          //                         contacts.guardianNumber +
+                          //                         "," +
+                          //                         contacts.motherNumber);
+                          //                   },
+                          //                 ),
+                          //               );
+                          //       }
+                          //       return Loading();
+                          //     },
+                          //   ),
+                          // ),
                         ],
                       ),
                     ),
@@ -461,12 +456,4 @@ class _MessagingState extends State<Messaging> {
     });
   }
 
-  Future getContactList() async {
-    SharedPreferences prefs = await SharedPreferences.getInstance();
-    parentsCategories = prefs.getStringList('streams');
-    setState(() {
-      parentsCategories = prefs.getStringList('streams');
-      print(parentsCategories);
-    });
-  }
 }

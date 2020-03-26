@@ -58,7 +58,7 @@ class _SettingsState extends State<Settings> {
                   ),
                   onPressed: () async {
                     await saveClasses(context);
-                    await saveStreams(context);
+                    // await saveStreams(context);
                   }),
             ],
           ),
@@ -69,7 +69,7 @@ class _SettingsState extends State<Settings> {
 
   saveParentContacts(BuildContext context) async {
     final ParentsContactsManager parentsContactManager = new ParentsContactsManager();
-    String url = 'http://192.168.100.10:8000/backend/operations/readAll.php';
+    String url = 'http://192.168.122.1:8000/backend/operations/readAll.php';
     final response = await client.get(url);
     final Map result = json.decode(response.body);
     if (response.statusCode == 200) {
@@ -81,7 +81,6 @@ class _SettingsState extends State<Settings> {
           form: result['contacts'][i]['form'],
         );
         parentsContactManager.addParentsContacts(contacts).then((contact) => print('$contact has been added'));
-        // parentsContactManager.query();
       }
     } else {
       throw Exception('unable to add contact');
@@ -90,7 +89,7 @@ class _SettingsState extends State<Settings> {
 
   saveTeacherContacts(BuildContext context) async {
     final TeacherManager _contactsManager = new TeacherManager();
-    String url = 'http://192.168.100.10:8000/backend/operations/readAllTeachers.php';
+    String url = 'http://192.168.122.1:8000/backend/operations/readAllTeachers.php';
     final response = await client.get(url);
     final Map result = json.decode(response.body);
     if (response.statusCode == 200) {
@@ -111,7 +110,7 @@ class _SettingsState extends State<Settings> {
 
   saveClasses(BuildContext context) async {
     final ClassesManager classesManager = new ClassesManager();
-    String url = 'http://192.168.100.10:8000/backend/operations/readClass.php';
+    String url = 'http://192.168.122.1:8000/backend/operations/readClass.php';
     final response = await client.get(url);
     final Map result = json.decode(response.body);
     print(response.statusCode);

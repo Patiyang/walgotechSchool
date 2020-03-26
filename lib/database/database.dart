@@ -6,12 +6,49 @@ import 'package:walgotech_final/models/contacts.dart';
 import 'package:walgotech_final/models/sms.dart';
 
 Database db;
+Database _database;
+
+class DBManager {
+  static const databaseName = 'walgotechApp.db';
+}
+
+Future openDB() async {
+  if (_database == null) {
+    _database = await openDatabase(join(await getDatabasesPath(), DBManager.databaseName), version: 1,
+        onCreate: (Database db, int version) async {
+      await db.execute("CREATE TABLE parentContacts ("
+          "id INTEGER PRIMARY KEY,"
+          "motherNumber TEXT,"
+          "fatherNumber TEXT,"
+          "guardianNumber TEXT,"
+          "form TEXT"
+          ")");
+
+      await db.execute("CREATE TABLE messages ("
+          "id INTEGER PRIMARYKEY,"
+          "message TEXT,"
+          "sender TEXT,"
+          "recipent TEXT,"
+          "date TEXT"
+          ")");
+
+      await db.execute("CREATE TABLE classes ("
+          "id INTEGER PRIMARYKEY,"
+          "classes TEXT"
+          ")");
+      await db.execute("CREATE TABLE teacherContacts ("
+          "id INTEGER PRIMARYKEY,"
+          "firstName TEXT,"
+          "lastName TEXT,"
+          "phoneNumber TEXT"
+          ")");
+    });
+  }
+}
 
 class SmsManager {
-  Database _database;
-  static const databaseName = 'SMS.DB';
   static const number = 'number';
-  static const parentsMesage = 'parentMessages';
+  static const messageTable = 'messages';
   static const teacherMessage = 'teacherMessages';
   static const id = 'id';
   static const message = 'message';
@@ -19,34 +56,14 @@ class SmsManager {
   static const date = 'date';
   static const recipent = 'recipent';
 
-  Future openDB() async {
-    if (_database == null) {
-      _database = await openDatabase(join(await getDatabasesPath(), SmsManager.databaseName), version: 1,
-          onCreate: (Database db, int version) async {
-        await db.execute("CREATE TABLE parentMessages ("
-            "id INTEGER PRIMARYKEY,"
-            "message TEXT,"
-            "sender TEXT,"
-            "recipent TEXT,"
-            "date TEXT"
-            ")");
-      });
-    }
-  }
-
   Future<int> insertSMS(SMS sms) async {
     await openDB();
-    return await _database.insert(SmsManager.parentsMesage, sms.toMap());
-  }
-
-  Future<int> insertTeacherSMS(SMS sms) async {
-    await openDB();
-    return await _database.insert(SmsManager.teacherMessage, sms.toMap());
+    return await _database.insert(SmsManager.messageTable, sms.toMap());
   }
 
   Future<List<SMS>> getParentsSMSList() async {
     await openDB();
-    final List<Map<String, dynamic>> sms = await _database.query(SmsManager.parentsMesage);
+    final List<Map<String, dynamic>> sms = await _database.query(SmsManager.messageTable);
     return List.generate(sms.length, (i) {
       return SMS(
         id: sms[i][SmsManager.id],
@@ -56,50 +73,16 @@ class SmsManager {
         recipent: sms[i][SmsManager.recipent],
       );
     });
-  }
-
-  Future<List<SMS>> getTeachersSMSList() async {
-    await openDB();
-    final List<Map<String, dynamic>> sms = await _database.query(SmsManager.teacherMessage);
-    return List.generate(sms.length, (i) {
-      return SMS(
-        id: sms[i][SmsManager.id],
-        message: sms[i][SmsManager.message],
-        sender: sms[i][SmsManager.sender],
-        dateTime: sms[i][SmsManager.date],
-        recipent: sms[i][SmsManager.recipent],
-      );
-    });
-  }
-
-  Future<int> updateSMS(SMS sms) async {
-    await openDB();
-    return await _database.update(
-      SmsManager.parentsMesage,
-      sms.toMap(),
-      where: "id = ?",
-      whereArgs: [id],
-    );
-  }
-
-  Future<void> deleteSMS(int id) async {
-    await openDB();
-    await _database.delete(
-      SmsManager.parentsMesage,
-      where: "id = ?",
-      whereArgs: [id],
-    );
   }
 
   Future<void> deleteAll() async {
     await openDB();
-    await _database.delete(parentsMesage);
+    await _database.delete(messageTable);
   }
 }
 
 class ParentsContactsManager {
   Database _database;
-  static const databaseName = 'shule1.db';
   static const id = 'id';
   static const tableName = 'parentContacts';
   static const motherNumber = 'motherNumber';
@@ -107,20 +90,12 @@ class ParentsContactsManager {
   static const guardianNumber = 'guardianNumber';
   static const form = 'form';
 
-  Future openDB() async {
-    if (_database == null) {
-      _database = await openDatabase(join(await getDatabasesPath(), ParentsContactsManager.databaseName), version: 1,
-          onCreate: (Database db, int version) async {
-        await db.execute("CREATE TABLE parentContacts ("
-            "id INTEGER PRIMARY KEY,"
-            "motherNumber TEXT,"
-            "fatherNumber TEXT,"
-            "guardianNumber TEXT,"
-            "form TEXT"
-            ")");
-      });
-    }
-  }
+  // Future openDB() async {
+  //   if (_database == null) {
+  //     _database = await openDatabase(join(await getDatabasesPath(), DBManager.databaseName),
+  //         version: 1, onCreate: (Database db, int version) async {});
+  //   }
+  // }
 
   Future<int> addParentsContacts(ParentsContacts contact) async {
     await openDB();
@@ -215,19 +190,19 @@ class TeacherManager {
   static const firstName = 'firstName';
   static const lastName = 'lastName';
 
-  Future openDB() async {
-    if (_database == null) {
-      _database = await openDatabase(join(await getDatabasesPath(), TeacherManager.databaseName), version: 1,
-          onCreate: (Database db, int version) async {
-        await db.execute("CREATE TABLE teacherContacts ("
-            "id INTEGER PRIMARYKEY,"
-            "firstName TEXT,"
-            "lastName TEXT,"
-            "phoneNumber TEXT"
-            ")");
-      });
-    }
-  }
+  // Future openDB() async {
+  //   if (_database == null) {
+  //     _database = await openDatabase(join(await getDatabasesPath(), TeacherManager.databaseName), version: 1,
+  //         onCreate: (Database db, int version) async {
+  //       await db.execute("CREATE TABLE teacherContacts ("
+  //           "id INTEGER PRIMARYKEY,"
+  //           "firstName TEXT,"
+  //           "lastName TEXT,"
+  //           "phoneNumber TEXT"
+  //           ")");
+  //     });
+  //   }
+  // }
 
   Future<int> addContacts(TeacherContacts contact) async {
     await openDB();
@@ -255,17 +230,14 @@ class ClassesManager {
   static const className = 'classes';
   static const tableName = 'classes';
 
-  Future openDB() async {
-    if (_database == null) {
-      _database = await openDatabase(join(await getDatabasesPath(), ClassesManager.databaseName), version: 1,
-          onCreate: (Database db, int version) async {
-        await db.execute("CREATE TABLE classes ("
-            "id INTEGER PRIMARYKEY,"
-            "classes TEXT"
-            ")");
-      });
-    }
-  }
+  // Future openDB() async {
+  //   if (_database == null) {
+  //     _database = await openDatabase(join(await getDatabasesPath(), ClassesManager.databaseName), version: 1,
+  //         onCreate: (Database db, int version) async {
+
+  //     });
+  //   }
+  // }
 
   Future<int> addClass(CurrentClasses currentClasses) async {
     await openDB();
@@ -306,7 +278,7 @@ class StreamsManager {
     return await _database.insert(StreamsManager.tableName, contact.toMap());
   }
 
-Future<List<CurrentClasses>> getallStreams() async {
+  Future<List<CurrentClasses>> getallStreams() async {
     await openDB();
     final List<Map<String, dynamic>> classes = await _database.query(StreamsManager.tableName);
     return List.generate(classes.length, (c) {

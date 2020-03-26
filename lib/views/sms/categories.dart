@@ -44,7 +44,16 @@ class _AllContactCategoriesState extends State<AllContactCategories> {
                 backgroundImage: AssetImage('images/modules/msg.jpg'),
               )),
         ),
-        
+        title: Stack(children: <Widget>[
+          Visibility(visible: page==0,
+            child: Text('Create Message')),
+              Visibility(visible: page==1,
+            child: Text('Your History')),
+              Visibility(visible: page==2,
+            child: Text('Schedule Message')),
+              Visibility(visible: page==3,
+            child: Text('Settings')),
+        ],),
       ),
       bottomNavigationBar: CurvedNavigationBar(
         color: accentColor,
