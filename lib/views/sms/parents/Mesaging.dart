@@ -478,13 +478,16 @@ class _MessagingState extends State<Messaging> {
                       padding: const EdgeInsets.all(8.0),
                       child: Container(
                         alignment: Alignment.topLeft,
-                        child: Column(
-                          crossAxisAlignment: CrossAxisAlignment.stretch,
-                          children: <Widget>[
-                            Text('Sending: Messages', style: categoryTextStyle.copyWith(color: accentColor, fontSize: 17)),
-                            Text('Sending to: Contacts', style: categoryTextStyle.copyWith(color: accentColor, fontSize: 17)),
-                          ],
-                        ),
+
+
+
+                        // child: Column(
+                        //   crossAxisAlignment: CrossAxisAlignment.stretch,
+                        //   children: <Widget>[
+                        //     Text('Sending: Messages', style: categoryTextStyle.copyWith(color: accentColor, fontSize: 17)),
+                        //     Text('Sending to: Contacts', style: categoryTextStyle.copyWith(color: accentColor, fontSize: 17)),
+                        //   ],
+                        // ),
                       ),
                     ),
                     SizedBox(

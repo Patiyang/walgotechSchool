@@ -68,32 +68,32 @@ class SmsManager {
 
   Future<int> insertSMS(SMS sms) async {
     await openDB();
-    return await _database.insert(SmsManager.messageTable, sms.toMap());
+    return await _database.insert(SmsManager.messageTable, sms.toMap(),conflictAlgorithm: ConflictAlgorithm.replace);
   }
 
   Future<int> addParentsContacts(ParentsContacts contact) async {
     await openDB();
-    return await _database.insert(ParentsContactsManager.tableName, contact.toMap());
+    return await _database.insert(ParentsContactsManager.tableName, contact.toMap(),conflictAlgorithm: ConflictAlgorithm.replace);
   }
 
   Future<int> addTeacherContacts(TeacherContacts contact) async {
     await openDB();
-    return await _database.insert(TeacherManager.tableName, contact.toMap());
+    return await _database.insert(TeacherManager.tableName, contact.toMap(),conflictAlgorithm: ConflictAlgorithm.replace);
   }
 
   Future<int> addSubordinateContacts(SubOrdinateContact contact) async {
     await openDB();
-    return await _database.insert(SubOrdinateManager.tableName, contact.toMap());
+    return await _database.insert(SubOrdinateManager.tableName, contact.toMap(),conflictAlgorithm: ConflictAlgorithm.replace);
   }
 
   Future<int> addClass(CurrentClasses currentClasses) async {
     await openDB();
-    return await _database.insert(ClassesManager.tableName, currentClasses.toMap());
+    return await _database.insert(ClassesManager.tableName, currentClasses.toMap(),conflictAlgorithm: ConflictAlgorithm.replace);
   }
 
   Future<int> addStream(CurrentStreams contact) async {
     await openDB();
-    return await _database.insert(StreamsManager.tableName, contact.toMap());
+    return await _database.insert(StreamsManager.tableName, contact.toMap(),conflictAlgorithm: ConflictAlgorithm.replace);
   }
 
   Future<List<CurrentStreams>> getallStreams() async {
@@ -203,7 +203,7 @@ class SmsManager {
  Future<List<ParentsContacts>> getStreams() async {
     await openDB();
     final List<Map<String, dynamic>> streamsContacts =
-        await _database.query(ParentsContactsManager.tableName, where: 'streams = ?' );
+        await _database.query(ParentsContactsManager.tableName, where: 'id = ?');
     return List.generate(streamsContacts.length, (i) {
       return ParentsContacts(
         fatherNumber: streamsContacts[i][ParentsContactsManager.fatherNumber],
