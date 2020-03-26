@@ -42,6 +42,16 @@ Future openDB() async {
           "lastName TEXT,"
           "phoneNumber TEXT"
           ")");
+      await db.execute("CREATE TABLE streams ("
+          "id INTEGER PRIMARYKEY,"
+          "streams TEXT"
+          ")");
+      await db.execute("CREATE TABLE subordinate ("
+          "id INTEGER PRIMARYKEY,"
+          "firstName TEXT,"
+          "lastName TEXT,"
+          "phone TEXT"
+          ")");
     });
   }
 }
@@ -59,6 +69,87 @@ class SmsManager {
   Future<int> insertSMS(SMS sms) async {
     await openDB();
     return await _database.insert(SmsManager.messageTable, sms.toMap());
+  }
+
+  Future<int> addParentsContacts(ParentsContacts contact) async {
+    await openDB();
+    return await _database.insert(ParentsContactsManager.tableName, contact.toMap());
+  }
+
+  Future<int> addTeacherContacts(TeacherContacts contact) async {
+    await openDB();
+    return await _database.insert(TeacherManager.tableName, contact.toMap());
+  }
+
+  Future<int> addSubordinateContacts(SubOrdinateContact contact) async {
+    await openDB();
+    return await _database.insert(SubOrdinateManager.tableName, contact.toMap());
+  }
+
+  Future<int> addClass(CurrentClasses currentClasses) async {
+    await openDB();
+    return await _database.insert(ClassesManager.tableName, currentClasses.toMap());
+  }
+
+  Future<int> addStream(CurrentStreams contact) async {
+    await openDB();
+    return await _database.insert(StreamsManager.tableName, contact.toMap());
+  }
+
+  Future<List<CurrentClasses>> getallStreams() async {
+    await openDB();
+    final List<Map<String, dynamic>> classes = await _database.query(StreamsManager.tableName);
+    return List.generate(classes.length, (c) {
+      return CurrentClasses(
+        registeredClasses: classes[c][ClassesManager.className],
+      );
+    });
+  }
+
+  Future<List<CurrentClasses>> getallClasses() async {
+    await openDB();
+    final List<Map<String, dynamic>> classes = await _database.query(ClassesManager.tableName);
+    return List.generate(classes.length, (c) {
+      return CurrentClasses(
+        registeredClasses: classes[c][ClassesManager.className],
+      );
+    });
+  }
+
+  Future<List<TeacherContacts>> getAllTeacherContacts() async {
+    await openDB();
+    final List<Map<String, dynamic>> contacts = await _database.query(TeacherManager.tableName);
+    return List.generate(contacts.length, (i) {
+      return TeacherContacts(
+        firstName: contacts[i][TeacherManager.firstName],
+        lastName: contacts[i][TeacherManager.lastName],
+        phoneNumber: contacts[i][TeacherManager.phoneNumber],
+      );
+    });
+  }
+
+  Future<List<ParentsContacts>> getParentContacts() async {
+    await openDB();
+    final List<Map<String, dynamic>> contacts = await _database.query(ParentsContactsManager.tableName);
+    return List.generate(contacts.length, (i) {
+      return ParentsContacts(
+          fatherNumber: contacts[i][ParentsContactsManager.fatherNumber],
+          motherNumber: contacts[i][ParentsContactsManager.motherNumber],
+          guardianNumber: contacts[i][ParentsContactsManager.guardianNumber],
+          form: contacts[i][ParentsContactsManager.form]);
+    });
+  }
+
+  Future<List<SubOrdinateContact>> getSubordinateContacts() async {
+    await openDB();
+    final List<Map<String, dynamic>> contacts = await _database.query(SubOrdinateManager.tableName);
+    return List.generate(contacts.length, (i) {
+      return SubOrdinateContact(
+        firstName: contacts[i][SubOrdinateManager.firstName],
+        lastName: contacts[i][SubOrdinateManager.lastName],
+        phone: contacts[i][SubOrdinateManager.phone],
+      );
+    });
   }
 
   Future<List<SMS>> getParentsSMSList() async {
@@ -89,30 +180,6 @@ class ParentsContactsManager {
   static const fatherNumber = 'fatherNumber';
   static const guardianNumber = 'guardianNumber';
   static const form = 'form';
-
-  // Future openDB() async {
-  //   if (_database == null) {
-  //     _database = await openDatabase(join(await getDatabasesPath(), DBManager.databaseName),
-  //         version: 1, onCreate: (Database db, int version) async {});
-  //   }
-  // }
-
-  Future<int> addParentsContacts(ParentsContacts contact) async {
-    await openDB();
-    return await _database.insert(ParentsContactsManager.tableName, contact.toMap());
-  }
-
-  Future<List<ParentsContacts>> getAllContacts() async {
-    await openDB();
-    final List<Map<String, dynamic>> contacts = await _database.query(ParentsContactsManager.tableName);
-    return List.generate(contacts.length, (i) {
-      return ParentsContacts(
-          fatherNumber: contacts[i][ParentsContactsManager.fatherNumber],
-          motherNumber: contacts[i][ParentsContactsManager.motherNumber],
-          guardianNumber: contacts[i][ParentsContactsManager.guardianNumber],
-          form: contacts[i][ParentsContactsManager.form]);
-    });
-  }
 
   Future<List<ParentsContacts>> getFormOne() async {
     await openDB();
@@ -182,109 +249,31 @@ class ParentsContactsManager {
 }
 
 class TeacherManager {
-  Database _database;
-  static const databaseName = 'school.db';
   static const id = 'id';
   static const tableName = 'teacherContacts';
   static const phoneNumber = 'phoneNumber';
   static const firstName = 'firstName';
   static const lastName = 'lastName';
-
-  // Future openDB() async {
-  //   if (_database == null) {
-  //     _database = await openDatabase(join(await getDatabasesPath(), TeacherManager.databaseName), version: 1,
-  //         onCreate: (Database db, int version) async {
-  //       await db.execute("CREATE TABLE teacherContacts ("
-  //           "id INTEGER PRIMARYKEY,"
-  //           "firstName TEXT,"
-  //           "lastName TEXT,"
-  //           "phoneNumber TEXT"
-  //           ")");
-  //     });
-  //   }
-  // }
-
-  Future<int> addContacts(TeacherContacts contact) async {
-    await openDB();
-    return await _database.insert(TeacherManager.tableName, contact.toMap());
-  }
-
-  Future<List<TeacherContacts>> getAllContacts() async {
-    await openDB();
-    final List<Map<String, dynamic>> contacts = await _database.query(TeacherManager.tableName);
-    return List.generate(contacts.length, (i) {
-      return TeacherContacts(
-        firstName: contacts[i][TeacherManager.firstName],
-        lastName: contacts[i][TeacherManager.lastName],
-        phoneNumber: contacts[i][TeacherManager.phoneNumber],
-      );
-    });
-  }
 }
 
-// ==============================CLASSES==================================
+// ==============================CLASSES=====================================
 class ClassesManager {
-  Database _database;
-  static const databaseName = 'shule.db';
   static const id = 'id';
   static const className = 'classes';
   static const tableName = 'classes';
-
-  // Future openDB() async {
-  //   if (_database == null) {
-  //     _database = await openDatabase(join(await getDatabasesPath(), ClassesManager.databaseName), version: 1,
-  //         onCreate: (Database db, int version) async {
-
-  //     });
-  //   }
-  // }
-
-  Future<int> addClass(CurrentClasses currentClasses) async {
-    await openDB();
-    return await _database.insert(tableName, currentClasses.toMap());
-  }
-
-  Future<List<CurrentClasses>> getallClasses() async {
-    await openDB();
-    final List<Map<String, dynamic>> classes = await _database.query(ClassesManager.tableName);
-    return List.generate(classes.length, (c) {
-      return CurrentClasses(
-        registeredClasses: classes[c][ClassesManager.className],
-      );
-    });
-  }
 }
 
-// ===========================STREAMS==============================
+// ===========================STREAMS========================================
 class StreamsManager {
-  Database _database;
-  static const databaseName = 'shule2.db';
-  static const streamName = 'streamName';
+  static const id = 'id';
+  static const streams = 'streams';
   static const tableName = 'streams';
+}
 
-  Future openDB() async {
-    if (_database == null) {
-      _database = await openDatabase(join(await getDatabasesPath(), StreamsManager.databaseName), version: 1,
-          onCreate: (Database db, int version) async {
-        await db.execute("CREATE TABLE stream ("
-            "streams TEXT"
-            ")");
-      });
-    }
-  }
-
-  Future<int> addStream(CurrentStreams contact) async {
-    await openDB();
-    return await _database.insert(StreamsManager.tableName, contact.toMap());
-  }
-
-  Future<List<CurrentClasses>> getallStreams() async {
-    await openDB();
-    final List<Map<String, dynamic>> classes = await _database.query(StreamsManager.tableName);
-    return List.generate(classes.length, (c) {
-      return CurrentClasses(
-        registeredClasses: classes[c][ClassesManager.className],
-      );
-    });
-  }
+//==============================SUBORDINATE==================================
+class SubOrdinateManager {
+  static const tableName = 'subordinate';
+  static const firstName = 'firstName';
+  static const lastName = 'lastName';
+  static const phone = 'phone';
 }

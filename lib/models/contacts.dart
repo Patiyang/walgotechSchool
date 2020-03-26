@@ -58,3 +58,27 @@ class TeacherContacts {
     );
   }
 }
+
+class SubOrdinateContact {
+  String firstName;
+  String lastName;
+  String phone;
+
+  SubOrdinateContact({id, @required this.firstName, @required this.lastName, @required this.phone});
+
+  Map<String, dynamic> toMap() {
+    return {
+      SubOrdinateManager.firstName: firstName,
+      SubOrdinateManager.lastName: lastName,
+      SubOrdinateManager.phone: phone,
+    };
+  }
+
+  factory SubOrdinateContact.fromJson(Map<String, dynamic> json) {
+    return new SubOrdinateContact(
+      firstName: json[SubOrdinateManager.firstName],
+      lastName: json[SubOrdinateManager.lastName],
+      phone: json[SubOrdinateManager.phone],
+    );
+  }
+}

@@ -26,21 +26,21 @@ class CurrentClasses {
 }
 
 class CurrentStreams {
-  String streamName;
+  String streams;
 
   CurrentStreams({
-    @required this.streamName,
+    @required this.streams,
   });
 
   Map<String, dynamic> toMap() {
     return {
-      StreamsManager.streamName: streamName,
+      StreamsManager.streams: streams,
     };
   }
 
   factory CurrentStreams.fromJson(Map<String, dynamic> json) {
     return new CurrentStreams(
-      streamName: json[StreamsManager.streamName],
+      streams: json[StreamsManager.streams],
     );
   }
 }

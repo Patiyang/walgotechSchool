@@ -5,12 +5,12 @@ import 'package:walgotech_final/helperClasses/loading.dart';
 import 'package:walgotech_final/models/sms.dart';
 import 'package:walgotech_final/styling.dart';
 
-class ParentHistory extends StatefulWidget {
+class MessageHistory extends StatefulWidget {
   @override
-  _ParentHistoryState createState() => _ParentHistoryState();
+  _MessageHistoryState createState() => _MessageHistoryState();
 }
 
-class _ParentHistoryState extends State<ParentHistory> {
+class _MessageHistoryState extends State<MessageHistory> {
   final SmsManager _smsManager = new SmsManager();
   Text userName;
   String _userName;

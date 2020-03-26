@@ -2,7 +2,7 @@ import 'package:curved_navigation_bar/curved_navigation_bar.dart';
 import 'package:flutter/material.dart';
 import 'package:walgotech_final/styling.dart';
 import 'package:walgotech_final/views/sms/parents/Mesaging.dart';
-import 'package:walgotech_final/views/sms/parents/parentsHistory.dart';
+import 'package:walgotech_final/views/sms/parents/messageHistory.dart';
 import 'package:walgotech_final/views/sms/settings/settings.dart';
 import 'package:walgotech_final/views/sms/subordinateStaff/subordinatecategory.dart';
 
@@ -80,7 +80,7 @@ class _AllContactCategoriesState extends State<AllContactCategories> {
       body: page == 0
           ? Messaging()
           : Container(
-              child: page == 1 ? ParentHistory() : Container(child: page == 2 ? SubOrdinateCategory() : Settings()),
+              child: page == 1 ? MessageHistory() : Container(child: page == 2 ? SubOrdinateCategory() : Settings()),
             ),
     );
   }
