@@ -1,4 +1,3 @@
-import 'dart:convert';
 
 import 'package:flutter/material.dart';
 import 'package:flutter/foundation.dart';
@@ -10,13 +9,15 @@ class ParentsContacts {
   String guardianNumber;
   String form;
   String admission;
+  String streams;
 
   ParentsContacts(
       {@required this.motherNumber,
       @required this.fatherNumber,
       @required this.guardianNumber,
       @required this.form,
-      @required this.admission});
+      @required this.admission,
+      @required this.streams});
 
   Map<String, dynamic> toMap() {
     return {
@@ -24,6 +25,7 @@ class ParentsContacts {
       ParentsContactsManager.motherNumber: motherNumber,
       ParentsContactsManager.guardianNumber: guardianNumber,
       ParentsContactsManager.form: form
+
     };
   }
 
@@ -33,7 +35,8 @@ class ParentsContacts {
         motherNumber: json[ParentsContactsManager.motherNumber],
         guardianNumber: json[ParentsContactsManager.guardianNumber],
         form: json[ParentsContactsManager.form],
-        admission: json[ParentsContactsManager.admission]);
+        admission: json[ParentsContactsManager.admission],
+        streams: json[ParentsContactsManager.streams]);
   }
 }
 

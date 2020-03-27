@@ -21,7 +21,8 @@ Future openDB() async {
           "motherNumber TEXT,"
           "fatherNumber TEXT,"
           "guardianNumber TEXT,"
-          "form TEXT"
+          "form TEXT,"
+          "stream TEXT"
           ")");
 
       await db.execute("CREATE TABLE messages ("
@@ -68,32 +69,33 @@ class SmsManager {
 
   Future<int> insertSMS(SMS sms) async {
     await openDB();
-    return await _database.insert(SmsManager.messageTable, sms.toMap(),conflictAlgorithm: ConflictAlgorithm.replace);
+    return await _database.insert(SmsManager.messageTable, sms.toMap(), conflictAlgorithm: ConflictAlgorithm.replace);
   }
 
   Future<int> addParentsContacts(ParentsContacts contact) async {
     await openDB();
-    return await _database.insert(ParentsContactsManager.tableName, contact.toMap(),conflictAlgorithm: ConflictAlgorithm.replace);
+    return await _database.insert(ParentsContactsManager.tableName, contact.toMap(),
+        conflictAlgorithm: ConflictAlgorithm.replace);
   }
 
   Future<int> addTeacherContacts(TeacherContacts contact) async {
     await openDB();
-    return await _database.insert(TeacherManager.tableName, contact.toMap(),conflictAlgorithm: ConflictAlgorithm.replace);
+    return await _database.insert(TeacherManager.tableName, contact.toMap(), conflictAlgorithm: ConflictAlgorithm.replace);
   }
 
   Future<int> addSubordinateContacts(SubOrdinateContact contact) async {
     await openDB();
-    return await _database.insert(SubOrdinateManager.tableName, contact.toMap(),conflictAlgorithm: ConflictAlgorithm.replace);
+    return await _database.insert(SubOrdinateManager.tableName, contact.toMap(), conflictAlgorithm: ConflictAlgorithm.replace);
   }
 
   Future<int> addClass(CurrentClasses currentClasses) async {
     await openDB();
-    return await _database.insert(ClassesManager.tableName, currentClasses.toMap(),conflictAlgorithm: ConflictAlgorithm.replace);
+    return await _database.insert(ClassesManager.tableName, currentClasses.toMap(), conflictAlgorithm: ConflictAlgorithm.replace);
   }
 
   Future<int> addStream(CurrentStreams contact) async {
     await openDB();
-    return await _database.insert(StreamsManager.tableName, contact.toMap(),conflictAlgorithm: ConflictAlgorithm.replace);
+    return await _database.insert(StreamsManager.tableName, contact.toMap(), conflictAlgorithm: ConflictAlgorithm.replace);
   }
 
   Future<List<CurrentStreams>> getallStreams() async {
@@ -133,11 +135,13 @@ class SmsManager {
     final List<Map<String, dynamic>> contacts = await _database.query(ParentsContactsManager.tableName);
     return List.generate(contacts.length, (i) {
       return ParentsContacts(
-          fatherNumber: contacts[i][ParentsContactsManager.fatherNumber],
-          motherNumber: contacts[i][ParentsContactsManager.motherNumber],
-          guardianNumber: contacts[i][ParentsContactsManager.guardianNumber],
-          form: contacts[i][ParentsContactsManager.form],
-          admission: contacts[i][ParentsContactsManager.admission]);
+        fatherNumber: contacts[i][ParentsContactsManager.fatherNumber],
+        motherNumber: contacts[i][ParentsContactsManager.motherNumber],
+        guardianNumber: contacts[i][ParentsContactsManager.guardianNumber],
+        form: contacts[i][ParentsContactsManager.form],
+        admission: contacts[i][ParentsContactsManager.admission],
+        streams: contacts[i][ParentsContactsManager.streams],
+      );
     });
   }
 
@@ -151,7 +155,8 @@ class SmsManager {
         form: formOnecontacts[i][ParentsContactsManager.form],
         guardianNumber: formOnecontacts[i][ParentsContactsManager.guardianNumber],
         motherNumber: formOnecontacts[i][ParentsContactsManager.motherNumber],
-        admission: formOnecontacts[i][ParentsContactsManager.admission]
+        admission: formOnecontacts[i][ParentsContactsManager.admission],
+        streams: formOnecontacts[i][ParentsContactsManager.streams],
       );
     });
   }
@@ -167,6 +172,7 @@ class SmsManager {
         guardianNumber: formTwocontacts[i][ParentsContactsManager.guardianNumber],
         motherNumber: formTwocontacts[i][ParentsContactsManager.motherNumber],
         admission: formTwocontacts[i][ParentsContactsManager.admission],
+        streams: formTwocontacts[i][ParentsContactsManager.streams],
       );
     });
   }
@@ -181,7 +187,8 @@ class SmsManager {
         form: formThreecontacts[i][ParentsContactsManager.form],
         guardianNumber: formThreecontacts[i][ParentsContactsManager.guardianNumber],
         motherNumber: formThreecontacts[i][ParentsContactsManager.motherNumber],
-        admission: formThreecontacts[i][ParentsContactsManager.admission]
+        admission: formThreecontacts[i][ParentsContactsManager.admission],
+        streams: formThreecontacts[i][ParentsContactsManager.streams],
       );
     });
   }
@@ -196,25 +203,27 @@ class SmsManager {
         form: formFourcontacts[i][ParentsContactsManager.form],
         guardianNumber: formFourcontacts[i][ParentsContactsManager.guardianNumber],
         motherNumber: formFourcontacts[i][ParentsContactsManager.motherNumber],
-        admission: formFourcontacts[i][ParentsContactsManager.admission]
-      );
-    });
-  }
- Future<List<ParentsContacts>> getStreams() async {
-    await openDB();
-    final List<Map<String, dynamic>> streamsContacts =
-        await _database.query(ParentsContactsManager.tableName, where: 'id = ?');
-    return List.generate(streamsContacts.length, (i) {
-      return ParentsContacts(
-        fatherNumber: streamsContacts[i][ParentsContactsManager.fatherNumber],
-        form: streamsContacts[i][ParentsContactsManager.form],
-        guardianNumber: streamsContacts[i][ParentsContactsManager.guardianNumber],
-        motherNumber: streamsContacts[i][ParentsContactsManager.motherNumber],
-        admission: streamsContacts[i][ParentsContactsManager.admission]
+        admission: formFourcontacts[i][ParentsContactsManager.admission],
+        streams: formFourcontacts[i][ParentsContactsManager.streams],
       );
     });
   }
 
+  Future<List<ParentsContacts>> getStreams() async {
+    await openDB();
+    final List<Map<String, dynamic>> formFourcontacts =
+        await _database.query(ParentsContactsManager.tableName, where: 'stream = ?');
+    return List.generate(formFourcontacts.length, (i) {
+      return ParentsContacts(
+        fatherNumber: formFourcontacts[i][ParentsContactsManager.fatherNumber],
+        form: formFourcontacts[i][ParentsContactsManager.form],
+        guardianNumber: formFourcontacts[i][ParentsContactsManager.guardianNumber],
+        motherNumber: formFourcontacts[i][ParentsContactsManager.motherNumber],
+        admission: formFourcontacts[i][ParentsContactsManager.admission],
+        streams: formFourcontacts[i][ParentsContactsManager.streams],
+      );
+    });
+  }
 
   Future<List<SubOrdinateContact>> getSubordinateContacts() async {
     await openDB();
@@ -257,6 +266,7 @@ class ParentsContactsManager {
   static const guardianNumber = 'guardianNumber';
   static const form = 'form';
   static const admission = 'admission';
+  static const streams = 'streams';
 
   Future<void> deleteAll() async {
     await openDB();

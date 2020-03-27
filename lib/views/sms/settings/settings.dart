@@ -78,12 +78,14 @@ class _SettingsState extends State<Settings> {
     if (response.statusCode == 200) {
       for (int i = 0; i < result['contacts'].length; i++) {
         ParentsContacts contacts = new ParentsContacts(
-            fatherNumber: result['contacts'][i]['fatherphone'],
-            motherNumber: result['contacts'][i]['motherphone'],
-            guardianNumber: result['contacts'][i]['guardianphone'],
-            form: result['contacts'][i]['form'],
-            admission: result['contacts'][i]['Admission']);
-
+          fatherNumber: result['contacts'][i]['fatherphone'],
+          motherNumber: result['contacts'][i]['motherphone'],
+          guardianNumber: result['contacts'][i]['guardianphone'],
+          form: result['contacts'][i]['form'],
+          admission: result['contacts'][i]['Admission'],
+          streams: result['contacts'][i]['stream'],
+        );
+print(contacts.streams);
         smsManager.addParentsContacts(contacts).then((contact) => print('$contact has been added'));
       }
     } else {
@@ -155,7 +157,7 @@ class _SettingsState extends State<Settings> {
   saveSubOrdinate(BuildContext context) async {
     final SmsManager smsManager = new SmsManager();
     // String url = 'http://192.168.43.101:8000/backend/operations/readAllSubOrdinate.php';
-        String url = 'http://10.0.2.2:8000/backend/operations/readAllSubOrdinate.php';
+    String url = 'http://10.0.2.2:8000/backend/operations/readAllSubOrdinate.php';
 
     final response = await client.get(url);
     final Map result = json.decode(response.body);
