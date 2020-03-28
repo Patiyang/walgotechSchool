@@ -28,6 +28,7 @@ class _AllContactCategoriesState extends State<AllContactCategories> {
     return Scaffold(
       backgroundColor: primaryColor,
       appBar: AppBar(
+        
         actions: <Widget>[
           Center(
               child: Text(

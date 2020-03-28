@@ -63,19 +63,20 @@ class _HomePageState extends State<HomePage> {
     return SafeArea(
       child: Scaffold(
         appBar: AppBar(
+          backgroundColor: Colors.blue[900],
           leading: Padding(
             padding: const EdgeInsets.all(10.0),
             child: CircleAvatar(
               backgroundImage: AssetImage('images/student.jpg'),
             ),
           ),
-          title: Text(widget.title),
+          title: Text('School Name',style: TextStyle(color: Colors.white),),
           centerTitle: true,
           elevation: 0,
           actions: <Widget>[
             Padding(
               padding: const EdgeInsets.all(8.0),
-              child: Icon(Icons.search),
+              child: Icon(Icons.search,color: Colors.white,),
             )
           ],
         ),

@@ -94,24 +94,24 @@ class _MessagingState extends State<Messaging> {
                         },
                         child: Text('Tap to Choose Specific Streams')),
                     Divider(),
-                    Visibility(
-                      visible: _currentClass == 'All Parents' ||
-                          _currentClass == 'Form1' ||
-                          _currentClass == 'Form2' ||
-                          _currentClass == 'Form3' ||
-                          _currentClass == 'Form4',
-                      child: MaterialButton(
-                          elevation: 0,
-                          color: accentColor,
-                          child: Text(
-                            'Send to both parents',
-                            style: categoriesStyle,
-                          ),
-                          shape: RoundedRectangleBorder(borderRadius: BorderRadius.all(Radius.circular(10))),
-                          onPressed: () {
-                            setState(() {});
-                          }),
-                    ),
+                    // Visibility(
+                    //   visible: _currentClass == 'All Parents' ||
+                    //       _currentClass == 'Form1' ||
+                    //       _currentClass == 'Form2' ||
+                    //       _currentClass == 'Form3' ||
+                    //       _currentClass == 'Form4',
+                    //   child: MaterialButton(
+                    //       elevation: 0,
+                    //       color: accentColor,
+                    //       child: Text(
+                    //         'Send to both parents',
+                    //         style: categoriesStyle,
+                    //       ),
+                    //       shape: RoundedRectangleBorder(borderRadius: BorderRadius.all(Radius.circular(10))),
+                    //       onPressed: () {
+                    //         setState(() {});
+                    //       }),
+                    // ),
                     Padding(
                       padding: const EdgeInsets.all(8.0),
                       child: Column(
