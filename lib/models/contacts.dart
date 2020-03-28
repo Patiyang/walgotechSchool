@@ -1,4 +1,3 @@
-
 import 'package:flutter/material.dart';
 import 'package:flutter/foundation.dart';
 import 'package:walgotech_final/database/database.dart';
@@ -24,10 +23,12 @@ class ParentsContacts {
       ParentsContactsManager.fatherNumber: fatherNumber,
       ParentsContactsManager.motherNumber: motherNumber,
       ParentsContactsManager.guardianNumber: guardianNumber,
-      ParentsContactsManager.form: form
-
+      ParentsContactsManager.form: form,
+      ParentsContactsManager.streams: streams,
+      ParentsContactsManager.admission:admission
     };
   }
+
 
   factory ParentsContacts.fromJson(Map<String, dynamic> json) {
     return new ParentsContacts(

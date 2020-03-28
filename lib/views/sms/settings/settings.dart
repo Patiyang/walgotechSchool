@@ -78,14 +78,13 @@ class _SettingsState extends State<Settings> {
     if (response.statusCode == 200) {
       for (int i = 0; i < result['contacts'].length; i++) {
         ParentsContacts contacts = new ParentsContacts(
-          fatherNumber: result['contacts'][i]['fatherphone'].replaceFirst(RegExp('0'),'+254'),
-          motherNumber: result['contacts'][i]['motherphone'].replaceFirst(RegExp('0'),'+254'),
-          guardianNumber: result['contacts'][i]['guardianphone'].replaceFirst(RegExp('0'),'+254'),
+          fatherNumber: result['contacts'][i]['fatherphone'].replaceFirst(RegExp('0'), '+254'),
+          motherNumber: result['contacts'][i]['motherphone'].replaceFirst(RegExp('0'), '+254'),
+          guardianNumber: result['contacts'][i]['guardianphone'].replaceFirst(RegExp('0'), '+254'),
           form: result['contacts'][i]['form'],
           admission: result['contacts'][i]['Admission'],
           streams: result['contacts'][i]['stream'],
         );
-        print(contacts.streams);
         smsManager.addParentsContacts(contacts).then((contact) => print('$contact has been added'));
       }
     } else {
@@ -102,11 +101,10 @@ class _SettingsState extends State<Settings> {
     if (response.statusCode == 200) {
       for (int i = 0; i < result['teachers'].length; i++) {
         TeacherContacts contacts = new TeacherContacts(
-          phoneNumber: result['teachers'][i]['phone'].replaceFirst(RegExp('0'),'+254'),
+          phoneNumber: result['teachers'][i]['phone'].replaceFirst(RegExp('0'), '+254'),
           firstName: result['teachers'][i]['firstName'],
           lastName: result['teachers'][i]['lastName'],
         );
-        print(contacts.firstName);
         smsManager.addTeacherContacts(contacts).then((contact) => print(' $contact has been added'));
       }
     }
@@ -167,9 +165,8 @@ class _SettingsState extends State<Settings> {
         SubOrdinateContact subOrdinateContact = new SubOrdinateContact(
           firstName: result['subordinate'][i]['firstName'],
           lastName: result['subordinate'][i]['lastName'],
-          phone: result['subordinate'][i]['phone'].replaceFirst(RegExp('0'),'+254'),
+          phone: result['subordinate'][i]['phone'].replaceFirst(RegExp('0'), '+254'),
         );
-        print(subOrdinateContact.phone);
         smsManager
             .addSubordinateContacts(subOrdinateContact)
             .then((subOrdinateContact) => print('$subOrdinateContact has been added'));
@@ -179,7 +176,6 @@ class _SettingsState extends State<Settings> {
     }
   }
 }
-
 
 //  List test = ['0724640807','0713951958'];
 //   for (var single in test) {

@@ -1,4 +1,5 @@
 import 'dart:async';
+import 'package:flutter/widgets.dart';
 import 'package:path/path.dart';
 import 'package:sqflite/sqflite.dart';
 import 'package:walgotech_final/models/classes.dart';
@@ -22,7 +23,8 @@ Future openDB() async {
           "fatherNumber TEXT,"
           "guardianNumber TEXT,"
           "form TEXT,"
-          "stream TEXT"
+          "admission TEXT,"
+          "streams TEXT"
           ")");
       await db.execute("CREATE TABLE teacherContacts ("
           "id INTEGER PRIMARYKEY,"
@@ -143,9 +145,11 @@ class SmsManager {
       );
     });
   }
-Future<List<ParentsContacts>> getStreamsContacts() async {
+
+  Future<List<ParentsContacts>> getStreamsContacts() async {
     await openDB();
-    final List<Map<String, dynamic>> contacts = await _database.query(ParentsContactsManager.tableName,where: 'form = ?',whereArgs: ['Form1','Form2','Form3','Form4']);
+    final List<Map<String, dynamic>> contacts =
+        await _database.query(ParentsContactsManager.tableName, where: 'form = ? AND streams = ? ', whereArgs: ['Form1','EAST']);
     return List.generate(contacts.length, (i) {
       return ParentsContacts(
         fatherNumber: contacts[i][ParentsContactsManager.fatherNumber],
@@ -157,6 +161,7 @@ Future<List<ParentsContacts>> getStreamsContacts() async {
       );
     });
   }
+
   Future<List<ParentsContacts>> getFormOne() async {
     await openDB();
     final List<Map<String, dynamic>> formOnecontacts =
@@ -254,8 +259,6 @@ Future<List<ParentsContacts>> getStreamsContacts() async {
 }
 
 class ParentsContactsManager {
-  Database _database;
-  static const id = 'id';
   static const tableName = 'parentContacts';
   static const motherNumber = 'motherNumber';
   static const fatherNumber = 'fatherNumber';
@@ -263,16 +266,6 @@ class ParentsContactsManager {
   static const form = 'form';
   static const admission = 'admission';
   static const streams = 'streams';
-
-  Future<void> deleteAll() async {
-    await openDB();
-    await _database.delete(tableName);
-  }
-
-  Future<void> query() async {
-    await openDB();
-    await _database.rawQuery("SELECT * FROM parentsContacts");
-  }
 }
 
 class TeacherManager {

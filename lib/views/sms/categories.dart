@@ -30,13 +30,9 @@ class _AllContactCategoriesState extends State<AllContactCategories> {
       appBar: AppBar(
         actions: <Widget>[
           Center(
-              child: GestureDetector(onTap: (){
-               Navigator.push(context, MaterialPageRoute(builder: (_)=>CurrentStreamClasses()));
-              },
-                              child: Text(
-            'Balance:',
-            style: TextStyle(fontSize: 20, color: Colors.green),
-          ),
+              child: Text(
+                'Balance:',
+                style: TextStyle(fontSize: 20, color: Colors.green),
               ))
         ],
         elevation: .7,
@@ -49,16 +45,14 @@ class _AllContactCategoriesState extends State<AllContactCategories> {
                 backgroundImage: AssetImage('images/modules/msg.jpg'),
               )),
         ),
-        title: Stack(children: <Widget>[
-          Visibility(visible: page==0,
-            child: Text('Create Message')),
-              Visibility(visible: page==1,
-            child: Text('Your History')),
-              Visibility(visible: page==2,
-            child: Text('Schedule Message')),
-              Visibility(visible: page==3,
-            child: Text('Settings')),
-        ],),
+        title: Stack(
+          children: <Widget>[
+            Visibility(visible: page == 0, child: Text('Create Message')),
+            Visibility(visible: page == 1, child: Text('Your History')),
+            Visibility(visible: page == 2, child: Text('Schedule Message')),
+            Visibility(visible: page == 3, child: Text('Settings')),
+          ],
+        ),
       ),
       bottomNavigationBar: CurvedNavigationBar(
         color: accentColor,

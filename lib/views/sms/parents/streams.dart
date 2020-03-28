@@ -39,6 +39,7 @@ class _CurrentStreamClassesState extends State<CurrentStreamClasses> {
     super.initState();
     _getStreams();
     getUserName();
+   
     _currentStream = 'stream';
     streamsDropDown = _getStreamsDropDown();
   }
@@ -97,10 +98,11 @@ class _CurrentStreamClassesState extends State<CurrentStreamClasses> {
                         setState(() {});
                       }),
                 ),
+                for(int i=0;i<streams.length;i++)
                 Padding(
                   padding: const EdgeInsets.all(3.0),
                   child: Visibility(
-                    visible: _currentStream == 'Form1 EAST',
+                    visible: _currentStream == streams[i].streams,
                     child: FutureBuilder(
                       future: _smsManager.getStreamsContacts(),
                       builder: (BuildContext context, AsyncSnapshot snapshot) {
@@ -212,6 +214,7 @@ class _CurrentStreamClassesState extends State<CurrentStreamClasses> {
       streams = data;
       streamsDropDown = _getStreamsDropDown();
       _currentStream = streams.isEmpty ? _currentStream = '' : streams[0].streams;
+       print(streams[0].streams);
       print(_currentStream);
     });
   }
