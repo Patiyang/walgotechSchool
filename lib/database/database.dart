@@ -1,5 +1,4 @@
 import 'dart:async';
-import 'package:flutter/widgets.dart';
 import 'package:path/path.dart';
 import 'package:sqflite/sqflite.dart';
 import 'package:walgotech_final/models/classes.dart';
@@ -156,7 +155,8 @@ class SmsManager {
 
   Future<List<ParentsContacts>> getParentContacts(String form) async {
     await openDB();
-    final List<Map<String, dynamic>> contacts = await _database.query(ParentsContactsManager.tableName, where: 'form = ?',whereArgs: [form]);
+    final List<Map<String, dynamic>> contacts =
+        await _database.query(ParentsContactsManager.tableName, where: 'form = ?', whereArgs: [form]);
     return List.generate(contacts.length, (i) {
       return ParentsContacts(
         fatherNumber: contacts[i][ParentsContactsManager.fatherNumber],
@@ -168,7 +168,8 @@ class SmsManager {
       );
     });
   }
-Future<List<ParentsContacts>> getAllParentContacts() async {
+
+  Future<List<ParentsContacts>> getAllParentContacts() async {
     await openDB();
     final List<Map<String, dynamic>> contacts = await _database.query(ParentsContactsManager.tableName);
     return List.generate(contacts.length, (i) {
@@ -182,10 +183,11 @@ Future<List<ParentsContacts>> getAllParentContacts() async {
       );
     });
   }
-  Future<List<ParentsContacts>> getStreamsContacts(String classname,String stream) async {
+
+  Future<List<ParentsContacts>> getStreamsContacts(String classname, String stream) async {
     await openDB();
-    final List<Map<String, dynamic>> contacts =
-        await _database.query(ParentsContactsManager.tableName, where: 'form = ? AND streams = ? ', whereArgs: [classname, stream]);
+    final List<Map<String, dynamic>> contacts = await _database
+        .query(ParentsContactsManager.tableName, where: 'form = ? AND streams = ? ', whereArgs: [classname, stream]);
     return List.generate(contacts.length, (i) {
       return ParentsContacts(
         fatherNumber: contacts[i][ParentsContactsManager.fatherNumber],
@@ -194,70 +196,6 @@ Future<List<ParentsContacts>> getAllParentContacts() async {
         form: contacts[i][ParentsContactsManager.form],
         admission: contacts[i][ParentsContactsManager.admission],
         streams: contacts[i][ParentsContactsManager.streams],
-      );
-    });
-  }
-
-  Future<List<ParentsContacts>> getFormOne() async {
-    await openDB();
-    final List<Map<String, dynamic>> formOnecontacts =
-        await _database.query(ParentsContactsManager.tableName, where: 'form = ("Form1")');
-    return List.generate(formOnecontacts.length, (i) {
-      return ParentsContacts(
-        fatherNumber: formOnecontacts[i][ParentsContactsManager.fatherNumber],
-        form: formOnecontacts[i][ParentsContactsManager.form],
-        guardianNumber: formOnecontacts[i][ParentsContactsManager.guardianNumber],
-        motherNumber: formOnecontacts[i][ParentsContactsManager.motherNumber],
-        admission: formOnecontacts[i][ParentsContactsManager.admission],
-        streams: formOnecontacts[i][ParentsContactsManager.streams],
-      );
-    });
-  }
-
-  Future<List<ParentsContacts>> getFormTwo() async {
-    await openDB();
-    final List<Map<String, dynamic>> formTwocontacts =
-        await _database.query(ParentsContactsManager.tableName, where: 'form = ("Form2")');
-    return List.generate(formTwocontacts.length, (i) {
-      return ParentsContacts(
-        fatherNumber: formTwocontacts[i][ParentsContactsManager.fatherNumber],
-        form: formTwocontacts[i][ParentsContactsManager.form],
-        guardianNumber: formTwocontacts[i][ParentsContactsManager.guardianNumber],
-        motherNumber: formTwocontacts[i][ParentsContactsManager.motherNumber],
-        admission: formTwocontacts[i][ParentsContactsManager.admission],
-        streams: formTwocontacts[i][ParentsContactsManager.streams],
-      );
-    });
-  }
-
-  Future<List<ParentsContacts>> getFormThree() async {
-    await openDB();
-    final List<Map<String, dynamic>> formThreecontacts =
-        await _database.query(ParentsContactsManager.tableName, where: 'form = ("Form3")');
-    return List.generate(formThreecontacts.length, (i) {
-      return ParentsContacts(
-        fatherNumber: formThreecontacts[i][ParentsContactsManager.fatherNumber],
-        form: formThreecontacts[i][ParentsContactsManager.form],
-        guardianNumber: formThreecontacts[i][ParentsContactsManager.guardianNumber],
-        motherNumber: formThreecontacts[i][ParentsContactsManager.motherNumber],
-        admission: formThreecontacts[i][ParentsContactsManager.admission],
-        streams: formThreecontacts[i][ParentsContactsManager.streams],
-      );
-    });
-  }
-
-  Future<List<ParentsContacts>> getFormFour() async {
-    await openDB();
-    final List<Map<String, dynamic>> formFourcontacts =
-        await _database.query(ParentsContactsManager.tableName, where: 'form = ("Form4")');
-    return List.generate(formFourcontacts.length, (i) {
-      return ParentsContacts(
-        fatherNumber: formFourcontacts[i][ParentsContactsManager.fatherNumber],
-        form: formFourcontacts[i][ParentsContactsManager.form],
-        guardianNumber: formFourcontacts[i][ParentsContactsManager.guardianNumber],
-        motherNumber: formFourcontacts[i][ParentsContactsManager.motherNumber],
-        admission: formFourcontacts[i][ParentsContactsManager.admission],
-        streams: formFourcontacts[i][ParentsContactsManager.streams],
       );
     });
   }
@@ -312,14 +250,12 @@ class TeacherManager {
   static const lastName = 'lastName';
 }
 
-// ==============================CLASSES=====================================
 class ClassesManager {
   static const id = 'id';
   static const className = 'classes';
   static const tableName = 'classes';
 }
 
-// ===========================STREAMS========================================
 class StreamsManager {
   static const id = 'id';
   static const streams = 'streams';
@@ -331,7 +267,6 @@ class StreamClassManager {
   static const classes = 'classes';
 }
 
-//==============================SUBORDINATE==================================
 class SubOrdinateManager {
   static const tableName = 'subordinate';
   static const firstName = 'firstName';

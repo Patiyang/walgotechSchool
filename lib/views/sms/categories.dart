@@ -3,7 +3,6 @@ import 'package:flutter/material.dart';
 import 'package:walgotech_final/styling.dart';
 import 'package:walgotech_final/views/sms/parents/Mesaging.dart';
 import 'package:walgotech_final/views/sms/parents/messageHistory.dart';
-import 'package:walgotech_final/views/sms/parents/streams.dart';
 import 'package:walgotech_final/views/sms/settings/settings.dart';
 import 'package:walgotech_final/views/sms/subordinateStaff/subordinatecategory.dart';
 
@@ -24,7 +23,6 @@ class _AllContactCategoriesState extends State<AllContactCategories> {
   }
 
   Widget build(BuildContext context) {
-    // var _selectedIndex;
     return Scaffold(
       backgroundColor: primaryColor,
       appBar: AppBar(
@@ -88,5 +86,5 @@ getSchoolDetails(){
   
 }
   getUserBalance() {}
-  checkstringlength() {}
+ 
 }

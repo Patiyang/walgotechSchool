@@ -214,8 +214,7 @@ class _CurrentStreamClassesState extends State<CurrentStreamClasses> {
       streams = data;
       streamsDropDown = _getStreamsDropDown();
       _currentStream = streams.isEmpty ? _currentStream = '' : streams[0].streams;
-      //  print(streams[0].streams);
-      // print(_currentStream.split(' '));
+    
     });
   }
 
