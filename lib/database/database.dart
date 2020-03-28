@@ -4,6 +4,7 @@ import 'package:path/path.dart';
 import 'package:sqflite/sqflite.dart';
 import 'package:walgotech_final/models/classes.dart';
 import 'package:walgotech_final/models/contacts.dart';
+import 'package:walgotech_final/models/schoolDetails.dart';
 import 'package:walgotech_final/models/sms.dart';
 
 Database db;
@@ -42,7 +43,12 @@ Future openDB() async {
           "id INTEGER PRIMARYKEY,"
           "classes TEXT"
           ")");
-
+      await db.execute("CREATE TABLE school ("
+          "id INTEGER PRIMARYKEY,"
+          "schoolName TEXT,"
+          "smsKey TEXT,"
+          "smsID TEXT"
+          ")");
       await db.execute("CREATE TABLE streams ("
           "id INTEGER PRIMARYKEY,"
           "streams TEXT"
@@ -79,6 +85,11 @@ class SmsManager {
         conflictAlgorithm: ConflictAlgorithm.replace);
   }
 
+  Future<int> addSchool(SchoolDetails details) async {
+    await openDB();
+    return await _database.insert(SchoolManager.tableName, details.toMap(), conflictAlgorithm: ConflictAlgorithm.replace);
+  }
+
   Future<int> addTeacherContacts(TeacherContacts contact) async {
     await openDB();
     return await _database.insert(TeacherManager.tableName, contact.toMap(), conflictAlgorithm: ConflictAlgorithm.replace);
@@ -109,6 +120,18 @@ class SmsManager {
     });
   }
 
+  Future<List<SchoolDetails>> classes() async {
+    await openDB();
+    final List<Map<String, dynamic>> school = await _database.rawQuery("SELECT * FROM school");
+    return List.generate(school.length, (s) {
+      return SchoolDetails(
+        schoolName: school[s][SchoolManager.schoolName],
+        smsID: school[s][SchoolManager.smsID],
+        smsKey: school[s][SchoolManager.smsKey],
+      );
+    });
+  }
+
   Future<List<CurrentClasses>> getallClasses() async {
     await openDB();
     final List<Map<String, dynamic>> classes = await _database.query(ClassesManager.tableName);
@@ -131,7 +154,21 @@ class SmsManager {
     });
   }
 
-  Future<List<ParentsContacts>> getParentContacts() async {
+  Future<List<ParentsContacts>> getParentContacts(String form) async {
+    await openDB();
+    final List<Map<String, dynamic>> contacts = await _database.query(ParentsContactsManager.tableName, where: 'form = ?',whereArgs: [form]);
+    return List.generate(contacts.length, (i) {
+      return ParentsContacts(
+        fatherNumber: contacts[i][ParentsContactsManager.fatherNumber],
+        motherNumber: contacts[i][ParentsContactsManager.motherNumber],
+        guardianNumber: contacts[i][ParentsContactsManager.guardianNumber],
+        form: contacts[i][ParentsContactsManager.form],
+        admission: contacts[i][ParentsContactsManager.admission],
+        streams: contacts[i][ParentsContactsManager.streams],
+      );
+    });
+  }
+Future<List<ParentsContacts>> getAllParentContacts() async {
     await openDB();
     final List<Map<String, dynamic>> contacts = await _database.query(ParentsContactsManager.tableName);
     return List.generate(contacts.length, (i) {
@@ -145,11 +182,10 @@ class SmsManager {
       );
     });
   }
-
-  Future<List<ParentsContacts>> getStreamsContacts() async {
+  Future<List<ParentsContacts>> getStreamsContacts(String classname,String stream) async {
     await openDB();
     final List<Map<String, dynamic>> contacts =
-        await _database.query(ParentsContactsManager.tableName, where: 'form = ? AND streams = ? ', whereArgs: ['Form1','EAST']);
+        await _database.query(ParentsContactsManager.tableName, where: 'form = ? AND streams = ? ', whereArgs: [classname, stream]);
     return List.generate(contacts.length, (i) {
       return ParentsContacts(
         fatherNumber: contacts[i][ParentsContactsManager.fatherNumber],
@@ -301,4 +337,17 @@ class SubOrdinateManager {
   static const firstName = 'firstName';
   static const lastName = 'lastName';
   static const phone = 'phone';
+}
+
+class SchoolManager {
+  static const tableName = 'school';
+  static const schoolName = 'schoolName';
+  static const address = 'address';
+  static const city = 'city';
+  static const email = 'email';
+  static const phone = 'phone';
+  static const schoolMotto = 'regname';
+  static const smsKey = 'smsKey';
+  static const smsUserName = 'smsUserName';
+  static const smsID = 'smsID';
 }

@@ -17,6 +17,7 @@ class HomePage extends StatefulWidget {
 
 class _HomePageState extends State<HomePage> {
   String name = '';
+  String schoolName = 'IRENE SCHOOL';
   @override
   void initState() {
     signInUser();
@@ -51,10 +52,13 @@ class _HomePageState extends State<HomePage> {
 
   Future signInUser() async {
     name = await getUName();
+    // schoolName = await getSchoolName();
     if (name != null) {
+      print(schoolName);
       if (name.length > 0) {}
     } else {
       name = '';
+      schoolName='d';
     }
     return name;
   }
@@ -70,13 +74,19 @@ class _HomePageState extends State<HomePage> {
               backgroundImage: AssetImage('images/student.jpg'),
             ),
           ),
-          title: Text('School Name',style: TextStyle(color: Colors.white),),
+          title: Text(
+            schoolName,
+            style: TextStyle(color: Colors.white),
+          ),
           centerTitle: true,
           elevation: 0,
           actions: <Widget>[
             Padding(
               padding: const EdgeInsets.all(8.0),
-              child: Icon(Icons.search,color: Colors.white,),
+              child: Icon(
+                Icons.search,
+                color: Colors.white,
+              ),
             )
           ],
         ),
@@ -110,5 +120,10 @@ class _HomePageState extends State<HomePage> {
   getUName() async {
     SharedPreferences preferences = await SharedPreferences.getInstance();
     return preferences.getString('userName');
+  }
+
+  getSchoolName() async {
+    SharedPreferences preferences = await SharedPreferences.getInstance();
+    return preferences.getString('schoolName');
   }
 }

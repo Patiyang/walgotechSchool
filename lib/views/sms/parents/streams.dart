@@ -98,13 +98,13 @@ class _CurrentStreamClassesState extends State<CurrentStreamClasses> {
                         setState(() {});
                       }),
                 ),
-                for(int i=0;i<streams.length;i++)
+                // for(int i=0;i<streams.length;i++)
                 Padding(
                   padding: const EdgeInsets.all(3.0),
                   child: Visibility(
-                    visible: _currentStream == streams[i].streams,
+                    visible: _currentStream == _currentStream,
                     child: FutureBuilder(
-                      future: _smsManager.getStreamsContacts(),
+                      future: _smsManager.getStreamsContacts(_currentStream.split(' ')[0],_currentStream.split(' ')[1]),
                       builder: (BuildContext context, AsyncSnapshot snapshot) {
                         if (snapshot.hasData) {
                           parentContact = snapshot.data;
@@ -214,8 +214,8 @@ class _CurrentStreamClassesState extends State<CurrentStreamClasses> {
       streams = data;
       streamsDropDown = _getStreamsDropDown();
       _currentStream = streams.isEmpty ? _currentStream = '' : streams[0].streams;
-       print(streams[0].streams);
-      print(_currentStream);
+      //  print(streams[0].streams);
+      // print(_currentStream.split(' '));
     });
   }
 

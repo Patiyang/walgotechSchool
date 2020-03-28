@@ -87,31 +87,15 @@ class _MessagingState extends State<Messaging> {
                       ),
                     ),
                     Text('OR'),
-                    SizedBox(height: 10,),
+                    SizedBox(
+                      height: 10,
+                    ),
                     GestureDetector(
                         onTap: () {
                           Navigator.push(context, MaterialPageRoute(builder: (_) => CurrentStreamClasses()));
                         },
                         child: Text('Tap to Choose Specific Streams')),
                     Divider(),
-                    // Visibility(
-                    //   visible: _currentClass == 'All Parents' ||
-                    //       _currentClass == 'Form1' ||
-                    //       _currentClass == 'Form2' ||
-                    //       _currentClass == 'Form3' ||
-                    //       _currentClass == 'Form4',
-                    //   child: MaterialButton(
-                    //       elevation: 0,
-                    //       color: accentColor,
-                    //       child: Text(
-                    //         'Send to both parents',
-                    //         style: categoriesStyle,
-                    //       ),
-                    //       shape: RoundedRectangleBorder(borderRadius: BorderRadius.all(Radius.circular(10))),
-                    //       onPressed: () {
-                    //         setState(() {});
-                    //       }),
-                    // ),
                     Padding(
                       padding: const EdgeInsets.all(8.0),
                       child: Column(
@@ -119,11 +103,11 @@ class _MessagingState extends State<Messaging> {
                           Stack(
                             children: <Widget>[
                               Visibility(
-                                visible: _currentClass == 'Form1',
+                                visible: _currentClass == _currentClass,
                                 child: Column(
                                   children: <Widget>[
                                     FutureBuilder(
-                                      future: _smsManager.getFormOne(),
+                                      future: _smsManager.getParentContacts(_currentClass),
                                       builder: (BuildContext context, AsyncSnapshot snapshot) {
                                         if (snapshot.hasData) {
                                           parentContact = snapshot.data;
@@ -131,110 +115,6 @@ class _MessagingState extends State<Messaging> {
                                             decoration: BoxDecoration(border: Border.all()),
                                             height: 150,
                                             child: ListView.builder(
-                                              physics: BouncingScrollPhysics(),
-                                              shrinkWrap: true,
-                                              itemCount: parentContact == null ? 0 : parentContact.length,
-                                              itemBuilder: (BuildContext context, int index) {
-                                                ParentsContacts contacts = parentContact[index];
-                                                return Text(contacts.motherNumber +
-                                                    "," +
-                                                    contacts.motherNumber +
-                                                    "," +
-                                                    contacts.guardianNumber);
-                                              },
-                                            ),
-                                          );
-                                        }
-                                        return Loading();
-                                      },
-                                    ),
-                                    messageInput()
-                                  ],
-                                ),
-                              ),
-                              Visibility(
-                                visible: _currentClass == 'Form2',
-                                child: Column(
-                                  children: <Widget>[
-                                    FutureBuilder(
-                                      future: _smsManager.getFormTwo(),
-                                      builder: (BuildContext context, AsyncSnapshot snapshot) {
-                                        if (snapshot.hasData) {
-                                          parentContact = snapshot.data;
-                                          return Container(
-                                            decoration: BoxDecoration(border: Border.all()),
-                                            height: 150,
-                                            child: ListView.builder(
-                                              physics: BouncingScrollPhysics(),
-                                              shrinkWrap: true,
-                                              itemCount: parentContact == null ? 0 : parentContact.length,
-                                              itemBuilder: (BuildContext context, int index) {
-                                                ParentsContacts contacts = parentContact[index];
-                                                return Text(contacts.motherNumber +
-                                                    "," +
-                                                    contacts.motherNumber +
-                                                    "," +
-                                                    contacts.guardianNumber);
-                                              },
-                                            ),
-                                          );
-                                        }
-                                        return Loading();
-                                      },
-                                    ),
-                                    messageInput()
-                                  ],
-                                ),
-                              ),
-                              Visibility(
-                                visible: _currentClass == 'Form3',
-                                child: Column(
-                                  children: <Widget>[
-                                    FutureBuilder(
-                                      future: _smsManager.getFormThree(),
-                                      builder: (BuildContext context, AsyncSnapshot snapshot) {
-                                        if (snapshot.hasData) {
-                                          parentContact = snapshot.data;
-                                          return Container(
-                                            decoration: BoxDecoration(border: Border.all()),
-                                            height: 150,
-                                            child: ListView.builder(
-                                              physics: BouncingScrollPhysics(),
-                                              shrinkWrap: true,
-                                              itemCount: parentContact == null ? 0 : parentContact.length,
-                                              itemBuilder: (BuildContext context, int index) {
-                                                ParentsContacts contacts = parentContact[index];
-                                                return Text(contacts.motherNumber +
-                                                    "," +
-                                                    contacts.motherNumber +
-                                                    "," +
-                                                    contacts.guardianNumber);
-                                              },
-                                            ),
-                                          );
-                                        }
-                                        return Loading();
-                                      },
-                                    ),
-                                    messageInput()
-                                  ],
-                                ),
-                              ),
-                              Visibility(
-                                visible: _currentClass == 'Form4',
-                                child: Column(
-                                  children: <Widget>[
-                                    FutureBuilder(
-                                      future: _smsManager.getFormFour(),
-                                      builder: (BuildContext context, AsyncSnapshot snapshot) {
-                                        if (snapshot.hasData) {
-                                          parentContact = snapshot.data;
-                                          print(parentContact.length);
-                                          return Container(
-                                            decoration: BoxDecoration(border: Border.all()),
-                                            height: 150,
-                                            child: ListView.builder(
-                                              scrollDirection: Axis.vertical,
                                               physics: BouncingScrollPhysics(),
                                               shrinkWrap: true,
                                               itemCount: parentContact == null ? 0 : parentContact.length,
@@ -261,7 +141,7 @@ class _MessagingState extends State<Messaging> {
                                 child: Column(
                                   children: <Widget>[
                                     FutureBuilder(
-                                      future: _smsManager.getParentContacts(),
+                                      future: _smsManager.getAllParentContacts(),
                                       builder: (BuildContext context, AsyncSnapshot snapshot) {
                                         if (snapshot.hasData) {
                                           parentContact = snapshot.data;
@@ -444,23 +324,14 @@ class _MessagingState extends State<Messaging> {
           totalMessages++;
         });
       }
+      
     }
   }
 
   // =====================================classes dd menu====================
   List<DropdownMenuItem<String>> _getClassesDropDown() {
-    List<String> additonal = ['Individual Contacts', 'All Parents', 'All Teachers', 'All Subordinate'];
+    List<String> additonal = ['Individual Contacts', 'All Subordinate', 'All Teachers', 'All Parents'];
     List<DropdownMenuItem<String>> dropDownItems = new List();
-    for (int i = 0; i < classes.length; i++) {
-      setState(() {
-        dropDownItems.insert(
-            0,
-            DropdownMenuItem(
-              child: Text(classes[i].registeredClasses),
-              value: classes[i].registeredClasses,
-            ));
-      });
-    }
     for (int f = 0; f < additonal.length; f++) {
       setState(() {
         dropDownItems.insert(
@@ -471,6 +342,17 @@ class _MessagingState extends State<Messaging> {
             ));
       });
     }
+    for (int i = 0; i < classes.length; i++) {
+      setState(() {
+        dropDownItems.insert(
+            0,
+            DropdownMenuItem(
+              child: Text(classes[i].registeredClasses),
+              value: classes[i].registeredClasses,
+            ));
+      });
+    }
+
     return dropDownItems;
   }
 

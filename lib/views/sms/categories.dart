@@ -84,7 +84,9 @@ class _AllContactCategoriesState extends State<AllContactCategories> {
             ),
     );
   }
-
+getSchoolDetails(){
+  
+}
   getUserBalance() {}
   checkstringlength() {}
 }

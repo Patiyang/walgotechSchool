@@ -12,47 +12,138 @@ class ImageCarousel extends StatelessWidget {
         boxFit: BoxFit.fitWidth,
         images: [
           Container(
-              child: Row(
-            children: <Widget>[
-              Padding(
-                padding: const EdgeInsets.all(8.0),
-                child: Column(
-                  children: <Widget>[
-                    Text(
-                      '10th\nApril\n2020',
-                      style: TextStyle(fontSize: 25),
-                    ),
-                  ],
+            margin: const EdgeInsets.all(3.0),
+            decoration: BoxDecoration(border: Border.all(color: accentColor)),
+            child: Row(
+              children: <Widget>[
+                Padding(
+                  padding: const EdgeInsets.all(8.0),
+                  child: Column(
+                    children: <Widget>[
+                      Text(
+                        '10th\nApril\n2020',
+                        style: TextStyle(fontSize: 25),
+                      ),
+                    ],
+                  ),
                 ),
-              ),
-              Expanded(
-                child: Column(
-                  crossAxisAlignment: CrossAxisAlignment.start,
-                  children: <Widget>[
-                    Padding(
-                      padding: const EdgeInsets.symmetric(horizontal: 65.0),
-                      child: Text(
-                        'Anual General Meeting',
-                        textAlign: TextAlign.center,
-                        style: TextStyle(
-                          fontSize: 20,
-                          color: Colors.orange,
-                          fontWeight: FontWeight.bold,
+                Expanded(
+                  child: Column(
+                    crossAxisAlignment: CrossAxisAlignment.start,
+                    children: <Widget>[
+                      Padding(
+                        padding: const EdgeInsets.symmetric(horizontal: 65.0),
+                        child: Text(
+                          'Anual General Meeting',
+                          textAlign: TextAlign.center,
+                          style: TextStyle(
+                            fontSize: 20,
+                            color: Colors.orange,
+                            fontWeight: FontWeight.bold,
+                          ),
                         ),
                       ),
-                    ),
-                    Padding(
-                      padding: const EdgeInsets.symmetric(horizontal: 20.0),
-                      child: Text(
-                        'The scheduled date for the annual general meeting is to be respected and everyone shound show up ',
-                        style: TextStyle(fontSize: 15),
+                      Padding(
+                        padding: const EdgeInsets.symmetric(horizontal: 20.0),
+                        child: Text(
+                          'The scheduled date for the annual general meeting is to be respected and everyone shound show up ',
+                          style: TextStyle(fontSize: 15),
+                        ),
                       ),
-                    ),
-                  ],
+                    ],
+                  ),
                 ),
-              ),
-            ],
-          )),
+              ],
+            ),
+          ),
+           Container(
+              margin: const EdgeInsets.all(3.0),
+              decoration: BoxDecoration(border: Border.all(color: accentColor)),
+              child: Row(
+                children: <Widget>[
+                  Padding(
+                    padding: const EdgeInsets.all(8.0),
+                    child: Column(
+                      children: <Widget>[
+                        Text(
+                          '17th\nNovember\n2020',
+                          style: TextStyle(fontSize: 25),
+                        ),
+                      ],
+                    ),
+                  ),
+                  Expanded(
+                    child: Column(
+                      crossAxisAlignment: CrossAxisAlignment.start,
+                      children: <Widget>[
+                        Padding(
+                          padding: const EdgeInsets.symmetric(horizontal: 65.0),
+                          child: Text(
+                            'Students Clinic Day',
+                            textAlign: TextAlign.center,
+                            style: TextStyle(
+                              fontSize: 20,
+                              color: Colors.orange,
+                              fontWeight: FontWeight.bold,
+                            ),
+                          ),
+                        ),
+                        Padding(
+                          padding: const EdgeInsets.symmetric(horizontal: 20.0),
+                          child: Text(
+                            'It is Important that every parent shows up on the scheduled date as it will also be the release date for the mock results',
+                            style: TextStyle(fontSize: 15),
+                          ),
+                        ),
+                      ],
+                    ),
+                  ),
+                ],
+              )),
+               Container(
+              margin: const EdgeInsets.all(3.0),
+              decoration: BoxDecoration(border: Border.all(color: accentColor)),
+              child: Row(
+                children: <Widget>[
+                  Padding(
+                    padding: const EdgeInsets.all(8.0),
+                    child: Column(
+                      children: <Widget>[
+                        Text(
+                          '18th\nMay\n2020',
+                          style: TextStyle(fontSize: 25),
+                        ),
+                      ],
+                    ),
+                  ),
+                  Expanded(
+                    child: Column(
+                      crossAxisAlignment: CrossAxisAlignment.start,
+                      children: <Widget>[
+                        Padding(
+                          padding: const EdgeInsets.symmetric(horizontal: 65.0),
+                          child: Text(
+                            'Form 3 field trip',
+                            textAlign: TextAlign.center,
+                            style: TextStyle(
+                              fontSize: 20,
+                              color: Colors.orange,
+                              fontWeight: FontWeight.bold,
+                            ),
+                          ),
+                        ),
+                        Padding(
+                          padding: const EdgeInsets.symmetric(horizontal: 20.0),
+                          child: Text(
+                            'On this day, we recommend that you equip your kids with all the necessary equipment',
+                            style: TextStyle(fontSize: 15),
+                          ),
+                        ),
+                      ],
+                    ),
+                  ),
+                ],
+              )),
           // Image.asset('images/C1.jpg', fit: BoxFit.cover),
           // Image.asset('images/C2.jpg', fit: BoxFit.cover),
           // Image.asset('images/C3.jpg', fit: BoxFit.cover),
