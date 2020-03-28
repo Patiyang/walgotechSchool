@@ -24,34 +24,33 @@ Future openDB() async {
           "form TEXT,"
           "stream TEXT"
           ")");
-
-      await db.execute("CREATE TABLE messages ("
-          "id INTEGER PRIMARYKEY,"
-          "message TEXT,"
-          "sender TEXT,"
-          "recipent TEXT,"
-          "date TEXT"
-          ")");
-
-      await db.execute("CREATE TABLE classes ("
-          "id INTEGER PRIMARYKEY,"
-          "classes TEXT"
-          ")");
       await db.execute("CREATE TABLE teacherContacts ("
           "id INTEGER PRIMARYKEY,"
           "firstName TEXT,"
           "lastName TEXT,"
           "phoneNumber TEXT"
           ")");
-      await db.execute("CREATE TABLE streams ("
-          "id INTEGER PRIMARYKEY,"
-          "streams TEXT"
-          ")");
       await db.execute("CREATE TABLE subordinate ("
           "id INTEGER PRIMARYKEY,"
           "firstName TEXT,"
           "lastName TEXT,"
           "phone TEXT"
+          ")");
+      await db.execute("CREATE TABLE classes ("
+          "id INTEGER PRIMARYKEY,"
+          "classes TEXT"
+          ")");
+
+      await db.execute("CREATE TABLE streams ("
+          "id INTEGER PRIMARYKEY,"
+          "streams TEXT"
+          ")");
+      await db.execute("CREATE TABLE messages ("
+          "id INTEGER PRIMARYKEY,"
+          "message TEXT,"
+          "sender TEXT,"
+          "recipent TEXT,"
+          "date TEXT"
           ")");
     });
   }
@@ -100,7 +99,7 @@ class SmsManager {
 
   Future<List<CurrentStreams>> getallStreams() async {
     await openDB();
-    final List<Map<String, dynamic>> streams = await _database.query(StreamsManager.tableName);
+    final List<Map<String, dynamic>> streams = await _database.rawQuery("SELECT * FROM streams");
     return List.generate(streams.length, (s) {
       return CurrentStreams(
         streams: streams[s][StreamsManager.streams],
@@ -144,7 +143,20 @@ class SmsManager {
       );
     });
   }
-
+Future<List<ParentsContacts>> getStreamsContacts() async {
+    await openDB();
+    final List<Map<String, dynamic>> contacts = await _database.query(ParentsContactsManager.tableName,where: 'form = ?',whereArgs: ['Form1','Form2','Form3','Form4']);
+    return List.generate(contacts.length, (i) {
+      return ParentsContacts(
+        fatherNumber: contacts[i][ParentsContactsManager.fatherNumber],
+        motherNumber: contacts[i][ParentsContactsManager.motherNumber],
+        guardianNumber: contacts[i][ParentsContactsManager.guardianNumber],
+        form: contacts[i][ParentsContactsManager.form],
+        admission: contacts[i][ParentsContactsManager.admission],
+        streams: contacts[i][ParentsContactsManager.streams],
+      );
+    });
+  }
   Future<List<ParentsContacts>> getFormOne() async {
     await openDB();
     final List<Map<String, dynamic>> formOnecontacts =
@@ -197,22 +209,6 @@ class SmsManager {
     await openDB();
     final List<Map<String, dynamic>> formFourcontacts =
         await _database.query(ParentsContactsManager.tableName, where: 'form = ("Form4")');
-    return List.generate(formFourcontacts.length, (i) {
-      return ParentsContacts(
-        fatherNumber: formFourcontacts[i][ParentsContactsManager.fatherNumber],
-        form: formFourcontacts[i][ParentsContactsManager.form],
-        guardianNumber: formFourcontacts[i][ParentsContactsManager.guardianNumber],
-        motherNumber: formFourcontacts[i][ParentsContactsManager.motherNumber],
-        admission: formFourcontacts[i][ParentsContactsManager.admission],
-        streams: formFourcontacts[i][ParentsContactsManager.streams],
-      );
-    });
-  }
-
-  Future<List<ParentsContacts>> getStreams() async {
-    await openDB();
-    final List<Map<String, dynamic>> formFourcontacts =
-        await _database.query(ParentsContactsManager.tableName, where: 'stream = ?');
     return List.generate(formFourcontacts.length, (i) {
       return ParentsContacts(
         fatherNumber: formFourcontacts[i][ParentsContactsManager.fatherNumber],

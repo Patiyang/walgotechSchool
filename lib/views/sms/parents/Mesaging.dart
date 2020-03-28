@@ -6,6 +6,7 @@ import 'package:walgotech_final/helperClasses/loading.dart';
 import 'package:walgotech_final/models/classes.dart';
 import 'package:walgotech_final/models/contacts.dart';
 import 'package:walgotech_final/models/sms.dart';
+import 'package:walgotech_final/views/sms/parents/streams.dart';
 import '../../../styling.dart';
 
 enum Pages { Streams, Categories }
@@ -22,13 +23,10 @@ class _MessagingState extends State<Messaging> {
   final key = new GlobalKey<ScaffoldState>();
   final formKey = new GlobalKey<FormState>();
   List<DropdownMenuItem<String>> classesDropDown = <DropdownMenuItem<String>>[];
-  List<DropdownMenuItem<String>> streamsDropDown = <DropdownMenuItem<String>>[];
   List<ParentsContacts> parentContact;
   List<TeacherContacts> teachersContact;
-  List<CurrentStreams> currentStreams;
   List<SubOrdinateContact> subordinateContact;
   List<CurrentClasses> classes = <CurrentClasses>[];
-  List<CurrentStreams> streams = <CurrentStreams>[];
 
   String recipent;
   Text userName;
@@ -39,24 +37,21 @@ class _MessagingState extends State<Messaging> {
   int totalContacts = 1;
 
   String _currentClass;
-  String _currentStream;
   @override
   void initState() {
     super.initState();
     _getClasses();
-    _getStreams();
     getUserName();
     _currentClass = '';
-    _currentStream = 'stream';
     classesDropDown = _getClassesDropDown();
-    streamsDropDown = _getStreamsDropDown();
   }
 
   @override
   Widget build(BuildContext context) {
-    return Material(
-      color: primaryColor,
-      child: Padding(
+    return Scaffold(
+      key: key,
+      backgroundColor: primaryColor,
+      body: Padding(
         padding: const EdgeInsets.symmetric(vertical: 8.0),
         child: SingleChildScrollView(
           physics: BouncingScrollPhysics(),
@@ -91,34 +86,14 @@ class _MessagingState extends State<Messaging> {
                         ),
                       ),
                     ),
-                    // Padding(
-                    //   padding: const EdgeInsets.symmetric(vertical: 8.0),
-                    //   child: Padding(
-                    //     padding: const EdgeInsets.symmetric(horizontal: 8.0),
-                    //     child: Material(
-                    //       elevation: 0,
-                    //       color: Colors.black26,
-                    //       shape: RoundedRectangleBorder(borderRadius: BorderRadius.all(Radius.circular(6))),
-                    //       child: Padding(
-                    //         padding: const EdgeInsets.symmetric(horizontal: 8.0),
-                    //         child: Visibility(
-                    //           visible: true,
-                    //           child: DropdownButton(
-                    //             isExpanded: true,
-                    //             icon: Icon(
-                    //               Icons.arrow_downward,
-                    //               color: Colors.black26,
-                    //             ),
-                    //             hint: Text('Select Stream'),
-                    //             items: streamsDropDown,
-                    //             onChanged: changeSelectedStream,
-                    //             value: null,
-                    //           ),
-                    //         ),
-                    //       ),
-                    //     ),
-                    //   ),
-                    // ),
+                    Text('OR'),
+                    SizedBox(height: 10,),
+                    GestureDetector(
+                        onTap: () {
+                          Navigator.push(context, MaterialPageRoute(builder: (_) => CurrentStreamClasses()));
+                        },
+                        child: Text('Tap to Choose Specific Streams')),
+                    Divider(),
                     Visibility(
                       visible: _currentClass == 'All Parents' ||
                           _currentClass == 'Form1' ||
@@ -281,36 +256,6 @@ class _MessagingState extends State<Messaging> {
                                   ],
                                 ),
                               ),
-                              // for(int i = 0;i<streams.length;i++)
-                              // Visibility(
-                              //   visible:_currentStream == streams[i].streams,
-                              //   child: FutureBuilder(
-                              //     future: _smsManager.getStreams(),
-                              //     builder: (BuildContext context, AsyncSnapshot snapshot) {
-                              //       if (snapshot.hasData) {
-                              //         parentContact = snapshot.data;
-                              //         return Container(
-                              //           decoration: BoxDecoration(border: Border.all()),
-                              //           height: 150,
-                              //           child: ListView.builder(
-                              //             physics: BouncingScrollPhysics(),
-                              //             shrinkWrap: true,
-                              //             itemCount: parentContact == null ? 0 : parentContact.length,
-                              //             itemBuilder: (BuildContext context, int index) {
-                              //               ParentsContacts contacts = parentContact[index];
-                              //               return Text(contacts.motherNumber +
-                              //                   "," +
-                              //                   contacts.motherNumber +
-                              //                   "," +
-                              //                   contacts.guardianNumber);
-                              //             },
-                              //           ),
-                              //         );
-                              //       }
-                              //       return Loading();
-                              //     },
-                              //   ),
-                              // ),
                               Visibility(
                                 visible: _currentClass == 'All Parents',
                                 child: Column(
@@ -330,7 +275,9 @@ class _MessagingState extends State<Messaging> {
                                               itemBuilder: (BuildContext context, int index) {
                                                 ParentsContacts parentsContacts = parentContact[index];
                                                 return Text(parentsContacts.fatherNumber +
+                                                    ',' +
                                                     parentsContacts.motherNumber +
+                                                    ',' +
                                                     parentsContacts.guardianNumber);
                                               },
                                             ),
@@ -363,7 +310,7 @@ class _MessagingState extends State<Messaging> {
                                               itemBuilder: (BuildContext context, int index) {
                                                 print(teachersContact.length);
                                                 TeacherContacts teachersContacts = teachersContact[index];
-                                                return Text(teachersContacts.phoneNumber);
+                                                return Text(teachersContacts.phoneNumber + ',');
                                               },
                                             ),
                                           );
@@ -408,9 +355,6 @@ class _MessagingState extends State<Messaging> {
                               Visibility(visible: _currentClass == 'Individual Contacts', child: messageInput())
                             ],
                           ),
-                          // Visibility(
-                          //   visible: _currentClass=='Individual Contacts',
-                          //   child: messageInput())
                         ],
                       ),
                     ),
@@ -435,7 +379,13 @@ class _MessagingState extends State<Messaging> {
                             if (messageController.text.isNotEmpty) {
                               messageAlert();
                             } else if (messageController.text.isEmpty) {
-                              Fluttertoast.showToast(msg: 'Your message is blank');
+                              key.currentState.showSnackBar(SnackBar(
+                                content: Text(
+                                  'Cannot send a blank text',
+                                  textAlign: TextAlign.center,
+                                  style: TextStyle(color: Colors.red[400]),
+                                ),
+                              ));
                             }
 
                             if (messageController.text.length > 10) {
@@ -482,15 +432,17 @@ class _MessagingState extends State<Messaging> {
         SMS sms = new SMS(
           message: messageController.text.toString(),
           sender: _userName,
-          recipent: _currentClass + " " + _currentStream,
+          recipent: _currentClass,
           dateTime: DateTime.now().toString(),
         );
         _smsManager.insertSMS(sms).then((id) => {
               messageController.clear(),
             });
       }
-      if (messageController.text.length > 10) {
-        totalContacts = totalContacts + 1;
+      if (messageController.text.toString().length > 10) {
+        setState(() {
+          totalMessages++;
+        });
       }
     }
   }
@@ -538,42 +490,8 @@ class _MessagingState extends State<Messaging> {
 
   changeSelectedCategory(String selectedClass) {
     setState(() {
-   _currentClass     = selectedClass;
+      _currentClass = selectedClass;
       print(_currentClass);
-    });
-  }
-
-  //=======================================streams dd menu============================
-  List<DropdownMenuItem<String>> _getStreamsDropDown() {
-    List<DropdownMenuItem<String>> dropDownItems = new List();
-    for (int i = 0; i < streams.length; i++) {
-      setState(() {
-        dropDownItems.insert(
-            0,
-            DropdownMenuItem(
-              child: Text(streams[i].streams),
-              value: streams[i].streams,
-            ));
-      });
-    }
-    return dropDownItems;
-  }
-
-  _getStreams() async {
-    List<CurrentStreams> data = await _smsManager.getallStreams();
-    setState(() {
-      if (streams.isEmpty) _currentStream = '';
-      streams = data;
-      streamsDropDown = _getStreamsDropDown();
-      _currentStream = streams.isEmpty ? _currentStream = '' : streams[0].streams;
-      print(_currentStream);
-    });
-  }
-
-  changeSelectedStream(String selectedStream) {
-    setState(() {
-      _currentStream = selectedStream;
-      print(_currentStream);
     });
   }
 
@@ -654,6 +572,4 @@ class _MessagingState extends State<Messaging> {
 
     showDialog(context: context, builder: (_) => alerts);
   }
-
-  Widget customMessage() {}
 }

@@ -3,6 +3,7 @@ import 'package:flutter/material.dart';
 import 'package:walgotech_final/styling.dart';
 import 'package:walgotech_final/views/sms/parents/Mesaging.dart';
 import 'package:walgotech_final/views/sms/parents/messageHistory.dart';
+import 'package:walgotech_final/views/sms/parents/streams.dart';
 import 'package:walgotech_final/views/sms/settings/settings.dart';
 import 'package:walgotech_final/views/sms/subordinateStaff/subordinatecategory.dart';
 
@@ -29,10 +30,14 @@ class _AllContactCategoriesState extends State<AllContactCategories> {
       appBar: AppBar(
         actions: <Widget>[
           Center(
-              child: Text(
+              child: GestureDetector(onTap: (){
+               Navigator.push(context, MaterialPageRoute(builder: (_)=>CurrentStreamClasses()));
+              },
+                              child: Text(
             'Balance:',
             style: TextStyle(fontSize: 20, color: Colors.green),
-          ))
+          ),
+              ))
         ],
         elevation: .7,
         centerTitle: true,
