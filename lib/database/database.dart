@@ -119,7 +119,7 @@ class SmsManager {
     });
   }
 
-  Future<List<SchoolDetails>> classes() async {
+  Future<List<SchoolDetails>> getSchoolDetails() async {
     await openDB();
     final List<Map<String, dynamic>> school = await _database.rawQuery("SELECT * FROM school");
     return List.generate(school.length, (s) {
@@ -133,7 +133,7 @@ class SmsManager {
 
   Future<List<CurrentClasses>> getallClasses() async {
     await openDB();
-    final List<Map<String, dynamic>> classes = await _database.query(ClassesManager.tableName);
+    final List<Map<String, dynamic>> classes = await _database.query(ClassesManager.tableName,orderBy: 'id');
     return List.generate(classes.length, (c) {
       return CurrentClasses(
         registeredClasses: classes[c][ClassesManager.className],

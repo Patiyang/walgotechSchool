@@ -39,7 +39,7 @@ class _CurrentStreamClassesState extends State<CurrentStreamClasses> {
     super.initState();
     _getStreams();
     getUserName();
-   
+
     _currentStream = 'stream';
     streamsDropDown = _getStreamsDropDown();
   }
@@ -86,25 +86,58 @@ class _CurrentStreamClassesState extends State<CurrentStreamClasses> {
                 ),
                 Visibility(
                   visible: true,
-                  child: MaterialButton(
-                      elevation: 0,
-                      color: accentColor,
-                      child: Text(
-                        'Send to both parents',
-                        style: categoriesStyle,
-                      ),
-                      shape: RoundedRectangleBorder(borderRadius: BorderRadius.all(Radius.circular(10))),
-                      onPressed: () {
-                        setState(() {});
-                      }),
+
+                  child: Padding(
+                    padding: const EdgeInsets.all(15.0),
+                    child: Row(
+                      mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                      children: <Widget>[
+                        Container(
+                          child: Row(
+                            children: <Widget>[
+                              Text('One Parent'),
+                              Radio(
+                                value: null,
+                                groupValue: null,
+                                onChanged: null,
+                              )
+                            ],
+                          ),
+                        ),
+                        Container(
+                          child: Row(
+                            children: <Widget>[
+                              Text('Both'),
+                              Radio(
+                                value: null,
+                                groupValue: null,
+                                onChanged: null,
+                              )
+                            ],
+                          ),
+                        ),
+                        Container(
+                          child: Row(
+                            children: <Widget>[
+                              Text('Guardian'),
+                              Radio(
+                                value: null,
+                                groupValue: null,
+                                onChanged: null,
+                              )
+                            ],
+                          ),
+                        ),
+                      ],
+                    ),
+                  ),
                 ),
-                // for(int i=0;i<streams.length;i++)
                 Padding(
                   padding: const EdgeInsets.all(3.0),
                   child: Visibility(
                     visible: _currentStream == _currentStream,
                     child: FutureBuilder(
-                      future: _smsManager.getStreamsContacts(_currentStream.split(' ')[0],_currentStream.split(' ')[1]),
+                      future: _smsManager.getStreamsContacts(_currentStream.split(' ')[0], _currentStream.split(' ')[1]),
                       builder: (BuildContext context, AsyncSnapshot snapshot) {
                         if (snapshot.hasData) {
                           parentContact = snapshot.data;
@@ -214,7 +247,6 @@ class _CurrentStreamClassesState extends State<CurrentStreamClasses> {
       streams = data;
       streamsDropDown = _getStreamsDropDown();
       _currentStream = streams.isEmpty ? _currentStream = '' : streams[0].streams;
-    
     });
   }
 

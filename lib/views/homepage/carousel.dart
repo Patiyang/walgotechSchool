@@ -22,7 +22,7 @@ class ImageCarousel extends StatelessWidget {
                     children: <Widget>[
                       Text(
                         '10th\nApril\n2020',
-                        style: TextStyle(fontSize: 25),
+                        style: TextStyle(fontSize: 20),
                       ),
                     ],
                   ),
@@ -32,7 +32,7 @@ class ImageCarousel extends StatelessWidget {
                     crossAxisAlignment: CrossAxisAlignment.start,
                     children: <Widget>[
                       Padding(
-                        padding: const EdgeInsets.symmetric(horizontal: 65.0),
+                        padding: const EdgeInsets.only(left: 60.0, top: 10),
                         child: Text(
                           'Anual General Meeting',
                           textAlign: TextAlign.center,
@@ -56,94 +56,95 @@ class ImageCarousel extends StatelessWidget {
               ],
             ),
           ),
-           Container(
-              margin: const EdgeInsets.all(3.0),
-              decoration: BoxDecoration(border: Border.all(color: accentColor)),
-              child: Row(
-                children: <Widget>[
-                  Padding(
-                    padding: const EdgeInsets.all(8.0),
-                    child: Column(
-                      children: <Widget>[
-                        Text(
-                          '17th\nNovember\n2020',
-                          style: TextStyle(fontSize: 25),
-                        ),
-                      ],
-                    ),
+          Container(
+            margin: const EdgeInsets.all(3.0),
+            decoration: BoxDecoration(border: Border.all(color: accentColor)),
+            child: Row(
+              children: <Widget>[
+                Padding(
+                  padding: const EdgeInsets.all(8.0),
+                  child: Column(
+                    children: <Widget>[
+                      Text(
+                        '17th\nNovember\n2020',
+                        style: TextStyle(fontSize: 20),
+                      ),
+                    ],
                   ),
-                  Expanded(
-                    child: Column(
-                      crossAxisAlignment: CrossAxisAlignment.start,
-                      children: <Widget>[
-                        Padding(
-                          padding: const EdgeInsets.symmetric(horizontal: 65.0),
-                          child: Text(
-                            'Students Clinic Day',
-                            textAlign: TextAlign.center,
-                            style: TextStyle(
-                              fontSize: 20,
-                              color: Colors.orange,
-                              fontWeight: FontWeight.bold,
-                            ),
+                ),
+                Expanded(
+                  child: Column(
+                    crossAxisAlignment: CrossAxisAlignment.start,
+                    children: <Widget>[
+                      Padding(
+                        padding: const EdgeInsets.only(left: 60, top: 10),
+                        child: Text(
+                          'Students Clinic Day',
+                          style: TextStyle(
+                            fontSize: 20,
+                            color: Colors.orange,
+                            fontWeight: FontWeight.bold,
                           ),
                         ),
-                        Padding(
-                          padding: const EdgeInsets.symmetric(horizontal: 20.0),
-                          child: Text(
-                            'It is Important that every parent shows up on the scheduled date as it will also be the release date for the mock results',
-                            style: TextStyle(fontSize: 15),
+                      ),
+                      Padding(
+                        padding: const EdgeInsets.symmetric(horizontal: 20.0),
+                        child: Text(
+                          'It is Important that every parent shows up on the scheduled date as it will also be the release date for the mock results',
+                          style: TextStyle(fontSize: 15),
+                        ),
+                      ),
+                    ],
+                  ),
+                ),
+              ],
+            ),
+          ),
+          Container(
+            margin: const EdgeInsets.all(3.0),
+            decoration: BoxDecoration(border: Border.all(color: accentColor)),
+            child: Row(
+              children: <Widget>[
+                Padding(
+                  padding: const EdgeInsets.all(8.0),
+                  child: Column(
+                    children: <Widget>[
+                      Text(
+                        '18th\nMay\n2020',
+                        style: TextStyle(fontSize: 20),
+                      ),
+                    ],
+                  ),
+                ),
+                Expanded(
+                  child: Column(
+                    crossAxisAlignment: CrossAxisAlignment.start,
+                    children: <Widget>[
+                      Padding(
+                        padding: const EdgeInsets.only(left: 60.0, top: 10),
+                        child: Text(
+                          'Form 3 field trip',
+                          textAlign: TextAlign.center,
+                          style: TextStyle(
+                            fontSize: 20,
+                            color: Colors.orange,
+                            fontWeight: FontWeight.bold,
                           ),
                         ),
-                      ],
-                    ),
-                  ),
-                ],
-              )),
-               Container(
-              margin: const EdgeInsets.all(3.0),
-              decoration: BoxDecoration(border: Border.all(color: accentColor)),
-              child: Row(
-                children: <Widget>[
-                  Padding(
-                    padding: const EdgeInsets.all(8.0),
-                    child: Column(
-                      children: <Widget>[
-                        Text(
-                          '18th\nMay\n2020',
-                          style: TextStyle(fontSize: 25),
+                      ),
+                      Padding(
+                        padding: const EdgeInsets.symmetric(horizontal: 20.0),
+                        child: Text(
+                          'On this day, we recommend that you equip your kids with all the necessary equipment',
+                          style: TextStyle(fontSize: 15),
                         ),
-                      ],
-                    ),
+                      ),
+                    ],
                   ),
-                  Expanded(
-                    child: Column(
-                      crossAxisAlignment: CrossAxisAlignment.start,
-                      children: <Widget>[
-                        Padding(
-                          padding: const EdgeInsets.symmetric(horizontal: 65.0),
-                          child: Text(
-                            'Form 3 field trip',
-                            textAlign: TextAlign.center,
-                            style: TextStyle(
-                              fontSize: 20,
-                              color: Colors.orange,
-                              fontWeight: FontWeight.bold,
-                            ),
-                          ),
-                        ),
-                        Padding(
-                          padding: const EdgeInsets.symmetric(horizontal: 20.0),
-                          child: Text(
-                            'On this day, we recommend that you equip your kids with all the necessary equipment',
-                            style: TextStyle(fontSize: 15),
-                          ),
-                        ),
-                      ],
-                    ),
-                  ),
-                ],
-              )),
+                ),
+              ],
+            ),
+          ),
           // Image.asset('images/C1.jpg', fit: BoxFit.cover),
           // Image.asset('images/C2.jpg', fit: BoxFit.cover),
           // Image.asset('images/C3.jpg', fit: BoxFit.cover),

@@ -1,7 +1,9 @@
 import 'package:flutter/material.dart';
 import 'package:shared_preferences/shared_preferences.dart';
+import 'package:walgotech_final/database/database.dart';
 import 'package:walgotech_final/helperClasses/error.dart';
 import 'package:walgotech_final/helperClasses/loading.dart';
+import 'package:walgotech_final/models/schoolDetails.dart';
 import 'package:walgotech_final/styling.dart';
 import 'package:walgotech_final/views/login/login.dart';
 import 'carousel.dart';
@@ -16,10 +18,13 @@ class HomePage extends StatefulWidget {
 }
 
 class _HomePageState extends State<HomePage> {
+  final SmsManager _smsManager = new SmsManager();
+  List<SchoolDetails> schoolDetails = <SchoolDetails>[];
   String name = '';
-  String schoolName = 'IRENE SCHOOL';
+  String schoolName = '';
   @override
   void initState() {
+    getSchoolName();
     signInUser();
     name = '';
     super.initState();
@@ -52,13 +57,10 @@ class _HomePageState extends State<HomePage> {
 
   Future signInUser() async {
     name = await getUName();
-    // schoolName = await getSchoolName();
     if (name != null) {
-      print(schoolName);
       if (name.length > 0) {}
     } else {
       name = '';
-      schoolName='d';
     }
     return name;
   }
@@ -123,7 +125,8 @@ class _HomePageState extends State<HomePage> {
   }
 
   getSchoolName() async {
-    SharedPreferences preferences = await SharedPreferences.getInstance();
-    return preferences.getString('schoolName');
+    List<SchoolDetails> data = await _smsManager.getSchoolDetails();
+    schoolDetails = data;
+    schoolName = schoolDetails[0].schoolName;
   }
 }

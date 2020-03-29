@@ -324,13 +324,13 @@ class _MessagingState extends State<Messaging> {
           totalMessages++;
         });
       }
-      
+
     }
   }
 
   // =====================================classes dd menu====================
   List<DropdownMenuItem<String>> _getClassesDropDown() {
-    List<String> additonal = ['Individual Contacts', 'All Subordinate', 'All Teachers', 'All Parents'];
+    List<String> additonal = ['Custom Message', 'Support Staff', 'Teachers', 'Parents'];
     List<DropdownMenuItem<String>> dropDownItems = new List();
     for (int f = 0; f < additonal.length; f++) {
       setState(() {
