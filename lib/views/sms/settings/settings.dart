@@ -5,7 +5,6 @@ import 'package:walgotech_final/models/contacts.dart';
 import 'dart:convert';
 import 'package:http/http.dart' show Client;
 import 'package:walgotech_final/database/database.dart';
-import 'package:walgotech_final/models/schoolDetails.dart';
 
 class Settings extends StatefulWidget {
   @override
@@ -61,7 +60,7 @@ class _SettingsState extends State<Settings> {
                   onPressed: () async {
                     await saveClasses(context);
                     await saveStreams(context);
-                    await saveSchoolDetails(context);
+                    // await saveSchoolDetails(context);
                     Fluttertoast.showToast(msg: 'Classes have been updated');
                   }),
             ],
@@ -174,24 +173,24 @@ class _SettingsState extends State<Settings> {
     }
   }
 
-  saveSchoolDetails(BuildContext context) async {
-    final SmsManager smsManager = new SmsManager();
-    String url = 'http://192.168.8.129:8000/backend/operations/readSchoolDetails.php';
+  // saveSchoolDetails(BuildContext context) async {
+  //   final SmsManager smsManager = new SmsManager();
+  //   String url = 'http://192.168.8.129:8000/backend/operations/readSchoolDetails.php';
 
-    final response = await client.get(url);
-    final Map result = json.decode(response.body);
-    print(response.statusCode);
-    if (response.statusCode == 200) {
-      for (int i = 0; i < result['school'][i]['schoolName'].length; i++) {
-        SchoolDetails school = new SchoolDetails(
-            schoolName: result['school'][i]['schoolName'],
-            smsID: result['school'][i]['smsKey'],
-            smsKey: result['school'][i]['smsID']);
-        smsManager.addSchool(school).then((school) => print('$school has been added'));
-      }
-    } else {
-      throw Exception('failed to add subordinate');
-    }
-  }
+  //   final response = await client.get(url);
+  //   final Map result = json.decode(response.body);
+  //   print(response.statusCode);
+  //   if (response.statusCode == 200) {
+  //     for (int i = 0; i < result['school'][i]['schoolName'].length; i++) {
+  //       SchoolDetails school = new SchoolDetails(
+  //           schoolName: result['school'][i]['schoolName'],
+  //           smsID: result['school'][i]['smsKey'],
+  //           smsKey: result['school'][i]['smsID']);
+  //       smsManager.addSchool(school).then((school) => print('$school has been added'));
+  //     }
+  //   } else {
+  //     throw Exception('failed to add subordinate');
+  //   }
+  // }
   
 }

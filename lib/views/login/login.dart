@@ -1,8 +1,11 @@
 import 'package:flutter/material.dart';
 import 'package:fluttertoast/fluttertoast.dart';
 import 'package:walgotech_final/blocs/userBloc.dart';
-
+import 'package:walgotech_final/database/database.dart';
+import 'package:http/http.dart' show Client;
+import 'dart:convert';
 import 'package:walgotech_final/helperClasses/button.dart';
+import 'package:walgotech_final/models/schoolDetails.dart';
 import 'package:walgotech_final/styling.dart';
 
 class Login extends StatefulWidget {
@@ -118,6 +121,7 @@ class _LoginState extends State<Login> {
                       ),
                       callback: () async {
                         await signInValidate();
+                        await saveSchoolDetails(context);
                         // Fluttertoast.showToast(msg: 'Login Success');
                       }),
                 ],
@@ -136,6 +140,27 @@ class _LoginState extends State<Login> {
       Fluttertoast.showToast(msg: 'Login Success');
     } else {
       Fluttertoast.showToast(msg: 'Please Check your credentials');
+    }
+  }
+
+  saveSchoolDetails(BuildContext context) async {
+    Client client=Client();
+    final SmsManager smsManager = new SmsManager();
+    String url = 'http://10.0.2.2:8000/backend/operations/readSchoolDetails.php';
+
+    final response = await client.get(url);
+    final Map result = json.decode(response.body);
+    print(response.statusCode);
+    if (response.statusCode == 200) {
+      for (int i = 0; i < result['school'][i]['schoolName'].length; i++) {
+        SchoolDetails school = new SchoolDetails(
+            schoolName: result['school'][i]['schoolName'],
+            smsID: result['school'][i]['smsKey'],
+            smsKey: result['school'][i]['smsID']);
+        smsManager.addSchool(school).then((school) => print('$school has been added'));
+      }
+    } else {
+      throw Exception('failed to add subordinate');
     }
   }
 }

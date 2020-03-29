@@ -32,6 +32,17 @@ class _MessagingState extends State<Messaging> {
   Text userName;
   String _userName;
   SMS sms;
+  String groupValue = allRegistred;
+  String category;
+  static const allRegistred = 'All Registered';
+  static const oneParent = 'One Parent';
+  static const guardian = 'Guardian';
+
+  static const custom = 'Custom Message';
+  static const support = 'Support Staff';
+  static const board = 'BoM';
+  static const teachers = 'Teachers';
+  static const parents = 'Parents';
 
   int totalMessages = 1;
   int totalContacts = 1;
@@ -86,6 +97,56 @@ class _MessagingState extends State<Messaging> {
                         ),
                       ),
                     ),
+                    Visibility(
+                      visible: _currentClass != board &&
+                          _currentClass != custom &&
+                          _currentClass != support &&
+                          _currentClass != teachers,
+                      child: Padding(
+                        padding: const EdgeInsets.all(15.0),
+                        child: Row(
+                          mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                          children: <Widget>[
+                            Container(
+                              child: Row(
+                                children: <Widget>[
+                                  Text(allRegistred),
+                                  Radio(
+                                    value: allRegistred,
+                                    groupValue: groupValue,
+                                    onChanged: (value) => categoryChanged(value),
+                                  )
+                                ],
+                              ),
+                            ),
+                            Container(
+                              child: Row(
+                                children: <Widget>[
+                                  Text(oneParent),
+                                  Radio(
+                                    value: oneParent,
+                                    groupValue: groupValue,
+                                    onChanged: (value) => categoryChanged(value),
+                                  )
+                                ],
+                              ),
+                            ),
+                            Container(
+                              child: Row(
+                                children: <Widget>[
+                                  Text(guardian),
+                                  Radio(
+                                    value: guardian,
+                                    groupValue: groupValue,
+                                    onChanged: (value) => categoryChanged(value),
+                                  )
+                                ],
+                              ),
+                            ),
+                          ],
+                        ),
+                      ),
+                    ),
                     Text('OR'),
                     SizedBox(
                       height: 10,
@@ -120,11 +181,17 @@ class _MessagingState extends State<Messaging> {
                                               itemCount: parentContact == null ? 0 : parentContact.length,
                                               itemBuilder: (BuildContext context, int index) {
                                                 ParentsContacts contacts = parentContact[index];
-                                                return Text(contacts.motherNumber +
-                                                    "," +
-                                                    contacts.motherNumber +
-                                                    "," +
-                                                    contacts.guardianNumber);
+                                                if (groupValue == allRegistred) {
+                                                  return Text(contacts.fatherNumber +
+                                                      "," +
+                                                      contacts.motherNumber +
+                                                      "," +
+                                                      contacts.guardianNumber);
+                                                } else if (groupValue == oneParent) {
+                                                  return Text(contacts.fatherNumber);
+                                                } else if (groupValue == guardian) {
+                                                  return Text(contacts.guardianNumber);
+                                                }
                                               },
                                             ),
                                           );
@@ -137,7 +204,7 @@ class _MessagingState extends State<Messaging> {
                                 ),
                               ),
                               Visibility(
-                                visible: _currentClass == 'All Parents',
+                                visible: _currentClass == parents,
                                 child: Column(
                                   children: <Widget>[
                                     FutureBuilder(
@@ -153,12 +220,18 @@ class _MessagingState extends State<Messaging> {
                                               shrinkWrap: true,
                                               itemCount: parentContact == null ? 0 : parentContact.length,
                                               itemBuilder: (BuildContext context, int index) {
-                                                ParentsContacts parentsContacts = parentContact[index];
-                                                return Text(parentsContacts.fatherNumber +
-                                                    ',' +
-                                                    parentsContacts.motherNumber +
-                                                    ',' +
-                                                    parentsContacts.guardianNumber);
+                                                ParentsContacts contacts = parentContact[index];
+                                                if (groupValue == allRegistred) {
+                                                  return Text(contacts.fatherNumber +
+                                                      "," +
+                                                      contacts.motherNumber +
+                                                      "," +
+                                                      contacts.guardianNumber);
+                                                } else if (groupValue == oneParent) {
+                                                  return Text(contacts.fatherNumber);
+                                                } else if (groupValue == guardian) {
+                                                  return Text(contacts.guardianNumber);
+                                                }
                                               },
                                             ),
                                           );
@@ -171,7 +244,7 @@ class _MessagingState extends State<Messaging> {
                                 ),
                               ),
                               Visibility(
-                                visible: _currentClass == 'All Teachers',
+                                visible: _currentClass == teachers,
                                 child: Column(
                                   children: <Widget>[
                                     FutureBuilder(
@@ -203,7 +276,7 @@ class _MessagingState extends State<Messaging> {
                                 ),
                               ),
                               Visibility(
-                                visible: _currentClass == 'All Subordinate',
+                                visible: _currentClass == support,
                                 child: Column(
                                   children: <Widget>[
                                     FutureBuilder(
@@ -232,7 +305,7 @@ class _MessagingState extends State<Messaging> {
                                   ],
                                 ),
                               ),
-                              Visibility(visible: _currentClass == 'Individual Contacts', child: messageInput())
+                              Visibility(visible: _currentClass == custom, child: messageInput())
                             ],
                           ),
                         ],
@@ -324,13 +397,12 @@ class _MessagingState extends State<Messaging> {
           totalMessages++;
         });
       }
-
     }
   }
 
   // =====================================classes dd menu====================
   List<DropdownMenuItem<String>> _getClassesDropDown() {
-    List<String> additonal = ['Custom Message', 'Support Staff', 'Teachers', 'Parents'];
+    List<String> additonal = [custom, support, board, teachers, parents];
     List<DropdownMenuItem<String>> dropDownItems = new List();
     for (int f = 0; f < additonal.length; f++) {
       setState(() {
@@ -377,6 +449,7 @@ class _MessagingState extends State<Messaging> {
     });
   }
 
+// =================================================SAVEUSERNAMEFOR SIGN IN========================================
   Future getUserName() async {
     SharedPreferences prefs = await SharedPreferences.getInstance();
     setState(() {
@@ -387,6 +460,22 @@ class _MessagingState extends State<Messaging> {
           style: TextStyle(fontFamily: 'Sans'),
         );
       });
+    });
+  }
+
+// ==========================================================CATEGORYCHANGED==========================================
+  categoryChanged(String value) {
+    setState(() {
+      if (value == allRegistred) {
+        groupValue = value;
+        category = value;
+      } else if (value == oneParent) {
+        groupValue = value;
+        category = value;
+      } else if (value == guardian) {
+        groupValue = value;
+        category = value;
+      }
     });
   }
 

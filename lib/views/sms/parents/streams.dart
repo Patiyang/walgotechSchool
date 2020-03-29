@@ -24,7 +24,7 @@ class _CurrentStreamClassesState extends State<CurrentStreamClasses> {
   List<DropdownMenuItem<String>> streamsDropDown = <DropdownMenuItem<String>>[];
   List<ParentsContacts> parentContact;
   List<CurrentStreams> streams = <CurrentStreams>[];
-
+  String _currentStream;
   String recipent;
   Text userName;
   String _userName;
@@ -33,7 +33,11 @@ class _CurrentStreamClassesState extends State<CurrentStreamClasses> {
   int totalMessages = 1;
   int totalContacts = 1;
 
-  String _currentStream;
+  String groupValue = allRegistred;
+  String category;
+  static const allRegistred = 'All Registered';
+  static const oneParent = 'One Parent';
+  static const guardian = 'Guardian';
   @override
   void initState() {
     super.initState();
@@ -86,7 +90,6 @@ class _CurrentStreamClassesState extends State<CurrentStreamClasses> {
                 ),
                 Visibility(
                   visible: true,
-
                   child: Padding(
                     padding: const EdgeInsets.all(15.0),
                     child: Row(
@@ -95,11 +98,11 @@ class _CurrentStreamClassesState extends State<CurrentStreamClasses> {
                         Container(
                           child: Row(
                             children: <Widget>[
-                              Text('One Parent'),
+                              Text(allRegistred),
                               Radio(
-                                value: null,
-                                groupValue: null,
-                                onChanged: null,
+                                value: allRegistred,
+                                groupValue: groupValue,
+                                onChanged: (value) => categoryChanged(value),
                               )
                             ],
                           ),
@@ -107,11 +110,11 @@ class _CurrentStreamClassesState extends State<CurrentStreamClasses> {
                         Container(
                           child: Row(
                             children: <Widget>[
-                              Text('Both'),
+                              Text(oneParent),
                               Radio(
-                                value: null,
-                                groupValue: null,
-                                onChanged: null,
+                                value: oneParent,
+                                groupValue: groupValue,
+                                onChanged: (value) => categoryChanged(value),
                               )
                             ],
                           ),
@@ -119,11 +122,11 @@ class _CurrentStreamClassesState extends State<CurrentStreamClasses> {
                         Container(
                           child: Row(
                             children: <Widget>[
-                              Text('Guardian'),
+                              Text(guardian),
                               Radio(
-                                value: null,
-                                groupValue: null,
-                                onChanged: null,
+                                value: guardian,
+                                groupValue: groupValue,
+                                onChanged: (value) => categoryChanged(value),
                               )
                             ],
                           ),
@@ -142,7 +145,7 @@ class _CurrentStreamClassesState extends State<CurrentStreamClasses> {
                         if (snapshot.hasData) {
                           parentContact = snapshot.data;
                           return Container(
-                            decoration: BoxDecoration(border: Border.all()),
+                            decoration: BoxDecoration(border: Border.all(color: Colors.black54)),
                             height: 150,
                             child: ListView.builder(
                               physics: BouncingScrollPhysics(),
@@ -150,7 +153,14 @@ class _CurrentStreamClassesState extends State<CurrentStreamClasses> {
                               itemCount: parentContact == null ? 0 : parentContact.length,
                               itemBuilder: (BuildContext context, int index) {
                                 ParentsContacts contacts = parentContact[index];
-                                return Text(contacts.motherNumber + "," + contacts.motherNumber + "," + contacts.guardianNumber);
+                                if (groupValue == allRegistred) {
+                                  return Text(
+                                      contacts.fatherNumber + "," + contacts.motherNumber + "," + contacts.guardianNumber);
+                                } else if (groupValue == oneParent) {
+                                  return Text(contacts.fatherNumber);
+                                } else if (groupValue == guardian) {
+                                  return Text(contacts.guardianNumber);
+                                }
                               },
                             ),
                           );
@@ -257,6 +267,7 @@ class _CurrentStreamClassesState extends State<CurrentStreamClasses> {
     });
   }
 
+// =======================================================================================
   Future getUserName() async {
     SharedPreferences prefs = await SharedPreferences.getInstance();
     setState(() {
@@ -270,6 +281,7 @@ class _CurrentStreamClassesState extends State<CurrentStreamClasses> {
     });
   }
 
+// =========================================DIALOG===================================
   void messageAlert() {
     var alerts = new AlertDialog(
       shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(20)),
@@ -335,6 +347,7 @@ class _CurrentStreamClassesState extends State<CurrentStreamClasses> {
     showDialog(context: context, builder: (_) => alerts);
   }
 
+// ============================================================SEND SAVE=======================
   void sendMessage(BuildContext context) {
     if (formKey.currentState.validate()) {
       if (sms == null) {
@@ -354,5 +367,20 @@ class _CurrentStreamClassesState extends State<CurrentStreamClasses> {
         });
       }
     }
+  }
+// ======================================RADIO===========================
+  categoryChanged(String value) {
+    setState(() {
+      if (value == allRegistred) {
+        groupValue = value;
+        category = value;
+      } else if (value == oneParent) {
+        groupValue = value;
+        category = value;
+      } else if (value == guardian) {
+        groupValue = value;
+        category = value;
+      }
+    });
   }
 }

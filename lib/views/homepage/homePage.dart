@@ -128,5 +128,6 @@ class _HomePageState extends State<HomePage> {
     List<SchoolDetails> data = await _smsManager.getSchoolDetails();
     schoolDetails = data;
     schoolName = schoolDetails[0].schoolName;
+    print('object' + schoolName);
   }
 }

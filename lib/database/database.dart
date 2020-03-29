@@ -133,7 +133,7 @@ class SmsManager {
 
   Future<List<CurrentClasses>> getallClasses() async {
     await openDB();
-    final List<Map<String, dynamic>> classes = await _database.query(ClassesManager.tableName,orderBy: 'id');
+    final List<Map<String, dynamic>> classes = await _database.query(ClassesManager.tableName,orderBy:'id');
     return List.generate(classes.length, (c) {
       return CurrentClasses(
         registeredClasses: classes[c][ClassesManager.className],
