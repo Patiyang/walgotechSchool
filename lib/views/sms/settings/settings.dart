@@ -60,7 +60,6 @@ class _SettingsState extends State<Settings> {
                   onPressed: () async {
                     await saveClasses(context);
                     await saveStreams(context);
-                    // await saveSchoolDetails(context);
                     Fluttertoast.showToast(msg: 'Classes have been updated');
                   }),
             ],
@@ -72,7 +71,7 @@ class _SettingsState extends State<Settings> {
 
   saveParentContacts(BuildContext context) async {
     final SmsManager smsManager = new SmsManager();
-    String url = 'http://192.168.8.129:8000/backend/operations/readAll.php';
+    String url = 'http://192.168.122.1:8000/backend/operations/readAll.php';
     final response = await client.get(url);
     final Map result = json.decode(response.body);
     if (response.statusCode == 200) {
@@ -94,7 +93,7 @@ class _SettingsState extends State<Settings> {
 
   saveTeacherContacts(BuildContext context) async {
     final SmsManager smsManager = new SmsManager();
-    String url = 'http://192.168.8.129:8000/backend/operations/readAllTeachers.php';
+    String url = 'http://192.168.122.1:8000/backend/operations/readAllTeachers.php';
     final response = await client.get(url);
     final Map result = json.decode(response.body);
     if (response.statusCode == 200) {
@@ -111,7 +110,7 @@ class _SettingsState extends State<Settings> {
 
   saveClasses(BuildContext context) async {
     final SmsManager smsManager = new SmsManager();
-    String url = 'http://192.168.8.129:8000/backend/operations/readClass.php';
+    String url = 'http://192.168.122.1:8000/backend/operations/readClass.php';
 
     final response = await client.get(url);
     final Map result = json.decode(response.body);
@@ -120,7 +119,6 @@ class _SettingsState extends State<Settings> {
       for (int i = 0; i < result['classes'].length; i++) {
         CurrentClasses classes = new CurrentClasses(
           registeredClasses: result['classes'][i]['className'],
-
         );
         print(classes.registeredClasses);
         smsManager.addClass(classes).then((_) => print('$_ class has been added'));
@@ -132,7 +130,7 @@ class _SettingsState extends State<Settings> {
 
   saveStreams(BuildContext context) async {
     final SmsManager smsManager = new SmsManager();
-    String url = 'http://192.168.8.129:8000/backend/operations/readStream.php';
+    String url = 'http://192.168.122.1:8000/backend/operations/readStream.php';
 
     final response = await client.get(url);
     final Map result = json.decode(response.body);
@@ -152,7 +150,7 @@ class _SettingsState extends State<Settings> {
 
   saveSubOrdinate(BuildContext context) async {
     final SmsManager smsManager = new SmsManager();
-    String url = 'http://192.168.8.129:8000/backend/operations/readAllSubOrdinate.php';
+    String url = 'http://192.168.122.1:8000/backend/operations/readAllSubOrdinate.php';
 
     final response = await client.get(url);
     final Map result = json.decode(response.body);
@@ -173,24 +171,5 @@ class _SettingsState extends State<Settings> {
     }
   }
 
-  // saveSchoolDetails(BuildContext context) async {
-  //   final SmsManager smsManager = new SmsManager();
-  //   String url = 'http://192.168.8.129:8000/backend/operations/readSchoolDetails.php';
-
-  //   final response = await client.get(url);
-  //   final Map result = json.decode(response.body);
-  //   print(response.statusCode);
-  //   if (response.statusCode == 200) {
-  //     for (int i = 0; i < result['school'][i]['schoolName'].length; i++) {
-  //       SchoolDetails school = new SchoolDetails(
-  //           schoolName: result['school'][i]['schoolName'],
-  //           smsID: result['school'][i]['smsKey'],
-  //           smsKey: result['school'][i]['smsID']);
-  //       smsManager.addSchool(school).then((school) => print('$school has been added'));
-  //     }
-  //   } else {
-  //     throw Exception('failed to add subordinate');
-  //   }
-  // }
-  
+  sendMessages() async {}
 }

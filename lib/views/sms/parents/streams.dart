@@ -38,6 +38,8 @@ class _CurrentStreamClassesState extends State<CurrentStreamClasses> {
   static const allRegistred = 'All Registered';
   static const oneParent = 'One Parent';
   static const guardian = 'Guardian';
+  static const custom = 'Custom Message';
+
   @override
   void initState() {
     super.initState();
@@ -148,15 +150,20 @@ class _CurrentStreamClassesState extends State<CurrentStreamClasses> {
                             decoration: BoxDecoration(border: Border.all(color: Colors.black54)),
                             height: 150,
                             child: ListView.builder(
+                              // addAutomaticKeepAlives:true ,
                               physics: BouncingScrollPhysics(),
                               shrinkWrap: true,
                               itemCount: parentContact == null ? 0 : parentContact.length,
                               itemBuilder: (BuildContext context, int index) {
                                 ParentsContacts contacts = parentContact[index];
                                 if (groupValue == allRegistred) {
+                                  print(contacts.toString());
                                   return Text(
                                       contacts.fatherNumber + "," + contacts.motherNumber + "," + contacts.guardianNumber);
                                 } else if (groupValue == oneParent) {
+                                  if (contacts.fatherNumber.isEmpty) {
+                                    return Text(contacts.motherNumber);
+                                  }
                                   return Text(contacts.fatherNumber);
                                 } else if (groupValue == guardian) {
                                   return Text(contacts.guardianNumber);
@@ -237,6 +244,7 @@ class _CurrentStreamClassesState extends State<CurrentStreamClasses> {
 //=======================================streams dd menu============================
   List<DropdownMenuItem<String>> _getStreamsDropDown() {
     List<DropdownMenuItem<String>> dropDownItems = new List();
+    
     for (int i = 0; i < streams.length; i++) {
       setState(() {
         dropDownItems.insert(
@@ -256,7 +264,7 @@ class _CurrentStreamClassesState extends State<CurrentStreamClasses> {
       if (streams.isEmpty) _currentStream = '';
       streams = data;
       streamsDropDown = _getStreamsDropDown();
-      _currentStream = streams.isEmpty ? _currentStream = '' : streams[0].streams;
+      _currentStream = streams[0].streams;
     });
   }
 
@@ -368,6 +376,7 @@ class _CurrentStreamClassesState extends State<CurrentStreamClasses> {
       }
     }
   }
+
 // ======================================RADIO===========================
   categoryChanged(String value) {
     setState(() {

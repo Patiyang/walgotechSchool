@@ -20,15 +20,17 @@ class _MessagingState extends State<Messaging> {
   final SmsManager _smsManager = new SmsManager();
   final messageController = new TextEditingController();
   final recipentController = new TextEditingController();
+  ScrollController _scrollController = ScrollController();
   final key = new GlobalKey<ScaffoldState>();
   final formKey = new GlobalKey<FormState>();
+
   List<DropdownMenuItem<String>> classesDropDown = <DropdownMenuItem<String>>[];
   List<ParentsContacts> parentContact;
   List<TeacherContacts> teachersContact;
   List<SubOrdinateContact> subordinateContact;
   List<CurrentClasses> classes = <CurrentClasses>[];
 
-  String recipent;
+  String recipent = "";
   Text userName;
   String _userName;
   SMS sms;
@@ -59,6 +61,7 @@ class _MessagingState extends State<Messaging> {
 
   @override
   Widget build(BuildContext context) {
+    WidgetsBinding.instance.addPostFrameCallback((_)=>_scrollBottomContacts());
     return Scaffold(
       key: key,
       backgroundColor: primaryColor,
@@ -172,26 +175,39 @@ class _MessagingState extends State<Messaging> {
                                       builder: (BuildContext context, AsyncSnapshot snapshot) {
                                         if (snapshot.hasData) {
                                           parentContact = snapshot.data;
+                                          recipent = "";
                                           return Container(
                                             decoration: BoxDecoration(border: Border.all()),
-                                            height: 150,
+                                            height: 180,
                                             child: ListView.builder(
                                               physics: BouncingScrollPhysics(),
                                               shrinkWrap: true,
                                               itemCount: parentContact == null ? 0 : parentContact.length,
                                               itemBuilder: (BuildContext context, int index) {
                                                 ParentsContacts contacts = parentContact[index];
+                                                print("heeeeeeey " + recipent);
                                                 if (groupValue == allRegistred) {
+                                                  recipent += contacts.fatherNumber +
+                                                      "," +
+                                                      contacts.motherNumber +
+                                                      "," +
+                                                      contacts.guardianNumber;
+
                                                   return Text(contacts.fatherNumber +
                                                       "," +
                                                       contacts.motherNumber +
                                                       "," +
                                                       contacts.guardianNumber);
                                                 } else if (groupValue == oneParent) {
+                                                  if (contacts.fatherNumber.isEmpty) {
+                                                    return Text(contacts.motherNumber);
+                                                  }
                                                   return Text(contacts.fatherNumber);
                                                 } else if (groupValue == guardian) {
                                                   return Text(contacts.guardianNumber);
                                                 }
+
+                                                print("this is a test");
                                               },
                                             ),
                                           );
@@ -216,18 +232,26 @@ class _MessagingState extends State<Messaging> {
                                             decoration: BoxDecoration(border: Border.all()),
                                             height: 150,
                                             child: ListView.builder(
+                                              controller: _scrollController,
+                                              // reverse: true,
+                                              addAutomaticKeepAlives: true,
                                               physics: BouncingScrollPhysics(),
                                               shrinkWrap: true,
                                               itemCount: parentContact == null ? 0 : parentContact.length,
                                               itemBuilder: (BuildContext context, int index) {
                                                 ParentsContacts contacts = parentContact[index];
                                                 if (groupValue == allRegistred) {
+                                                  print(parentContact[index].toString());
+
                                                   return Text(contacts.fatherNumber +
                                                       "," +
                                                       contacts.motherNumber +
                                                       "," +
                                                       contacts.guardianNumber);
                                                 } else if (groupValue == oneParent) {
+                                                  if (contacts.fatherNumber.isEmpty) {
+                                                    return Text(contacts.motherNumber);
+                                                  }
                                                   return Text(contacts.fatherNumber);
                                                 } else if (groupValue == guardian) {
                                                   return Text(contacts.guardianNumber);
@@ -346,6 +370,7 @@ class _MessagingState extends State<Messaging> {
                                 totalMessages = 2;
                               });
                             }
+                            print(recipentController.text.toString());
                           },
                         ),
                       ),
@@ -542,5 +567,9 @@ class _MessagingState extends State<Messaging> {
     );
 
     showDialog(context: context, builder: (_) => alerts);
+  }
+
+  _scrollBottomContacts() {
+    _scrollController.jumpTo(_scrollController.position.maxScrollExtent);
   }
 }
