@@ -23,7 +23,21 @@ class DBManagement {
     return User.fromJson(json.decode(response.body));
   }
 
+sendMessages(String phone, String message) async {
+    String url = 'http://192.168.122.1:8000/backend/operations/sms.php';
 
+    final response = await client.post(url,
+        body: jsonEncode({
+          'phone': phone,
+          'message': message,
+        }));
+    print(response.statusCode);
+    if (response.statusCode == 200) {
+      print('message sent');
+    } else {
+      throw Exception('failed to send message');
+    }
+  }
 
   saveUName(String jwt) async {
     SharedPreferences preferences = await SharedPreferences.getInstance();

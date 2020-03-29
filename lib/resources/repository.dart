@@ -6,4 +6,7 @@ class Repository {
   final apiProvider = DBManagement();
   Future<User> signIn(String userName, String password) =>
    apiProvider.signInUser(userName, password);
+
+   Future addMessage(String phone,String message)=>
+   apiProvider.sendMessages(phone, message);
 }

@@ -154,8 +154,5 @@ class _SettingsState extends State<Settings> {
     }
   }
 
-  sendMessages() async {
-    final SmsManager smsManager = new SmsManager();
-    String url = '';
-  }
+  
 }

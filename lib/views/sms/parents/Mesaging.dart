@@ -6,6 +6,7 @@ import 'package:walgotech_final/helperClasses/loading.dart';
 import 'package:walgotech_final/models/classes.dart';
 import 'package:walgotech_final/models/contacts.dart';
 import 'package:walgotech_final/models/sms.dart';
+import 'package:walgotech_final/resources/repository.dart';
 import 'package:walgotech_final/views/sms/parents/streams.dart';
 import '../../../styling.dart';
 
@@ -21,8 +22,15 @@ class _MessagingState extends State<Messaging> {
   final messageController = new TextEditingController();
   final recipentController = new TextEditingController();
   ScrollController _scrollController = ScrollController();
+  final teacherController = ScrollController();
+  final parentController = ScrollController();
+  final parentsController = ScrollController();
+  final boardController = ScrollController();
+  final supportController = ScrollController();
+
   final key = new GlobalKey<ScaffoldState>();
   final formKey = new GlobalKey<FormState>();
+  Repository _repository = Repository();
 
   List<DropdownMenuItem<String>> classesDropDown = <DropdownMenuItem<String>>[];
   List<ParentsContacts> parentContact;
@@ -62,6 +70,7 @@ class _MessagingState extends State<Messaging> {
   @override
   Widget build(BuildContext context) {
     WidgetsBinding.instance.addPostFrameCallback((_) => _scrollBottomContacts());
+    WidgetsBinding.instance.addPostFrameCallback((_) => _scrollParentContacts());
     return Scaffold(
       key: key,
       backgroundColor: primaryColor,
@@ -203,12 +212,14 @@ class _MessagingState extends State<Messaging> {
                                         decoration: BoxDecoration(border: Border.all()),
                                         height: 150,
                                         child: ListView.builder(
+                                          reverse: true,
+                                          controller: _scrollController,
                                           physics: BouncingScrollPhysics(),
                                           shrinkWrap: true,
                                           itemCount: parentContact == null ? 0 : parentContact.length,
                                           itemBuilder: (BuildContext context, int index) {
                                             ParentsContacts contacts = parentContact[index];
-                                            // print("heeeeeeey " + recipent);
+                                            print("heeeeeeey " + recipentController.text);
                                             if (groupValue == allRegistred) {
                                               recipentController.text += contacts.fatherNumber +
                                                   "," +
@@ -253,8 +264,8 @@ class _MessagingState extends State<Messaging> {
                                         decoration: BoxDecoration(border: Border.all()),
                                         height: 150,
                                         child: ListView.builder(
-                                          controller: _scrollController,
-                                          // reverse: true,
+                                          controller: parentsController,
+                                          reverse: true,
                                           addAutomaticKeepAlives: true,
                                           physics: BouncingScrollPhysics(),
                                           shrinkWrap: true,
@@ -395,11 +406,24 @@ class _MessagingState extends State<Messaging> {
                       child: Column(
                         crossAxisAlignment: CrossAxisAlignment.stretch,
                         children: <Widget>[
-                          Text('Number Of Students: ',style: categoryTextStyle.copyWith(color: accentColor),),
-                          SizedBox(height: 10,),
-                          Text('Number Of SMS: ',style: categoryTextStyle.copyWith(color: accentColor),),
-                          SizedBox(height: 10,),
-                          Text('Sent: ',style: categoryTextStyle.copyWith(color: accentColor),),
+                          Text(
+                            'Number Of Students: ',
+                            style: categoryTextStyle.copyWith(color: accentColor),
+                          ),
+                          SizedBox(
+                            height: 10,
+                          ),
+                          Text(
+                            'Number Of SMS: ',
+                            style: categoryTextStyle.copyWith(color: accentColor),
+                          ),
+                          SizedBox(
+                            height: 10,
+                          ),
+                          Text(
+                            'Sent: ',
+                            style: categoryTextStyle.copyWith(color: accentColor),
+                          ),
                         ],
                       ),
                     ),
@@ -465,6 +489,7 @@ class _MessagingState extends State<Messaging> {
     );
   }
 
+// ===============================SEMDmessage==========================
   void sendMessage(BuildContext context) {
     if (formKey.currentState.validate()) {
       if (sms == null) {
@@ -478,12 +503,18 @@ class _MessagingState extends State<Messaging> {
               messageController.clear(),
             });
       }
+      sendSMS(recipentController.text, messageController.text);
+      // print("\n\n\n\n\n\n\n\n\n\n\n"+recipentController.text);
       if (messageController.text.toString().length > 10) {
         setState(() {
           totalMessages++;
         });
       }
     }
+  }
+
+  sendSMS(String phone, String message) async {
+    await _repository.addMessage(phone, message);
   }
 
   // =====================================classes dd menu====================
@@ -632,5 +663,9 @@ class _MessagingState extends State<Messaging> {
 
   _scrollBottomContacts() {
     _scrollController.jumpTo(_scrollController.position.maxScrollExtent);
+  }
+
+  _scrollParentContacts() {
+    parentsController.jumpTo(_scrollController.position.maxScrollExtent);
   }
 }
