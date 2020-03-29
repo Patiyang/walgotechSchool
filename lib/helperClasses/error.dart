@@ -7,7 +7,7 @@ class ErrorLog extends StatelessWidget {
       body: Container(
         child: Center(
           child: Text(
-            'something somewhere is fucked up',
+            'You encountered an error',
             style: TextStyle(color: Colors.black, fontFamily: 'Sans'),
           ),
         ),

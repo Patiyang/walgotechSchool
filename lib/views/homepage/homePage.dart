@@ -127,7 +127,9 @@ class _HomePageState extends State<HomePage> {
   getSchoolName() async {
     List<SchoolDetails> data = await _smsManager.getSchoolDetails();
     schoolDetails = data;
-    schoolName = schoolDetails[0].schoolName;
-    print('object' + schoolName);
+    setState(() {
+      schoolName = schoolDetails[0].schoolName;
+    });
+    print('object ' + schoolName);
   }
 }

@@ -21,7 +21,7 @@ class _SettingsState extends State<Settings> {
         Padding(
           padding: const EdgeInsets.symmetric(horizontal: 20.0, vertical: 8),
           child: Row(
-            mainAxisAlignment: MainAxisAlignment.spaceBetween,
+            mainAxisAlignment: MainAxisAlignment.center,
             children: <Widget>[
               MaterialButton(
                   height: 50,
@@ -40,27 +40,10 @@ class _SettingsState extends State<Settings> {
                   onPressed: () async {
                     await saveParentContacts(context);
                     await saveTeacherContacts(context);
-                    await saveSubOrdinate(context);
-                    Fluttertoast.showToast(msg: 'Contacts have been updated');
-                  }),
-              MaterialButton(
-                  height: 50,
-                  color: Colors.white54,
-                  shape: RoundedRectangleBorder(borderRadius: BorderRadius.all(Radius.circular(5))),
-                  child: Column(
-                    mainAxisAlignment: MainAxisAlignment.center,
-                    children: <Widget>[
-                      Icon(
-                        Icons.refresh,
-                        size: 30,
-                      ),
-                      Text('Update Classes')
-                    ],
-                  ),
-                  onPressed: () async {
                     await saveClasses(context);
                     await saveStreams(context);
-                    Fluttertoast.showToast(msg: 'Classes have been updated');
+                    await saveSubOrdinate(context);
+                    Fluttertoast.showToast(msg: 'Data Has Been Updated');
                   }),
             ],
           ),
@@ -171,5 +154,8 @@ class _SettingsState extends State<Settings> {
     }
   }
 
-  sendMessages() async {}
+  sendMessages() async {
+    final SmsManager smsManager = new SmsManager();
+    String url = '';
+  }
 }

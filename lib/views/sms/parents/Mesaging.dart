@@ -38,7 +38,7 @@ class _MessagingState extends State<Messaging> {
   String category;
   static const allRegistred = 'All Registered';
   static const oneParent = 'One Parent';
-  static const guardian = 'Guardian';
+  static const bothParents = 'Both Parents';
 
   static const custom = 'Custom Message';
   static const support = 'Support Staff';
@@ -61,7 +61,7 @@ class _MessagingState extends State<Messaging> {
 
   @override
   Widget build(BuildContext context) {
-    WidgetsBinding.instance.addPostFrameCallback((_)=>_scrollBottomContacts());
+    WidgetsBinding.instance.addPostFrameCallback((_) => _scrollBottomContacts());
     return Scaffold(
       key: key,
       backgroundColor: primaryColor,
@@ -94,7 +94,7 @@ class _MessagingState extends State<Messaging> {
                               hint: Text('Select Category'),
                               items: classesDropDown,
                               onChanged: changeSelectedCategory,
-                              value: null,
+                              value: classes.isEmpty ? null : _currentClass,
                             ),
                           ),
                         ),
@@ -107,237 +107,301 @@ class _MessagingState extends State<Messaging> {
                           _currentClass != teachers,
                       child: Padding(
                         padding: const EdgeInsets.all(15.0),
-                        child: Row(
-                          mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                          children: <Widget>[
-                            Container(
-                              child: Row(
-                                children: <Widget>[
-                                  Text(allRegistred),
-                                  Radio(
-                                    value: allRegistred,
-                                    groupValue: groupValue,
-                                    onChanged: (value) => categoryChanged(value),
-                                  )
-                                ],
+                        child: SingleChildScrollView(
+                          physics: BouncingScrollPhysics(),
+                          scrollDirection: Axis.horizontal,
+                          child: Row(
+                            mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                            children: <Widget>[
+                              Container(
+                                child: Row(
+                                  children: <Widget>[
+                                    Text(allRegistred),
+                                    Radio(
+                                      value: allRegistred,
+                                      groupValue: groupValue,
+                                      onChanged: (value) => categoryChanged(value),
+                                    )
+                                  ],
+                                ),
                               ),
-                            ),
-                            Container(
-                              child: Row(
-                                children: <Widget>[
-                                  Text(oneParent),
-                                  Radio(
-                                    value: oneParent,
-                                    groupValue: groupValue,
-                                    onChanged: (value) => categoryChanged(value),
-                                  )
-                                ],
+                              Container(
+                                child: Row(
+                                  children: <Widget>[
+                                    Text(oneParent),
+                                    Radio(
+                                      value: oneParent,
+                                      groupValue: groupValue,
+                                      onChanged: (value) => categoryChanged(value),
+                                    )
+                                  ],
+                                ),
                               ),
-                            ),
-                            Container(
-                              child: Row(
-                                children: <Widget>[
-                                  Text(guardian),
-                                  Radio(
-                                    value: guardian,
-                                    groupValue: groupValue,
-                                    onChanged: (value) => categoryChanged(value),
-                                  )
-                                ],
+                              Container(
+                                child: Row(
+                                  children: <Widget>[
+                                    Text(bothParents),
+                                    Radio(
+                                      value: bothParents,
+                                      groupValue: groupValue,
+                                      onChanged: (value) => categoryChanged(value),
+                                    )
+                                  ],
+                                ),
                               ),
-                            ),
-                          ],
+                            ],
+                          ),
                         ),
                       ),
                     ),
-                    Text('OR'),
+                    Visibility(
+                        visible: _currentClass != custom &&
+                            _currentClass != board &&
+                            _currentClass != teachers &&
+                            _currentClass != support,
+                        child: Text('OR')),
                     SizedBox(
                       height: 10,
                     ),
-                    GestureDetector(
+                    Visibility(
+                      visible: _currentClass != custom &&
+                          _currentClass != board &&
+                          _currentClass != teachers &&
+                          _currentClass != support,
+                      child: GestureDetector(
                         onTap: () {
                           Navigator.push(context, MaterialPageRoute(builder: (_) => CurrentStreamClasses()));
                         },
-                        child: Text('Tap to Choose Specific Streams')),
+                        child: Text('Tap to Choose Specific Streams',
+                            style: categoryTextStyle.copyWith(color: accentColor, fontSize: 19)),
+                      ),
+                    ),
+                    SizedBox(
+                      height: 10,
+                    ),
                     Divider(),
                     Padding(
                       padding: const EdgeInsets.all(8.0),
                       child: Column(
                         children: <Widget>[
-                          Stack(
-                            children: <Widget>[
-                              Visibility(
-                                visible: _currentClass == _currentClass,
-                                child: Column(
-                                  children: <Widget>[
-                                    FutureBuilder(
-                                      future: _smsManager.getParentContacts(_currentClass),
-                                      builder: (BuildContext context, AsyncSnapshot snapshot) {
-                                        if (snapshot.hasData) {
-                                          parentContact = snapshot.data;
-                                          recipent = "";
-                                          return Container(
-                                            decoration: BoxDecoration(border: Border.all()),
-                                            height: 180,
-                                            child: ListView.builder(
-                                              physics: BouncingScrollPhysics(),
-                                              shrinkWrap: true,
-                                              itemCount: parentContact == null ? 0 : parentContact.length,
-                                              itemBuilder: (BuildContext context, int index) {
-                                                ParentsContacts contacts = parentContact[index];
-                                                print("heeeeeeey " + recipent);
-                                                if (groupValue == allRegistred) {
-                                                  recipent += contacts.fatherNumber +
-                                                      "," +
-                                                      contacts.motherNumber +
-                                                      "," +
-                                                      contacts.guardianNumber;
+                          Visibility(
+                            visible: _currentClass == _currentClass &&
+                                _currentClass != parents &&
+                                _currentClass != support &&
+                                _currentClass != board &&
+                                _currentClass != custom &&
+                                _currentClass != teachers,
+                            child: Column(
+                              children: <Widget>[
+                                FutureBuilder(
+                                  future: _smsManager.getParentContacts(_currentClass),
+                                  builder: (BuildContext context, AsyncSnapshot snapshot) {
+                                    if (snapshot.hasData) {
+                                      parentContact = snapshot.data;
+                                      recipent = "";
+                                      return Container(
+                                        decoration: BoxDecoration(border: Border.all()),
+                                        height: 150,
+                                        child: ListView.builder(
+                                          physics: BouncingScrollPhysics(),
+                                          shrinkWrap: true,
+                                          itemCount: parentContact == null ? 0 : parentContact.length,
+                                          itemBuilder: (BuildContext context, int index) {
+                                            ParentsContacts contacts = parentContact[index];
+                                            // print("heeeeeeey " + recipent);
+                                            if (groupValue == allRegistred) {
+                                              recipentController.text += contacts.fatherNumber +
+                                                  "," +
+                                                  contacts.motherNumber +
+                                                  "," +
+                                                  contacts.guardianNumber;
 
-                                                  return Text(contacts.fatherNumber +
-                                                      "," +
-                                                      contacts.motherNumber +
-                                                      "," +
-                                                      contacts.guardianNumber);
-                                                } else if (groupValue == oneParent) {
-                                                  if (contacts.fatherNumber.isEmpty) {
-                                                    return Text(contacts.motherNumber);
-                                                  }
-                                                  return Text(contacts.fatherNumber);
-                                                } else if (groupValue == guardian) {
-                                                  return Text(contacts.guardianNumber);
-                                                }
-
-                                                print("this is a test");
-                                              },
-                                            ),
-                                          );
-                                        }
-                                        return Loading();
-                                      },
-                                    ),
-                                    messageInput()
-                                  ],
+                                              return Text(contacts.fatherNumber +
+                                                  "," +
+                                                  contacts.motherNumber +
+                                                  "," +
+                                                  contacts.guardianNumber);
+                                            } else if (groupValue == oneParent) {
+                                              if (contacts.fatherNumber.isEmpty) {
+                                                return Text(contacts.motherNumber);
+                                              }
+                                              return Text(contacts.fatherNumber);
+                                            } else if (groupValue == bothParents) {
+                                              return Text(contacts.motherNumber + "," + contacts.fatherNumber);
+                                            }
+                                          },
+                                        ),
+                                      );
+                                    }
+                                    return Loading();
+                                  },
                                 ),
-                              ),
-                              Visibility(
-                                visible: _currentClass == parents,
-                                child: Column(
-                                  children: <Widget>[
-                                    FutureBuilder(
-                                      future: _smsManager.getAllParentContacts(),
-                                      builder: (BuildContext context, AsyncSnapshot snapshot) {
-                                        if (snapshot.hasData) {
-                                          parentContact = snapshot.data;
-                                          return Container(
-                                            decoration: BoxDecoration(border: Border.all()),
-                                            height: 150,
-                                            child: ListView.builder(
-                                              controller: _scrollController,
-                                              // reverse: true,
-                                              addAutomaticKeepAlives: true,
-                                              physics: BouncingScrollPhysics(),
-                                              shrinkWrap: true,
-                                              itemCount: parentContact == null ? 0 : parentContact.length,
-                                              itemBuilder: (BuildContext context, int index) {
-                                                ParentsContacts contacts = parentContact[index];
-                                                if (groupValue == allRegistred) {
-                                                  print(parentContact[index].toString());
-
-                                                  return Text(contacts.fatherNumber +
-                                                      "," +
-                                                      contacts.motherNumber +
-                                                      "," +
-                                                      contacts.guardianNumber);
-                                                } else if (groupValue == oneParent) {
-                                                  if (contacts.fatherNumber.isEmpty) {
-                                                    return Text(contacts.motherNumber);
-                                                  }
-                                                  return Text(contacts.fatherNumber);
-                                                } else if (groupValue == guardian) {
-                                                  return Text(contacts.guardianNumber);
-                                                }
-                                              },
-                                            ),
-                                          );
-                                        }
-                                        return Loading();
-                                      },
-                                    ),
-                                    messageInput()
-                                  ],
-                                ),
-                              ),
-                              Visibility(
-                                visible: _currentClass == teachers,
-                                child: Column(
-                                  children: <Widget>[
-                                    FutureBuilder(
-                                      future: _smsManager.getAllTeacherContacts(),
-                                      builder: (BuildContext context, AsyncSnapshot snapshot) {
-                                        if (snapshot.hasData) {
-                                          teachersContact = snapshot.data;
-                                          return Container(
-                                            decoration: BoxDecoration(border: Border.all()),
-                                            height: 150,
-                                            child: ListView.builder(
-                                              scrollDirection: Axis.vertical,
-                                              physics: BouncingScrollPhysics(),
-                                              shrinkWrap: true,
-                                              itemCount: teachersContact == null ? 0 : teachersContact.length,
-                                              itemBuilder: (BuildContext context, int index) {
-                                                print(teachersContact.length);
-                                                TeacherContacts teachersContacts = teachersContact[index];
-                                                return Text(teachersContacts.phoneNumber + ',');
-                                              },
-                                            ),
-                                          );
-                                        }
-                                        return Loading();
-                                      },
-                                    ),
-                                    messageInput()
-                                  ],
-                                ),
-                              ),
-                              Visibility(
-                                visible: _currentClass == support,
-                                child: Column(
-                                  children: <Widget>[
-                                    FutureBuilder(
-                                      future: _smsManager.getSubordinateContacts(),
-                                      builder: (BuildContext context, AsyncSnapshot snapshot) {
-                                        if (snapshot.hasData) {
-                                          subordinateContact = snapshot.data;
-                                          return Container(
-                                            decoration: BoxDecoration(border: Border.all()),
-                                            height: 150,
-                                            child: ListView.builder(
-                                              physics: BouncingScrollPhysics(),
-                                              shrinkWrap: true,
-                                              itemCount: subordinateContact == null ? 0 : subordinateContact.length,
-                                              itemBuilder: (BuildContext context, int index) {
-                                                SubOrdinateContact subOrdinate = subordinateContact[index];
-                                                return Text(subOrdinate.phone);
-                                              },
-                                            ),
-                                          );
-                                        }
-                                        return Loading();
-                                      },
-                                    ),
-                                    messageInput()
-                                  ],
-                                ),
-                              ),
-                              Visibility(visible: _currentClass == custom, child: messageInput())
-                            ],
+                                messageInput()
+                              ],
+                            ),
                           ),
+                          Visibility(
+                            visible: _currentClass == parents,
+                            child: Column(
+                              children: <Widget>[
+                                FutureBuilder(
+                                  future: _smsManager.getAllParentContacts(),
+                                  builder: (BuildContext context, AsyncSnapshot snapshot) {
+                                    if (snapshot.hasData) {
+                                      parentContact = snapshot.data;
+                                      return Container(
+                                        decoration: BoxDecoration(border: Border.all()),
+                                        height: 150,
+                                        child: ListView.builder(
+                                          controller: _scrollController,
+                                          // reverse: true,
+                                          addAutomaticKeepAlives: true,
+                                          physics: BouncingScrollPhysics(),
+                                          shrinkWrap: true,
+                                          itemCount: parentContact == null ? 0 : parentContact.length,
+                                          itemBuilder: (BuildContext context, int index) {
+                                            ParentsContacts contacts = parentContact[index];
+                                            if (groupValue == allRegistred) {
+                                              print(parentContact[index].toString());
+
+                                              return Text(contacts.fatherNumber +
+                                                  "," +
+                                                  contacts.motherNumber +
+                                                  "," +
+                                                  contacts.guardianNumber);
+                                            } else if (groupValue == oneParent) {
+                                              if (contacts.fatherNumber.isEmpty) {
+                                                return Text(contacts.motherNumber);
+                                              }
+                                              return Text(contacts.fatherNumber);
+                                            } else if (groupValue == bothParents) {
+                                              return Text(contacts.motherNumber + "," + contacts.fatherNumber);
+                                            }
+                                          },
+                                        ),
+                                      );
+                                    }
+                                    return Loading();
+                                  },
+                                ),
+                                messageInput()
+                              ],
+                            ),
+                          ),
+                          Visibility(
+                            visible: _currentClass == teachers,
+                            child: Column(
+                              children: <Widget>[
+                                FutureBuilder(
+                                  future: _smsManager.getAllTeacherContacts(),
+                                  builder: (BuildContext context, AsyncSnapshot snapshot) {
+                                    if (snapshot.hasData) {
+                                      teachersContact = snapshot.data;
+                                      return Container(
+                                        decoration: BoxDecoration(border: Border.all()),
+                                        height: 150,
+                                        child: ListView.builder(
+                                          scrollDirection: Axis.vertical,
+                                          physics: BouncingScrollPhysics(),
+                                          shrinkWrap: true,
+                                          itemCount: teachersContact == null ? 0 : teachersContact.length,
+                                          itemBuilder: (BuildContext context, int index) {
+                                            print(teachersContact.length);
+                                            TeacherContacts teachersContacts = teachersContact[index];
+                                            return Text(teachersContacts.phoneNumber + ',');
+                                          },
+                                        ),
+                                      );
+                                    }
+                                    return Loading();
+                                  },
+                                ),
+                                messageInput()
+                              ],
+                            ),
+                          ),
+                          Visibility(
+                            visible: _currentClass == board,
+                            child: Column(
+                              children: <Widget>[
+                                FutureBuilder(
+                                  future: _smsManager.getAllTeacherContacts(),
+                                  builder: (BuildContext context, AsyncSnapshot snapshot) {
+                                    if (snapshot.hasData) {
+                                      teachersContact = snapshot.data;
+                                      return Container(
+                                        decoration: BoxDecoration(border: Border.all()),
+                                        height: 150,
+                                        child: ListView.builder(
+                                          scrollDirection: Axis.vertical,
+                                          physics: BouncingScrollPhysics(),
+                                          shrinkWrap: true,
+                                          itemCount: teachersContact == null ? 0 : teachersContact.length,
+                                          itemBuilder: (BuildContext context, int index) {
+                                            print(teachersContact.length);
+                                            TeacherContacts teachersContacts = teachersContact[index];
+                                            return Text(teachersContacts.phoneNumber + ',');
+                                          },
+                                        ),
+                                      );
+                                    }
+                                    return Loading();
+                                  },
+                                ),
+                                messageInput()
+                              ],
+                            ),
+                          ),
+                          Visibility(
+                            visible: _currentClass == support,
+                            child: Column(
+                              children: <Widget>[
+                                FutureBuilder(
+                                  future: _smsManager.getSubordinateContacts(),
+                                  builder: (BuildContext context, AsyncSnapshot snapshot) {
+                                    if (snapshot.hasData) {
+                                      subordinateContact = snapshot.data;
+                                      return Container(
+                                        decoration: BoxDecoration(border: Border.all()),
+                                        height: 150,
+                                        child: ListView.builder(
+                                          physics: BouncingScrollPhysics(),
+                                          shrinkWrap: true,
+                                          itemCount: subordinateContact == null ? 0 : subordinateContact.length,
+                                          itemBuilder: (BuildContext context, int index) {
+                                            SubOrdinateContact subOrdinate = subordinateContact[index];
+                                            return Text(subOrdinate.phone);
+                                          },
+                                        ),
+                                      );
+                                    }
+                                    return Loading();
+                                  },
+                                ),
+                                messageInput()
+                              ],
+                            ),
+                          ),
+                          Visibility(visible: _currentClass == custom, child: messageInput())
                         ],
                       ),
                     ),
                     Divider(),
                     SizedBox(
                       height: 10,
+                    ),
+                    Padding(
+                      padding: const EdgeInsets.all(8.0),
+                      child: Column(
+                        crossAxisAlignment: CrossAxisAlignment.stretch,
+                        children: <Widget>[
+                          Text('Number Of Students: ',style: categoryTextStyle.copyWith(color: accentColor),),
+                          SizedBox(height: 10,),
+                          Text('Number Of SMS: ',style: categoryTextStyle.copyWith(color: accentColor),),
+                          SizedBox(height: 10,),
+                          Text('Sent: ',style: categoryTextStyle.copyWith(color: accentColor),),
+                        ],
+                      ),
                     ),
                     Padding(
                       padding: const EdgeInsets.all(8.0),
@@ -386,19 +450,16 @@ class _MessagingState extends State<Messaging> {
   }
 
   Widget messageInput() {
-    return Visibility(
-      visible: true,
-      child: Padding(
-        padding: const EdgeInsets.symmetric(vertical: 8.0),
-        child: TextFormField(
-          maxLines: 7,
-          controller: messageController,
-          validator: (v) => v.isNotEmpty ? null : 'recipents are empty',
-          decoration: InputDecoration(
-            enabled: true,
-            hintText: 'Type in Mssage',
-            border: OutlineInputBorder(),
-          ),
+    return Padding(
+      padding: const EdgeInsets.symmetric(vertical: 8.0),
+      child: TextFormField(
+        maxLines: 7,
+        controller: messageController,
+        validator: (v) => v.isNotEmpty ? null : 'recipents are empty',
+        decoration: InputDecoration(
+          enabled: true,
+          hintText: 'Type in Message',
+          border: OutlineInputBorder(),
         ),
       ),
     );
@@ -497,7 +558,7 @@ class _MessagingState extends State<Messaging> {
       } else if (value == oneParent) {
         groupValue = value;
         category = value;
-      } else if (value == guardian) {
+      } else if (value == bothParents) {
         groupValue = value;
         category = value;
       }

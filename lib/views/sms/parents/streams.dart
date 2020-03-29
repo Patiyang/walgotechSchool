@@ -2,6 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:fluttertoast/fluttertoast.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 import 'package:walgotech_final/database/database.dart';
+import 'package:walgotech_final/helperClasses/error.dart';
 import 'package:walgotech_final/helperClasses/loading.dart';
 import 'package:walgotech_final/models/classes.dart';
 import 'package:walgotech_final/models/contacts.dart';
@@ -19,7 +20,7 @@ class _CurrentStreamClassesState extends State<CurrentStreamClasses> {
   final messageController = new TextEditingController();
   final recipentController = new TextEditingController();
   final formKey = new GlobalKey<FormState>();
-  final key = new GlobalKey<ScaffoldState>();
+  final scafoldKey = new GlobalKey<ScaffoldState>();
   List<DropdownMenuItem<String>> classesDropDown = <DropdownMenuItem<String>>[];
   List<DropdownMenuItem<String>> streamsDropDown = <DropdownMenuItem<String>>[];
   List<ParentsContacts> parentContact;
@@ -37,7 +38,7 @@ class _CurrentStreamClassesState extends State<CurrentStreamClasses> {
   String category;
   static const allRegistred = 'All Registered';
   static const oneParent = 'One Parent';
-  static const guardian = 'Guardian';
+  static const bothParents = 'Both Parents';
   static const custom = 'Custom Message';
 
   @override
@@ -53,6 +54,7 @@ class _CurrentStreamClassesState extends State<CurrentStreamClasses> {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
+      key: scafoldKey,
       appBar: AppBar(
         elevation: .3,
         centerTitle: true,
@@ -63,158 +65,176 @@ class _CurrentStreamClassesState extends State<CurrentStreamClasses> {
         child: SafeArea(
           child: SingleChildScrollView(
             physics: BouncingScrollPhysics(),
-            child: Column(
-              children: <Widget>[
-                Padding(
-                  padding: const EdgeInsets.symmetric(horizontal: 3.0),
-                  child: Material(
-                    elevation: 0,
-                    color: Colors.black26,
-                    shape: RoundedRectangleBorder(borderRadius: BorderRadius.all(Radius.circular(6))),
-                    child: Padding(
-                      padding: const EdgeInsets.symmetric(horizontal: 8.0),
-                      child: Visibility(
-                        visible: true,
-                        child: DropdownButton(
-                          isExpanded: true,
-                          icon: Icon(
-                            Icons.arrow_downward,
-                            color: Colors.black26,
+            child: Form(
+              key: formKey,
+              child: Column(
+                children: <Widget>[
+                  Padding(
+                    padding: const EdgeInsets.symmetric(horizontal: 3.0),
+                    child: Material(
+                      elevation: 0,
+                      color: Colors.black26,
+                      shape: RoundedRectangleBorder(borderRadius: BorderRadius.all(Radius.circular(6))),
+                      child: Padding(
+                        padding: const EdgeInsets.symmetric(horizontal: 8.0),
+                        child: Visibility(
+                          visible: true,
+                          child: DropdownButton(
+                            isExpanded: true,
+                            icon: Icon(
+                              Icons.arrow_downward,
+                              color: Colors.black26,
+                            ),
+                            hint: Text('Select Stream'),
+                            items: streamsDropDown,
+                            onChanged: changeSelectedStream,
+                            value: streams.isEmpty ? null : _currentStream,
                           ),
-                          hint: Text('Select Stream'),
-                          items: streamsDropDown,
-                          onChanged: changeSelectedStream,
-                          value: null,
                         ),
                       ),
                     ),
                   ),
-                ),
-                Visibility(
-                  visible: true,
-                  child: Padding(
-                    padding: const EdgeInsets.all(15.0),
-                    child: Row(
-                      mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                      children: <Widget>[
-                        Container(
-                          child: Row(
-                            children: <Widget>[
-                              Text(allRegistred),
-                              Radio(
-                                value: allRegistred,
-                                groupValue: groupValue,
-                                onChanged: (value) => categoryChanged(value),
-                              )
-                            ],
-                          ),
+                  Visibility(
+                    visible: true,
+                    child: Padding(
+                      padding: const EdgeInsets.all(15.0),
+                      child: SingleChildScrollView(
+                        scrollDirection: Axis.horizontal,
+                        physics: BouncingScrollPhysics(),
+                        child: Row(
+                          mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                          children: <Widget>[
+                            Container(
+                              child: Row(
+                                children: <Widget>[
+                                  Text(allRegistred),
+                                  Radio(
+                                    value: allRegistred,
+                                    groupValue: groupValue,
+                                    onChanged: (value) => categoryChanged(value),
+                                  )
+                                ],
+                              ),
+                            ),
+                            Container(
+                              child: Row(
+                                children: <Widget>[
+                                  Text(oneParent),
+                                  Radio(
+                                    value: oneParent,
+                                    groupValue: groupValue,
+                                    onChanged: (value) => categoryChanged(value),
+                                  )
+                                ],
+                              ),
+                            ),
+                            Container(
+                              child: Row(
+                                children: <Widget>[
+                                  Text(bothParents),
+                                  Radio(
+                                    value: bothParents,
+                                    groupValue: groupValue,
+                                    onChanged: (value) => categoryChanged(value),
+                                  )
+                                ],
+                              ),
+                            ),
+                          ],
                         ),
-                        Container(
-                          child: Row(
-                            children: <Widget>[
-                              Text(oneParent),
-                              Radio(
-                                value: oneParent,
-                                groupValue: groupValue,
-                                onChanged: (value) => categoryChanged(value),
-                              )
-                            ],
-                          ),
-                        ),
-                        Container(
-                          child: Row(
-                            children: <Widget>[
-                              Text(guardian),
-                              Radio(
-                                value: guardian,
-                                groupValue: groupValue,
-                                onChanged: (value) => categoryChanged(value),
-                              )
-                            ],
-                          ),
-                        ),
-                      ],
+                      ),
                     ),
                   ),
-                ),
-                Padding(
-                  padding: const EdgeInsets.all(3.0),
-                  child: Visibility(
-                    visible: _currentStream == _currentStream,
-                    child: FutureBuilder(
-                      future: _smsManager.getStreamsContacts(_currentStream.split(' ')[0], _currentStream.split(' ')[1]),
-                      builder: (BuildContext context, AsyncSnapshot snapshot) {
-                        if (snapshot.hasData) {
-                          parentContact = snapshot.data;
-                          return Container(
-                            decoration: BoxDecoration(border: Border.all(color: Colors.black54)),
-                            height: 150,
-                            child: ListView.builder(
-                              // addAutomaticKeepAlives:true ,
-                              physics: BouncingScrollPhysics(),
-                              shrinkWrap: true,
-                              itemCount: parentContact == null ? 0 : parentContact.length,
-                              itemBuilder: (BuildContext context, int index) {
-                                ParentsContacts contacts = parentContact[index];
-                                if (groupValue == allRegistred) {
-                                  print(contacts.toString());
-                                  return Text(
-                                      contacts.fatherNumber + "," + contacts.motherNumber + "," + contacts.guardianNumber);
-                                } else if (groupValue == oneParent) {
-                                  if (contacts.fatherNumber.isEmpty) {
-                                    return Text(contacts.motherNumber);
-                                  }
-                                  return Text(contacts.fatherNumber);
-                                } else if (groupValue == guardian) {
-                                  return Text(contacts.guardianNumber);
+                  Padding(
+                    padding: const EdgeInsets.all(3.0),
+                    child: Visibility(
+                      visible: _currentStream == _currentStream,
+                      child: streams.isEmpty
+                          ? Loading()
+                          : FutureBuilder(
+                              future: _smsManager.getStreamsContacts(_currentStream.split(' ')[0], _currentStream.split(' ')[1]),
+                              builder: (BuildContext context, AsyncSnapshot snapshot) {
+                                if (snapshot.hasData) {
+                                  parentContact = snapshot.data;
+                                  return Container(
+                                    decoration: BoxDecoration(border: Border.all(color: Colors.black54)),
+                                    height: 150,
+                                    child: ListView.builder(
+                                      // addAutomaticKeepAlives:true ,
+                                      physics: BouncingScrollPhysics(),
+                                      shrinkWrap: true,
+                                      itemCount: parentContact == null ? 0 : parentContact.length,
+                                      itemBuilder: (BuildContext context, int index) {
+                                        ParentsContacts contacts = parentContact[index];
+                                        if (groupValue == allRegistred) {
+                                          print(contacts.toString());
+                                          return Text(contacts.fatherNumber +
+                                              "," +
+                                              contacts.motherNumber +
+                                              "," +
+                                              contacts.guardianNumber);
+                                        } else if (groupValue == oneParent) {
+                                          if (contacts.fatherNumber.isEmpty) {
+                                            return Text(contacts.motherNumber);
+                                          }
+                                          return Text(contacts.fatherNumber);
+                                        } else if (groupValue == bothParents) {
+                                          return Text(contacts.motherNumber + "," + contacts.fatherNumber);
+                                        }
+                                      },
+                                    ),
+                                  );
                                 }
+
+                                return Loading();
                               },
                             ),
-                          );
-                        }
-                        return Loading();
-                      },
                     ),
                   ),
-                ),
-                Padding(
-                  padding: const EdgeInsets.all(3.0),
-                  child: messageInput(),
-                ),
-                Divider(),
-                SizedBox(
-                  height: 10,
-                ),
-                Padding(
-                  padding: const EdgeInsets.all(8.0),
-                  child: Container(
-                    alignment: Alignment.bottomCenter,
-                    child: MaterialButton(
-                      color: accentColor,
-                      elevation: 0,
-                      shape: RoundedRectangleBorder(borderRadius: BorderRadius.all(Radius.circular(10))),
-                      minWidth: MediaQuery.of(context).size.width * .3,
-                      child: Text(
-                        'Send',
-                        style: categoriesStyle,
-                      ),
-                      onPressed: () {
-                        if (messageController.text.isNotEmpty) {
-                          messageAlert();
-                        } else if (messageController.text.isEmpty) {
-                          Scaffold.of(context).showSnackBar(SnackBar(content: Text('data')));
-                        }
+                  Padding(
+                    padding: const EdgeInsets.all(3.0),
+                    child: messageInput(),
+                  ),
+                  Divider(),
+                  SizedBox(
+                    height: 10,
+                  ),
+                  Padding(
+                    padding: const EdgeInsets.all(8.0),
+                    child: Container(
+                      alignment: Alignment.bottomCenter,
+                      child: MaterialButton(
+                        color: accentColor,
+                        elevation: 0,
+                        shape: RoundedRectangleBorder(borderRadius: BorderRadius.all(Radius.circular(10))),
+                        minWidth: MediaQuery.of(context).size.width * .3,
+                        child: Text(
+                          'Send',
+                          style: categoriesStyle,
+                        ),
+                        onPressed: () {
+                          if (messageController.text.isNotEmpty) {
+                            messageAlert();
+                          } else if (messageController.text.isEmpty) {
+                            scafoldKey.currentState.showSnackBar(SnackBar(
+                                content: Text(
+                              'Cannot send a blank text',
+                              textAlign: TextAlign.center,
+                              style: TextStyle(color: Colors.red[400]),
+                            )));
+                          }
 
-                        if (messageController.text.length > 10) {
-                          setState(() {
-                            totalMessages = 2;
-                          });
-                        }
-                      },
+                          if (messageController.text.length > 10) {
+                            setState(() {
+                              totalMessages = 2;
+                            });
+                          }
+                        },
+                      ),
                     ),
                   ),
-                ),
-              ],
+                ],
+              ),
             ),
           ),
         ),
@@ -244,7 +264,7 @@ class _CurrentStreamClassesState extends State<CurrentStreamClasses> {
 //=======================================streams dd menu============================
   List<DropdownMenuItem<String>> _getStreamsDropDown() {
     List<DropdownMenuItem<String>> dropDownItems = new List();
-    
+
     for (int i = 0; i < streams.length; i++) {
       setState(() {
         dropDownItems.insert(
@@ -386,7 +406,7 @@ class _CurrentStreamClassesState extends State<CurrentStreamClasses> {
       } else if (value == oneParent) {
         groupValue = value;
         category = value;
-      } else if (value == guardian) {
+      } else if (value == bothParents) {
         groupValue = value;
         category = value;
       }
