@@ -21,10 +21,11 @@ class _MessagingState extends State<Messaging> {
   final SmsManager _smsManager = new SmsManager();
   final messageController = new TextEditingController();
   final recipentController = new TextEditingController();
+  final individualController = new TextEditingController();
   ScrollController _scrollController = ScrollController();
   final teacherController = ScrollController();
   final parentController = ScrollController();
-  final parentsController = ScrollController();
+  final parentsController = ScrollController(initialScrollOffset: 0);
   final boardController = ScrollController();
   final supportController = ScrollController();
 
@@ -54,8 +55,9 @@ class _MessagingState extends State<Messaging> {
   static const teachers = 'Teachers';
   static const parents = 'Parents';
 
-  int totalMessages = 1;
-  int totalContacts = 1;
+  int totalMessages = 0;
+  int totalContacts = 0;
+  int totalStudents = 0;
 
   String _currentClass;
   @override
@@ -64,6 +66,7 @@ class _MessagingState extends State<Messaging> {
     _getClasses();
     getUserName();
     _currentClass = '';
+    messageController.addListener(_messageLength);
     classesDropDown = _getClassesDropDown();
   }
 
@@ -219,7 +222,8 @@ class _MessagingState extends State<Messaging> {
                                           itemCount: parentContact == null ? 0 : parentContact.length,
                                           itemBuilder: (BuildContext context, int index) {
                                             ParentsContacts contacts = parentContact[index];
-                                            print("heeeeeeey " + recipentController.text);
+                                            // print("heeeeeeey " + recipentController.text);
+
                                             if (groupValue == allRegistred) {
                                               recipentController.text += contacts.fatherNumber +
                                                   "," +
@@ -234,10 +238,15 @@ class _MessagingState extends State<Messaging> {
                                                   contacts.guardianNumber);
                                             } else if (groupValue == oneParent) {
                                               if (contacts.fatherNumber.isEmpty) {
+                                                recipentController.text += contacts.motherNumber + ",";
+
                                                 return Text(contacts.motherNumber);
                                               }
+                                              recipentController.text += contacts.fatherNumber + ",";
                                               return Text(contacts.fatherNumber);
                                             } else if (groupValue == bothParents) {
+                                              recipentController.text +=
+                                                  contacts.fatherNumber + "," + contacts.motherNumber + ",";
                                               return Text(contacts.motherNumber + "," + contacts.fatherNumber);
                                             }
                                           },
@@ -266,14 +275,18 @@ class _MessagingState extends State<Messaging> {
                                         child: ListView.builder(
                                           controller: parentsController,
                                           reverse: true,
-                                          addAutomaticKeepAlives: true,
                                           physics: BouncingScrollPhysics(),
                                           shrinkWrap: true,
                                           itemCount: parentContact == null ? 0 : parentContact.length,
                                           itemBuilder: (BuildContext context, int index) {
                                             ParentsContacts contacts = parentContact[index];
+                                            // print("heeeeeeey " + recipentController.text);
                                             if (groupValue == allRegistred) {
-                                              print(parentContact[index].toString());
+                                              recipentController.text += contacts.fatherNumber +
+                                                  "," +
+                                                  contacts.motherNumber +
+                                                  "," +
+                                                  contacts.guardianNumber;
 
                                               return Text(contacts.fatherNumber +
                                                   "," +
@@ -282,10 +295,15 @@ class _MessagingState extends State<Messaging> {
                                                   contacts.guardianNumber);
                                             } else if (groupValue == oneParent) {
                                               if (contacts.fatherNumber.isEmpty) {
+                                                recipentController.text += contacts.motherNumber + ",";
+
                                                 return Text(contacts.motherNumber);
                                               }
+                                              recipentController.text += contacts.fatherNumber + ",";
                                               return Text(contacts.fatherNumber);
                                             } else if (groupValue == bothParents) {
+                                              recipentController.text +=
+                                                  contacts.fatherNumber + "," + contacts.motherNumber + ",";
                                               return Text(contacts.motherNumber + "," + contacts.fatherNumber);
                                             }
                                           },
@@ -381,7 +399,7 @@ class _MessagingState extends State<Messaging> {
                                           itemCount: subordinateContact == null ? 0 : subordinateContact.length,
                                           itemBuilder: (BuildContext context, int index) {
                                             SubOrdinateContact subOrdinate = subordinateContact[index];
-                                            return Text(subOrdinate.phone);
+                                            return Text(subOrdinate.phone + ',');
                                           },
                                         ),
                                       );
@@ -393,7 +411,23 @@ class _MessagingState extends State<Messaging> {
                               ],
                             ),
                           ),
-                          Visibility(visible: _currentClass == custom, child: messageInput())
+                          Visibility(
+                              visible: _currentClass == custom,
+                              child: Column(
+                                children: <Widget>[
+                                  TextFormField(
+                                    controller: individualController,
+                                    maxLines: 7,
+                                    validator: (v) => v.isNotEmpty ? null : 'recipents are empty',
+                                    decoration: InputDecoration(
+                                      enabled: true,
+                                      hintText: 'Type in Custom Message',
+                                      border: OutlineInputBorder(),
+                                    ),
+                                  ),
+                                  messageInput(),
+                                ],
+                              ))
                         ],
                       ),
                     ),
@@ -406,15 +440,21 @@ class _MessagingState extends State<Messaging> {
                       child: Column(
                         crossAxisAlignment: CrossAxisAlignment.stretch,
                         children: <Widget>[
-                          Text(
-                            'Number Of Students: ',
-                            style: categoryTextStyle.copyWith(color: accentColor),
+                          Visibility(
+                            visible: _currentClass != teachers &&
+                                _currentClass != board &&
+                                _currentClass != custom &&
+                                _currentClass != support,
+                            child: Text(
+                              'Number Of Students: $totalStudents',
+                              style: categoryTextStyle.copyWith(color: accentColor),
+                            ),
                           ),
                           SizedBox(
                             height: 10,
                           ),
                           Text(
-                            'Number Of SMS: ',
+                            'Number Of SMS: $totalMessages',
                             style: categoryTextStyle.copyWith(color: accentColor),
                           ),
                           SizedBox(
@@ -458,7 +498,7 @@ class _MessagingState extends State<Messaging> {
                                 totalMessages = 2;
                               });
                             }
-                            print(recipentController.text.toString());
+                            // print(recipentController.text.toString());
                           },
                         ),
                       ),
@@ -504,12 +544,6 @@ class _MessagingState extends State<Messaging> {
             });
       }
       sendSMS(recipentController.text, messageController.text);
-      // print("\n\n\n\n\n\n\n\n\n\n\n"+recipentController.text);
-      if (messageController.text.toString().length > 10) {
-        setState(() {
-          totalMessages++;
-        });
-      }
     }
   }
 
@@ -562,6 +596,7 @@ class _MessagingState extends State<Messaging> {
   changeSelectedCategory(String selectedClass) {
     setState(() {
       _currentClass = selectedClass;
+      totalStudents = parentContact.length;
       print(_currentClass);
     });
   }
@@ -600,16 +635,6 @@ class _MessagingState extends State<Messaging> {
     var alerts = new AlertDialog(
       shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(20)),
       elevation: .3,
-      title: Column(
-        children: <Widget>[
-          Text('Sending: $totalMessages SMS', style: categoryTextStyle.copyWith(color: accentColor, fontSize: 17)),
-          SizedBox(
-            height: 20,
-          ),
-          Text('Sending to: ${parentContact.length} Contacts ',
-              style: categoryTextStyle.copyWith(color: accentColor, fontSize: 17)),
-        ],
-      ),
       content: Container(
         alignment: Alignment.topLeft,
         width: 320,
@@ -659,6 +684,23 @@ class _MessagingState extends State<Messaging> {
     );
 
     showDialog(context: context, builder: (_) => alerts);
+  }
+
+  _messageLength() {
+    print('the message length is ${messageController.text.length}');
+    setState(() {
+      if (messageController.text.length > 0 &&messageController.text.length <10 ) {
+        totalMessages = 1;
+      } else if (messageController.text.length > 10 && messageController.text.length < 20) {
+        totalMessages = 2;
+      } else if (messageController.text.length > 20 && messageController.text.length < 30) {
+        totalMessages = 3;
+      } else if (messageController.text.length > 30 && messageController.text.length < 40) {
+        totalMessages = 4;
+      } else if (messageController.text.length > 40 && messageController.text.length < 50) {
+        totalMessages = 5;
+      }
+    });
   }
 
   _scrollBottomContacts() {

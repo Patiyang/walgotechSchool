@@ -19,6 +19,8 @@ class _CurrentStreamClassesState extends State<CurrentStreamClasses> {
   final SmsManager _smsManager = new SmsManager();
   final messageController = new TextEditingController();
   final recipentController = new TextEditingController();
+  ScrollController _scrollController = ScrollController();
+
   final formKey = new GlobalKey<FormState>();
   final scafoldKey = new GlobalKey<ScaffoldState>();
   List<DropdownMenuItem<String>> classesDropDown = <DropdownMenuItem<String>>[];
@@ -53,6 +55,8 @@ class _CurrentStreamClassesState extends State<CurrentStreamClasses> {
 
   @override
   Widget build(BuildContext context) {
+    WidgetsBinding.instance.addPostFrameCallback((_) => _scrollBottomContacts());
+
     return Scaffold(
       key: scafoldKey,
       appBar: AppBar(
@@ -160,7 +164,8 @@ class _CurrentStreamClassesState extends State<CurrentStreamClasses> {
                                     decoration: BoxDecoration(border: Border.all(color: Colors.black54)),
                                     height: 150,
                                     child: ListView.builder(
-                                      // addAutomaticKeepAlives:true ,
+                                      controller: _scrollController,
+                                      reverse: true,
                                       physics: BouncingScrollPhysics(),
                                       shrinkWrap: true,
                                       itemCount: parentContact == null ? 0 : parentContact.length,
@@ -411,5 +416,9 @@ class _CurrentStreamClassesState extends State<CurrentStreamClasses> {
         category = value;
       }
     });
+  }
+
+  _scrollBottomContacts() {
+    _scrollController.jumpTo(_scrollController.position.maxScrollExtent);
   }
 }
