@@ -22,6 +22,10 @@ class _MessagingState extends State<Messaging> {
   final messageController = new TextEditingController();
   final recipentController = new TextEditingController();
   final individualController = new TextEditingController();
+  final boardtextController = new TextEditingController();
+  final teacherstextController = new TextEditingController();
+  final supporttextController = new TextEditingController();
+
   ScrollController _scrollController = ScrollController();
   final teacherController = ScrollController();
   final parentController = ScrollController();
@@ -63,6 +67,7 @@ class _MessagingState extends State<Messaging> {
   @override
   void initState() {
     super.initState();
+    // totalContacts = parentContact.length;
     _getClasses();
     getUserName();
     _currentClass = '';
@@ -222,9 +227,11 @@ class _MessagingState extends State<Messaging> {
                                           itemCount: parentContact == null ? 0 : parentContact.length,
                                           itemBuilder: (BuildContext context, int index) {
                                             ParentsContacts contacts = parentContact[index];
-                                            // print("heeeeeeey " + recipentController.text);
 
                                             if (groupValue == allRegistred) {
+                                              totalContacts = contacts.fatherNumber.length +
+                                                  contacts.motherNumber.length +
+                                                  contacts.guardianNumber.length;
                                               recipentController.text += contacts.fatherNumber +
                                                   "," +
                                                   contacts.motherNumber +
@@ -236,15 +243,17 @@ class _MessagingState extends State<Messaging> {
                                                   contacts.motherNumber +
                                                   "," +
                                                   contacts.guardianNumber);
-                                            } else if (groupValue == oneParent) {
+                                            }  if (groupValue == oneParent) {
                                               if (contacts.fatherNumber.isEmpty) {
+                                                totalContacts = contacts.motherNumber.length;
                                                 recipentController.text += contacts.motherNumber + ",";
-
                                                 return Text(contacts.motherNumber);
                                               }
+                                              totalContacts = contacts.fatherNumber.length;
                                               recipentController.text += contacts.fatherNumber + ",";
                                               return Text(contacts.fatherNumber);
-                                            } else if (groupValue == bothParents) {
+                                            }  if (groupValue == bothParents) {
+                                              totalContacts = contacts.fatherNumber.length + contacts.motherNumber.length;
                                               recipentController.text +=
                                                   contacts.fatherNumber + "," + contacts.motherNumber + ",";
                                               return Text(contacts.motherNumber + "," + contacts.fatherNumber);
@@ -280,8 +289,11 @@ class _MessagingState extends State<Messaging> {
                                           itemCount: parentContact == null ? 0 : parentContact.length,
                                           itemBuilder: (BuildContext context, int index) {
                                             ParentsContacts contacts = parentContact[index];
-                                            // print("heeeeeeey " + recipentController.text);
+
                                             if (groupValue == allRegistred) {
+                                              totalContacts = contacts.fatherNumber.length +
+                                                  contacts.motherNumber.length +
+                                                  contacts.guardianNumber.length;
                                               recipentController.text += contacts.fatherNumber +
                                                   "," +
                                                   contacts.motherNumber +
@@ -295,13 +307,15 @@ class _MessagingState extends State<Messaging> {
                                                   contacts.guardianNumber);
                                             } else if (groupValue == oneParent) {
                                               if (contacts.fatherNumber.isEmpty) {
+                                                totalContacts = contacts.motherNumber.length;
                                                 recipentController.text += contacts.motherNumber + ",";
-
                                                 return Text(contacts.motherNumber);
                                               }
+                                              totalContacts = contacts.fatherNumber.length;
                                               recipentController.text += contacts.fatherNumber + ",";
                                               return Text(contacts.fatherNumber);
                                             } else if (groupValue == bothParents) {
+                                              totalContacts = contacts.fatherNumber.length + contacts.motherNumber.length;
                                               recipentController.text +=
                                                   contacts.fatherNumber + "," + contacts.motherNumber + ",";
                                               return Text(contacts.motherNumber + "," + contacts.fatherNumber);
@@ -337,6 +351,9 @@ class _MessagingState extends State<Messaging> {
                                           itemBuilder: (BuildContext context, int index) {
                                             print(teachersContact.length);
                                             TeacherContacts teachersContacts = teachersContact[index];
+                                            if (groupValue == teachers) {
+                                              teacherstextController.text += teachersContacts.phoneNumber + ',';
+                                            }
                                             return Text(teachersContacts.phoneNumber + ',');
                                           },
                                         ),
@@ -369,6 +386,9 @@ class _MessagingState extends State<Messaging> {
                                           itemBuilder: (BuildContext context, int index) {
                                             print(teachersContact.length);
                                             TeacherContacts teachersContacts = teachersContact[index];
+                                            if (groupValue == board) {
+                                              boardtextController.text = teachersContacts.phoneNumber + ',';
+                                            }
                                             return Text(teachersContacts.phoneNumber + ',');
                                           },
                                         ),
@@ -399,6 +419,9 @@ class _MessagingState extends State<Messaging> {
                                           itemCount: subordinateContact == null ? 0 : subordinateContact.length,
                                           itemBuilder: (BuildContext context, int index) {
                                             SubOrdinateContact subOrdinate = subordinateContact[index];
+                                            if (_currentClass == support) {
+                                              supporttextController.text = subOrdinate.phone + ',';
+                                            }
                                             return Text(subOrdinate.phone + ',');
                                           },
                                         ),
@@ -416,12 +439,16 @@ class _MessagingState extends State<Messaging> {
                               child: Column(
                                 children: <Widget>[
                                   TextFormField(
+                                    keyboardType: TextInputType.phone,
                                     controller: individualController,
                                     maxLines: 7,
-                                    validator: (v) => v.isNotEmpty ? null : 'recipents are empty',
+                                    validator: (v) {
+                                      if (v.length < 13) return 'plese enter a valid message length';
+                                      if (v.isEmpty) return 'cannot send a blank text';
+                                    },
                                     decoration: InputDecoration(
                                       enabled: true,
-                                      hintText: 'Type in Custom Message',
+                                      hintText: 'Message Separated by Commas e.g +254xxxxxxxx,+254xxxxxxxx',
                                       border: OutlineInputBorder(),
                                     ),
                                   ),
@@ -461,7 +488,7 @@ class _MessagingState extends State<Messaging> {
                             height: 10,
                           ),
                           Text(
-                            'Sent: ',
+                            'Sending: $totalContacts',
                             style: categoryTextStyle.copyWith(color: accentColor),
                           ),
                         ],
@@ -481,7 +508,7 @@ class _MessagingState extends State<Messaging> {
                             style: categoriesStyle,
                           ),
                           onPressed: () {
-                            if (messageController.text.isNotEmpty) {
+                            if (messageController.text.isNotEmpty && formKey.currentState.validate()) {
                               messageAlert();
                             } else if (messageController.text.isEmpty) {
                               key.currentState.showSnackBar(SnackBar(
@@ -493,11 +520,6 @@ class _MessagingState extends State<Messaging> {
                               ));
                             }
 
-                            if (messageController.text.length > 10) {
-                              setState(() {
-                                totalMessages = 2;
-                              });
-                            }
                             // print(recipentController.text.toString());
                           },
                         ),
@@ -543,12 +565,7 @@ class _MessagingState extends State<Messaging> {
               messageController.clear(),
             });
       }
-      sendSMS(recipentController.text, messageController.text);
     }
-  }
-
-  sendSMS(String phone, String message) async {
-    await _repository.addMessage(phone, message);
   }
 
   // =====================================classes dd menu====================
@@ -595,8 +612,8 @@ class _MessagingState extends State<Messaging> {
 
   changeSelectedCategory(String selectedClass) {
     setState(() {
-      _currentClass = selectedClass;
       totalStudents = parentContact.length;
+      _currentClass = selectedClass;
       print(_currentClass);
     });
   }
@@ -621,10 +638,12 @@ class _MessagingState extends State<Messaging> {
       if (value == allRegistred) {
         groupValue = value;
         category = value;
-      } else if (value == oneParent) {
+      }
+      else if (value == oneParent) {
         groupValue = value;
         category = value;
-      } else if (value == bothParents) {
+      }
+      else if (value == bothParents) {
         groupValue = value;
         category = value;
       }
@@ -666,8 +685,25 @@ class _MessagingState extends State<Messaging> {
         FlatButton.icon(
           color: Colors.green[300],
           onPressed: () {
+            if (_currentClass == custom) {
+              sendSMS(individualController.text, messageController.text);
+              Fluttertoast.showToast(msg: 'Message Sent successfuly');
+            }
+            if (_currentClass == board) {
+              sendSMS(boardtextController.text, messageController.text);
+            }
+            if (_currentClass == support) {
+              sendSMS(supporttextController.text, messageController.text);
+            }
+            if (_currentClass == teachers) {
+              sendSMS(teacherstextController.text, messageController.text);
+              Fluttertoast.showToast(msg: 'Message Sent ');
+            } else {
+              sendSMS(recipentController.text, messageController.text);
+            }
+
             sendMessage(context);
-            Fluttertoast.showToast(msg: 'Message Sent successfuly');
+
             Navigator.pop(context);
           },
           icon: Icon(
@@ -686,18 +722,22 @@ class _MessagingState extends State<Messaging> {
     showDialog(context: context, builder: (_) => alerts);
   }
 
+  sendSMS(String phone, String message) async {
+    await _repository.addMessage(phone, message);
+  }
+
   _messageLength() {
-    print('the message length is ${messageController.text.length}');
+    // print('the message length is ${messageController.text.length}');
     setState(() {
-      if (messageController.text.length > 0 &&messageController.text.length <10 ) {
+      if (messageController.text.length > 0 && messageController.text.length < 160) {
         totalMessages = 1;
-      } else if (messageController.text.length > 10 && messageController.text.length < 20) {
+      } else if (messageController.text.length > 160 && messageController.text.length < 320) {
         totalMessages = 2;
-      } else if (messageController.text.length > 20 && messageController.text.length < 30) {
+      } else if (messageController.text.length > 320 && messageController.text.length < 640) {
         totalMessages = 3;
-      } else if (messageController.text.length > 30 && messageController.text.length < 40) {
+      } else if (messageController.text.length > 640 && messageController.text.length < 1280) {
         totalMessages = 4;
-      } else if (messageController.text.length > 40 && messageController.text.length < 50) {
+      } else if (messageController.text.length > 1280 && messageController.text.length < 2560) {
         totalMessages = 5;
       }
     });

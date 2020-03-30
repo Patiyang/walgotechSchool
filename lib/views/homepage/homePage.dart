@@ -24,9 +24,9 @@ class _HomePageState extends State<HomePage> {
   String schoolName = '';
   @override
   void initState() {
-    getSchoolName();
     signInUser();
     name = '';
+    getSchoolName();
     super.initState();
   }
 
@@ -69,7 +69,7 @@ class _HomePageState extends State<HomePage> {
     return SafeArea(
       child: Scaffold(
         appBar: AppBar(
-          backgroundColor: Colors.blue[900],
+         backgroundColor: accentColor,
           leading: Padding(
             padding: const EdgeInsets.all(10.0),
             child: CircleAvatar(
@@ -130,6 +130,7 @@ class _HomePageState extends State<HomePage> {
     setState(() {
       schoolName = schoolDetails[0].schoolName;
     });
-    print('object ' + schoolName);
+    print('object\n\n\n\n\n\n ' + schoolName);
+    return schoolName;
   }
 }

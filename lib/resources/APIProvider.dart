@@ -6,7 +6,7 @@ import 'package:walgotech_final/models/users.dart';
 Client client = Client();
 
 class DBManagement {
-  String url = 'http://192.168.122.1:8000/backend/operations/login.php';
+  String url = 'http://192.168.42.224:8000/backend/operations/login.php';
   Future<User> signInUser(String userName, String password) async {
     final response = await client.post(url,
         body: jsonEncode({
@@ -24,7 +24,7 @@ class DBManagement {
   }
 
 sendMessages(String phone, String message) async {
-    String url = 'http://192.168.122.1:8000/backend/operations/sms.php';
+    String url = 'http://192.168.42.224:8000/backend/operations/send.php';
 
     final response = await client.post(url,
         body: jsonEncode({

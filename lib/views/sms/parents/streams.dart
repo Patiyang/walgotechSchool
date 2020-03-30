@@ -2,7 +2,6 @@ import 'package:flutter/material.dart';
 import 'package:fluttertoast/fluttertoast.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 import 'package:walgotech_final/database/database.dart';
-import 'package:walgotech_final/helperClasses/error.dart';
 import 'package:walgotech_final/helperClasses/loading.dart';
 import 'package:walgotech_final/models/classes.dart';
 import 'package:walgotech_final/models/contacts.dart';
@@ -33,8 +32,9 @@ class _CurrentStreamClassesState extends State<CurrentStreamClasses> {
   String _userName;
   SMS sms;
 
-  int totalMessages = 1;
-  int totalContacts = 1;
+  int totalMessages = 0;
+  int totalStudents = 0;
+  int totalContacts = 0;
 
   String groupValue = allRegistred;
   String category;
@@ -48,7 +48,7 @@ class _CurrentStreamClassesState extends State<CurrentStreamClasses> {
     super.initState();
     _getStreams();
     getUserName();
-
+    messageController.addListener(_messageLength);
     _currentStream = 'stream';
     streamsDropDown = _getStreamsDropDown();
   }
@@ -172,7 +172,11 @@ class _CurrentStreamClassesState extends State<CurrentStreamClasses> {
                                       itemBuilder: (BuildContext context, int index) {
                                         ParentsContacts contacts = parentContact[index];
                                         if (groupValue == allRegistred) {
-                                          print(contacts.toString());
+                                          totalContacts = contacts.fatherNumber.length +
+                                              contacts.motherNumber.length +
+                                              contacts.guardianNumber.length;
+                                          recipentController.text +=
+                                              contacts.fatherNumber + "," + contacts.motherNumber + "," + contacts.guardianNumber;
                                           return Text(contacts.fatherNumber +
                                               "," +
                                               contacts.motherNumber +
@@ -180,10 +184,16 @@ class _CurrentStreamClassesState extends State<CurrentStreamClasses> {
                                               contacts.guardianNumber);
                                         } else if (groupValue == oneParent) {
                                           if (contacts.fatherNumber.isEmpty) {
+                                            totalContacts = contacts.motherNumber.length;
+                                            recipentController.text += contacts.motherNumber + ",";
                                             return Text(contacts.motherNumber);
                                           }
+                                          totalContacts = contacts.fatherNumber.length;
+                                          recipentController.text += contacts.fatherNumber + ",";
                                           return Text(contacts.fatherNumber);
                                         } else if (groupValue == bothParents) {
+                                          totalContacts = contacts.fatherNumber.length + contacts.motherNumber.length;
+                                          recipentController.text += contacts.fatherNumber + "," + contacts.motherNumber + ",";
                                           return Text(contacts.motherNumber + "," + contacts.fatherNumber);
                                         }
                                       },
@@ -206,6 +216,32 @@ class _CurrentStreamClassesState extends State<CurrentStreamClasses> {
                   ),
                   Padding(
                     padding: const EdgeInsets.all(8.0),
+                    child: Column(
+                      crossAxisAlignment: CrossAxisAlignment.stretch,
+                      children: <Widget>[
+                        Text(
+                          'Number Of Students: $totalStudents',
+                          style: categoryTextStyle.copyWith(color: accentColor),
+                        ),
+                        SizedBox(
+                          height: 10,
+                        ),
+                        Text(
+                          'Number Of SMS: $totalMessages',
+                          style: categoryTextStyle.copyWith(color: accentColor),
+                        ),
+                        SizedBox(
+                          height: 10,
+                        ),
+                        Text(
+                          'Sent: ',
+                          style: categoryTextStyle.copyWith(color: accentColor),
+                        ),
+                      ],
+                    ),
+                  ),
+                  Padding(
+                    padding: const EdgeInsets.all(8.0),
                     child: Container(
                       alignment: Alignment.bottomCenter,
                       child: MaterialButton(
@@ -220,19 +256,13 @@ class _CurrentStreamClassesState extends State<CurrentStreamClasses> {
                         onPressed: () {
                           if (messageController.text.isNotEmpty) {
                             messageAlert();
-                          } else if (messageController.text.isEmpty) {
+                          } else if (messageController.text.isEmpty && formKey.currentState.validate()) {
                             scafoldKey.currentState.showSnackBar(SnackBar(
                                 content: Text(
                               'Cannot send a blank text',
                               textAlign: TextAlign.center,
                               style: TextStyle(color: Colors.red[400]),
                             )));
-                          }
-
-                          if (messageController.text.length > 10) {
-                            setState(() {
-                              totalMessages = 2;
-                            });
                           }
                         },
                       ),
@@ -255,10 +285,13 @@ class _CurrentStreamClassesState extends State<CurrentStreamClasses> {
         child: TextFormField(
           maxLines: 7,
           controller: messageController,
-          validator: (v) => v.isNotEmpty ? null : 'recipents are empty',
+          validator: (v) {
+            if (v.length < 13) return 'plese enter a valid message length';
+            if (v.isEmpty) return 'cannot send a blank text';
+          },
           decoration: InputDecoration(
             enabled: true,
-            hintText: 'Type in Mssage',
+            hintText: 'Type in Message',
             border: OutlineInputBorder(),
           ),
         ),
@@ -289,14 +322,18 @@ class _CurrentStreamClassesState extends State<CurrentStreamClasses> {
       if (streams.isEmpty) _currentStream = '';
       streams = data;
       streamsDropDown = _getStreamsDropDown();
+
       _currentStream = streams[0].streams;
     });
+    totalStudents = parentContact.length;
   }
 
-  changeSelectedStream(String selectedStream) {
+  changeSelectedStream(String selectedStream) async {
     setState(() {
+      totalStudents = parentContact.length;
+
       _currentStream = selectedStream;
-      print(_currentStream);
+      // print(_currentStream);
     });
   }
 
@@ -319,16 +356,6 @@ class _CurrentStreamClassesState extends State<CurrentStreamClasses> {
     var alerts = new AlertDialog(
       shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(20)),
       elevation: .3,
-      title: Column(
-        children: <Widget>[
-          Text('Sending: $totalMessages SMS', style: categoryTextStyle.copyWith(color: accentColor, fontSize: 17)),
-          SizedBox(
-            height: 20,
-          ),
-          Text('Sending to: ${parentContact.length} Contacts ',
-              style: categoryTextStyle.copyWith(color: accentColor, fontSize: 17)),
-        ],
-      ),
       content: Container(
         alignment: Alignment.topLeft,
         width: 320,
@@ -394,11 +421,6 @@ class _CurrentStreamClassesState extends State<CurrentStreamClasses> {
               messageController.clear(),
             });
       }
-      if (messageController.text.toString().length > 10) {
-        setState(() {
-          totalMessages++;
-        });
-      }
     }
   }
 
@@ -414,6 +436,22 @@ class _CurrentStreamClassesState extends State<CurrentStreamClasses> {
       } else if (value == bothParents) {
         groupValue = value;
         category = value;
+      }
+    });
+  }
+
+  _messageLength() {
+    setState(() {
+      if (messageController.text.length > 0 && messageController.text.length < 10) {
+        totalMessages = 1;
+      } else if (messageController.text.length > 10 && messageController.text.length < 20) {
+        totalMessages = 2;
+      } else if (messageController.text.length > 20 && messageController.text.length < 30) {
+        totalMessages = 3;
+      } else if (messageController.text.length > 30 && messageController.text.length < 40) {
+        totalMessages = 4;
+      } else if (messageController.text.length > 40 && messageController.text.length < 50) {
+        totalMessages = 5;
       }
     });
   }
