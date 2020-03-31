@@ -34,7 +34,7 @@ class _CurrentStreamClassesState extends State<CurrentStreamClasses> {
 
   int totalMessages = 0;
   int totalStudents = 0;
-  int totalContacts = 0;
+  List totalContacts = [];
 
   String groupValue = allRegistred;
   String category;
@@ -92,7 +92,7 @@ class _CurrentStreamClassesState extends State<CurrentStreamClasses> {
                             hint: Text('Select Stream'),
                             items: streamsDropDown,
                             onChanged: changeSelectedStream,
-                            value: streams.isEmpty ? null : _currentStream,
+                            value: null,
                           ),
                         ),
                       ),
@@ -172,9 +172,6 @@ class _CurrentStreamClassesState extends State<CurrentStreamClasses> {
                                       itemBuilder: (BuildContext context, int index) {
                                         ParentsContacts contacts = parentContact[index];
                                         if (groupValue == allRegistred) {
-                                          totalContacts = contacts.fatherNumber.length +
-                                              contacts.motherNumber.length +
-                                              contacts.guardianNumber.length;
                                           recipentController.text +=
                                               contacts.fatherNumber + "," + contacts.motherNumber + "," + contacts.guardianNumber;
                                           return Text(contacts.fatherNumber +
@@ -184,15 +181,12 @@ class _CurrentStreamClassesState extends State<CurrentStreamClasses> {
                                               contacts.guardianNumber);
                                         } else if (groupValue == oneParent) {
                                           if (contacts.fatherNumber.isEmpty) {
-                                            totalContacts = contacts.motherNumber.length;
                                             recipentController.text += contacts.motherNumber + ",";
                                             return Text(contacts.motherNumber);
                                           }
-                                          totalContacts = contacts.fatherNumber.length;
                                           recipentController.text += contacts.fatherNumber + ",";
                                           return Text(contacts.fatherNumber);
                                         } else if (groupValue == bothParents) {
-                                          totalContacts = contacts.fatherNumber.length + contacts.motherNumber.length;
                                           recipentController.text += contacts.fatherNumber + "," + contacts.motherNumber + ",";
                                           return Text(contacts.motherNumber + "," + contacts.fatherNumber);
                                         }
@@ -234,7 +228,7 @@ class _CurrentStreamClassesState extends State<CurrentStreamClasses> {
                           height: 10,
                         ),
                         Text(
-                          'Sent: ',
+                          'Sent:$totalMessages /${totalContacts.length}',
                           style: categoryTextStyle.copyWith(color: accentColor),
                         ),
                       ],
@@ -333,7 +327,8 @@ class _CurrentStreamClassesState extends State<CurrentStreamClasses> {
       totalStudents = parentContact.length;
 
       _currentStream = selectedStream;
-      // print(_currentStream);
+      print(_currentStream);
+      print(totalStudents);
     });
   }
 
@@ -427,30 +422,49 @@ class _CurrentStreamClassesState extends State<CurrentStreamClasses> {
 // ======================================RADIO===========================
   categoryChanged(String value) {
     setState(() {
-      if (value == allRegistred) {
-        groupValue = value;
-        category = value;
-      } else if (value == oneParent) {
-        groupValue = value;
-        category = value;
-      } else if (value == bothParents) {
-        groupValue = value;
-        category = value;
+      totalContacts.clear();
+      for (int i = 0; i < parentContact.length; i++) {
+        var contacts = parentContact[i];
+        if (value == allRegistred) {
+          groupValue = value;
+          category = value;
+          totalContacts.add(contacts.guardianNumber);
+          totalContacts.add(contacts.motherNumber);
+          totalContacts.add(contacts.fatherNumber);
+        } else if (value == oneParent) {
+          groupValue = value;
+          category = value;
+          if (contacts.fatherNumber.isEmpty) {
+            if (contacts.motherNumber.isNotEmpty) totalContacts.add(contacts.motherNumber);
+          } else if (contacts.fatherNumber.isNotEmpty) {
+            totalContacts.add(contacts.fatherNumber);
+          }
+        } else if (value == bothParents) {
+          groupValue = value;
+          category = value;
+          if (contacts.fatherNumber.isNotEmpty && contacts.motherNumber.isNotEmpty) {
+            totalContacts.add(contacts.motherNumber);
+            totalContacts.add(contacts.fatherNumber);
+          }
+        }
       }
     });
   }
 
   _messageLength() {
+    // print('the message length is ${messageController.text.length}');
     setState(() {
-      if (messageController.text.length > 0 && messageController.text.length < 10) {
+      if (messageController.text.length < 1) {
+        totalMessages = 0;
+      } else if (messageController.text.length > 0 && messageController.text.length < 160) {
         totalMessages = 1;
-      } else if (messageController.text.length > 10 && messageController.text.length < 20) {
+      } else if (messageController.text.length > 160 && messageController.text.length < 320) {
         totalMessages = 2;
-      } else if (messageController.text.length > 20 && messageController.text.length < 30) {
+      } else if (messageController.text.length > 320 && messageController.text.length < 640) {
         totalMessages = 3;
-      } else if (messageController.text.length > 30 && messageController.text.length < 40) {
+      } else if (messageController.text.length > 640 && messageController.text.length < 1280) {
         totalMessages = 4;
-      } else if (messageController.text.length > 40 && messageController.text.length < 50) {
+      } else if (messageController.text.length > 1280 && messageController.text.length < 2560) {
         totalMessages = 5;
       }
     });
