@@ -34,7 +34,7 @@ class _SettingsState extends State<Settings> {
                         Icons.refresh,
                         size: 30,
                       ),
-                      Text('Update Contacts')
+                      Text('Sync Data')
                     ],
                   ),
                   onPressed: () async {

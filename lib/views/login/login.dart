@@ -135,7 +135,7 @@ class _LoginState extends State<Login> {
 
   signInValidate() async {
     if (formKey.currentState.validate()) {
-      formKey.currentState.reset();
+      // formKey.currentState.reset();
       await userBloc.signInUser(userName.text, password.text).then((_) => widget.loginPressed());
       Fluttertoast.showToast(msg: 'Login Success');
     } else {

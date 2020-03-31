@@ -59,9 +59,9 @@ class _MessagingState extends State<Messaging> {
   static const teachers = 'Teachers';
   static const parents = 'Parents';
 
-  int totalMessages = 0;
-  int totalContacts = 0;
-  int totalStudents = 0;
+  int totalMessages;
+  int totalContacts;
+  int totalStudents;
 
   String _currentClass;
   @override
@@ -71,6 +71,9 @@ class _MessagingState extends State<Messaging> {
     _getClasses();
     getUserName();
     _currentClass = '';
+    totalMessages = 0;
+    totalContacts = 0;
+    totalStudents = 0;
     messageController.addListener(_messageLength);
     classesDropDown = _getClassesDropDown();
   }
@@ -111,6 +114,7 @@ class _MessagingState extends State<Messaging> {
                               hint: Text('Select Category'),
                               items: classesDropDown,
                               onChanged: changeSelectedCategory,
+                              disabledHint: Text('Select Categry'),
                               value: classes.isEmpty ? null : _currentClass,
                             ),
                           ),
@@ -218,7 +222,7 @@ class _MessagingState extends State<Messaging> {
                                       recipent = "";
                                       return Container(
                                         decoration: BoxDecoration(border: Border.all()),
-                                        height: 150,
+                                        height: 300,
                                         child: ListView.builder(
                                           reverse: true,
                                           controller: _scrollController,
@@ -229,9 +233,9 @@ class _MessagingState extends State<Messaging> {
                                             ParentsContacts contacts = parentContact[index];
 
                                             if (groupValue == allRegistred) {
-                                              totalContacts = contacts.fatherNumber.length +
-                                                  contacts.motherNumber.length +
-                                                  contacts.guardianNumber.length;
+                                              // totalContacts = contacts.fatherNumber.length +
+                                              //     contacts.motherNumber.length +
+                                              //     contacts.guardianNumber.length;
                                               recipentController.text += contacts.fatherNumber +
                                                   "," +
                                                   contacts.motherNumber +
@@ -243,17 +247,20 @@ class _MessagingState extends State<Messaging> {
                                                   contacts.motherNumber +
                                                   "," +
                                                   contacts.guardianNumber);
-                                            }  if (groupValue == oneParent) {
+                                            }
+                                            if (groupValue == oneParent) {
                                               if (contacts.fatherNumber.isEmpty) {
-                                                totalContacts = contacts.motherNumber.length;
+                                                // totalContacts = contacts.motherNumber.length;
                                                 recipentController.text += contacts.motherNumber + ",";
                                                 return Text(contacts.motherNumber);
+                                              } else {
+                                                // totalContacts = contacts.fatherNumber.length;
+                                                recipentController.text += contacts.fatherNumber + ",";
+                                                return Text(contacts.fatherNumber);
                                               }
-                                              totalContacts = contacts.fatherNumber.length;
-                                              recipentController.text += contacts.fatherNumber + ",";
-                                              return Text(contacts.fatherNumber);
-                                            }  if (groupValue == bothParents) {
-                                              totalContacts = contacts.fatherNumber.length + contacts.motherNumber.length;
+                                            }
+                                            if (groupValue == bothParents) {
+                                              // totalContacts = contacts.fatherNumber.length + contacts.motherNumber.length;
                                               recipentController.text +=
                                                   contacts.fatherNumber + "," + contacts.motherNumber + ",";
                                               return Text(contacts.motherNumber + "," + contacts.fatherNumber);
@@ -291,9 +298,9 @@ class _MessagingState extends State<Messaging> {
                                             ParentsContacts contacts = parentContact[index];
 
                                             if (groupValue == allRegistred) {
-                                              totalContacts = contacts.fatherNumber.length +
-                                                  contacts.motherNumber.length +
-                                                  contacts.guardianNumber.length;
+                                              // totalContacts = contacts.fatherNumber.length +
+                                              //     contacts.motherNumber.length +
+                                              //     contacts.guardianNumber.length;
                                               recipentController.text += contacts.fatherNumber +
                                                   "," +
                                                   contacts.motherNumber +
@@ -310,10 +317,11 @@ class _MessagingState extends State<Messaging> {
                                                 totalContacts = contacts.motherNumber.length;
                                                 recipentController.text += contacts.motherNumber + ",";
                                                 return Text(contacts.motherNumber);
+                                              } else {
+                                                totalContacts = contacts.fatherNumber.length;
+                                                recipentController.text += contacts.fatherNumber + ",";
+                                                return Text(contacts.fatherNumber);
                                               }
-                                              totalContacts = contacts.fatherNumber.length;
-                                              recipentController.text += contacts.fatherNumber + ",";
-                                              return Text(contacts.fatherNumber);
                                             } else if (groupValue == bothParents) {
                                               totalContacts = contacts.fatherNumber.length + contacts.motherNumber.length;
                                               recipentController.text +=
@@ -572,16 +580,7 @@ class _MessagingState extends State<Messaging> {
   List<DropdownMenuItem<String>> _getClassesDropDown() {
     List<String> additonal = [custom, support, board, teachers, parents];
     List<DropdownMenuItem<String>> dropDownItems = new List();
-    for (int f = 0; f < additonal.length; f++) {
-      setState(() {
-        dropDownItems.insert(
-            0,
-            DropdownMenuItem(
-              child: Text(additonal[f]),
-              value: additonal[f],
-            ));
-      });
-    }
+
     for (int i = 0; i < classes.length; i++) {
       setState(() {
         dropDownItems.insert(
@@ -592,6 +591,16 @@ class _MessagingState extends State<Messaging> {
             ));
       });
     }
+    // for (int f = 0; f < additonal.length; f++) {
+    //   setState(() {
+    //     dropDownItems.insert(
+    //         0,
+    //         DropdownMenuItem(
+    //           child: Text(additonal[f]),
+    //           value: additonal[f],
+    //         ));
+    //   });
+    // }
 
     return dropDownItems;
   }
@@ -606,14 +615,16 @@ class _MessagingState extends State<Messaging> {
       classes = data;
       classesDropDown = _getClassesDropDown();
       _currentClass = classes[0].registeredClasses;
-      print(_currentClass);
+      // print(_currentClass);
     });
   }
 
   changeSelectedCategory(String selectedClass) {
     setState(() {
-      totalStudents = parentContact.length;
       _currentClass = selectedClass;
+      totalStudents = parentContact.length;
+      print(totalStudents);
+      print(totalContacts);
       print(_currentClass);
     });
   }
@@ -635,18 +646,41 @@ class _MessagingState extends State<Messaging> {
 // ==========================================================CATEGORYCHANGED==========================================
   categoryChanged(String value) {
     setState(() {
-      if (value == allRegistred) {
-        groupValue = value;
-        category = value;
+      for (int i = 0; i < parentContact.length; i++) {
+        if (value == allRegistred) {
+          groupValue = value;
+          category = value;
+          totalContacts = int.parse(parentContact[i].motherNumber) +
+              int.parse(parentContact[i].fatherNumber) +
+              int.parse(parentContact[i].guardianNumber);
+          print(totalContacts);
+        }
+        if (value == oneParent) {
+          groupValue = value;
+          category = value;
+          totalContacts = parentContact[i].motherNumber.length;
+          print(totalContacts);
+        }
+        if (value == bothParents) {
+          groupValue = value;
+          category = value;
+          totalContacts = parentContact[i].fatherNumber.length + parentContact[i].motherNumber.length;
+          print(totalContacts);
+        }
       }
-      else if (value == oneParent) {
-        groupValue = value;
-        category = value;
-      }
-      else if (value == bothParents) {
-        groupValue = value;
-        category = value;
-      }
+      // if (value == allRegistred) {
+      //   print(totalContacts);
+      //   groupValue = value;
+      //   category = value;
+      // } else if (value == oneParent) {
+      //   print(totalContacts);
+      //   groupValue = value;
+      //   category = value;
+      // } else if (value == bothParents) {
+      //   print(totalContacts);
+      //   groupValue = value;
+      //   category = value;
+      // }
     });
   }
 
