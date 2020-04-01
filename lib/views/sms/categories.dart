@@ -1,5 +1,6 @@
 import 'package:curved_navigation_bar/curved_navigation_bar.dart';
 import 'package:flutter/material.dart';
+import 'package:gradient_app_bar/gradient_app_bar.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 import 'package:walgotech_final/styling.dart';
 import 'package:walgotech_final/views/sms/parents/Mesaging.dart';
@@ -27,12 +28,13 @@ class _AllContactCategoriesState extends State<AllContactCategories> {
   Widget build(BuildContext context) {
     return Scaffold(
       backgroundColor: primaryColor,
-      appBar: AppBar(
+      appBar: GradientAppBar(
+        gradient: LinearGradient(colors: [Colors.cyan, Colors.indigo]),
         actions: <Widget>[
           Center(
               child: Text(
             'Balance: $bal',
-            style: TextStyle(fontSize: 20, color: Colors.green),
+            style: TextStyle(fontSize: 20, color: Colors.white),
           ))
         ],
         elevation: .7,
@@ -55,19 +57,19 @@ class _AllContactCategoriesState extends State<AllContactCategories> {
         ),
       ),
       bottomNavigationBar: CurvedNavigationBar(
-        color: accentColor,
+        color: customBtns,
         key: barKey,
         animationDuration: Duration(milliseconds: 150),
         index: 0,
         height: 45,
         animationCurve: Curves.easeInOut,
-        buttonBackgroundColor: accentColor,
+        buttonBackgroundColor: customBtns,
         backgroundColor: primaryColor,
         items: <Widget>[
-          Icon(Icons.face, size: 19, color: Colors.white),
-          Icon(Icons.people, size: 19, color: Colors.white),
-          Icon(Icons.group_work, size: 19, color: Colors.white),
-          Icon(Icons.settings, size: 19, color: Colors.white)
+          Icon(Icons.face, size: 19, color: Colors.black),
+          Icon(Icons.message, size: 19, color: Colors.black),
+          Icon(Icons.timer, size: 19, color: Colors.black),
+          Icon(Icons.settings, size: 19, color: Colors.black)
         ],
         onTap: (index) {
           debugPrint('current index is $index');
@@ -79,7 +81,7 @@ class _AllContactCategoriesState extends State<AllContactCategories> {
       body: page == 0
           ? Messaging()
           : Container(
-              child: page == 1 ? MessageHistory() : Container(child: page == 2 ? SubOrdinateCategory() : Settings()),
+              child: page == 1 ? MessageHistory() : Container(child: page == 2 ? Schedule() : Settings()),
             ),
     );
   }

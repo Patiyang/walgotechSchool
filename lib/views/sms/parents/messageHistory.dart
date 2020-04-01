@@ -45,7 +45,7 @@ class _MessageHistoryState extends State<MessageHistory> {
                   padding: const EdgeInsets.all(6.0),
                   child: Material(
                     shape: RoundedRectangleBorder(borderRadius: BorderRadius.all(Radius.circular(10))),
-                    color: Colors.black38,
+                    color: customBtns,
                     child: ListTile(
                       title: Text('Message: ${message.message}',style: TextStyle(color: Colors.black),),
                       leading: Padding(

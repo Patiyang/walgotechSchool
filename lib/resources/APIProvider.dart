@@ -32,16 +32,16 @@ class DBManagement {
 
   sendMessages(String phone, String message) async {
     String url = 'http://192.168.43.101:8000/backend/operations/send.php';
-    List<SchoolDetails> data = await _smsManager.getSchoolDetails();
-    schoolDetails = data;
-    apiKey = schoolDetails[0].smsKey;
-    smsId = schoolDetails[0].smsID;
+    // List<SchoolDetails> data = await _smsManager.getSchoolDetails();
+    // schoolDetails = data;
+    // apiKey = schoolDetails[0].smsKey;
+    // smsId = schoolDetails[0].smsID;
     final response = await client.post(url,
         body: jsonEncode({
           'phone': phone,
           'message': message,
-          'apiKey': apiKey,
-          'smsId': smsId,
+          // 'apiKey': apiKey,
+          // 'smsId': smsId,
         }));
     print('\n\n\n\n\n\n\n${response.statusCode}');
     print(smsId);

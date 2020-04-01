@@ -109,7 +109,7 @@ class _MessagingState extends State<Messaging> {
                         padding: const EdgeInsets.symmetric(horizontal: 8.0),
                         child: Material(
                           elevation: 0,
-                          color: Colors.black26,
+                          color: customBtns,
                           shape: RoundedRectangleBorder(borderRadius: BorderRadius.all(Radius.circular(6))),
                           child: Padding(
                             padding: const EdgeInsets.symmetric(horizontal: 8.0),
@@ -117,7 +117,7 @@ class _MessagingState extends State<Messaging> {
                               isExpanded: true,
                               icon: Icon(
                                 Icons.arrow_downward,
-                                color: Colors.black26,
+                                color: Colors.black,
                               ),
                               hint: Text('Select Category'),
                               items: classesDropDown,
@@ -169,6 +169,8 @@ class _MessagingState extends State<Messaging> {
                                   children: <Widget>[
                                     Text(allRegistred),
                                     Radio(
+                                      
+                                      autofocus: true,
                                       value: allRegistred,
                                       groupValue: groupValue,
                                       onChanged: (value) => categoryChanged(value),
@@ -543,13 +545,13 @@ class _MessagingState extends State<Messaging> {
                       child: Container(
                         alignment: Alignment.bottomCenter,
                         child: MaterialButton(
-                          color: accentColor,
+                          color: customBtns,
                           elevation: 0,
                           shape: RoundedRectangleBorder(borderRadius: BorderRadius.all(Radius.circular(10))),
                           minWidth: MediaQuery.of(context).size.width * .3,
                           child: Text(
                             'Send',
-                            style: categoriesStyle,
+                            style: categoriesStyle.copyWith(color: accentColor),
                           ),
                           onPressed: () {
                             if (messageController.text.isNotEmpty && formKey.currentState.validate()) {

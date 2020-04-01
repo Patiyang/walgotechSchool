@@ -165,6 +165,7 @@ class _CurrentStreamClassesState extends State<CurrentStreamClasses> {
                               builder: (BuildContext context, AsyncSnapshot snapshot) {
                                 if (snapshot.hasData) {
                                   parentContact = snapshot.data;
+                                  totalStudents = parentContact.length;
                                   return groupValue == ''
                                       ? Text('Please Pick a Contact Group Above First')
                                       : Container(
@@ -178,7 +179,7 @@ class _CurrentStreamClassesState extends State<CurrentStreamClasses> {
                                             itemCount: parentContact == null ? 0 : parentContact.length,
                                             itemBuilder: (BuildContext context, int index) {
                                               ParentsContacts contacts = parentContact[index];
-                                              totalStudents = parentContact.length;
+                                              // totalStudents = parentContact.length;
                                               if (groupValue == allRegistred) {
                                                 recipentController.text += contacts.fatherNumber +
                                                     "," +

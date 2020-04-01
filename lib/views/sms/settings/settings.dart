@@ -5,6 +5,7 @@ import 'package:walgotech_final/models/contacts.dart';
 import 'dart:convert';
 import 'package:http/http.dart' show Client;
 import 'package:walgotech_final/database/database.dart';
+import 'package:walgotech_final/styling.dart';
 
 class Settings extends StatefulWidget {
   @override
@@ -25,7 +26,7 @@ class _SettingsState extends State<Settings> {
             children: <Widget>[
               MaterialButton(
                   height: 50,
-                  color: Colors.white54,
+                  color: customBtns,
                   shape: RoundedRectangleBorder(borderRadius: BorderRadius.all(Radius.circular(5))),
                   child: Column(
                     mainAxisAlignment: MainAxisAlignment.center,

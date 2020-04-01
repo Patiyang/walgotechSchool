@@ -3,6 +3,7 @@ import 'package:flutter/widgets.dart';
 
 Color primaryColor = new Color(0xffffffff);
 Color accentColor = new Color(0xff303030);
+Color customBtns = new Color(0xffADD8E6);
 
  TextStyle modules=new TextStyle(color: primaryColor, fontSize: 20);
  TextStyle categoriesStyle = modules.copyWith(fontSize: 14,letterSpacing: .6);

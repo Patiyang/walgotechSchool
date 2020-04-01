@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:gradient_app_bar/gradient_app_bar.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 import 'package:walgotech_final/database/database.dart';
 import 'package:walgotech_final/helperClasses/error.dart';
@@ -68,8 +69,7 @@ class _HomePageState extends State<HomePage> {
   Widget getHomePage() {
     return SafeArea(
       child: Scaffold(
-        appBar: AppBar(
-         backgroundColor: accentColor,
+        appBar: GradientAppBar(
           leading: Padding(
             padding: const EdgeInsets.all(10.0),
             child: CircleAvatar(
@@ -80,6 +80,7 @@ class _HomePageState extends State<HomePage> {
             schoolName,
             style: TextStyle(color: Colors.white),
           ),
+          gradient: LinearGradient(colors: [Colors.cyan, Colors.indigo]),
           centerTitle: true,
           elevation: 0,
           actions: <Widget>[
