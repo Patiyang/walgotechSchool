@@ -287,7 +287,7 @@ class _MessagingState extends State<Messaging> {
                                   builder: (BuildContext context, AsyncSnapshot snapshot) {
                                     if (snapshot.hasData) {
                                       parentContact = snapshot.data;
-                                      totalStudents= parentContact.length;
+                                      totalStudents = parentContact.length;
                                       return Container(
                                         decoration: BoxDecoration(border: Border.all()),
                                         height: 150,
@@ -584,6 +584,10 @@ class _MessagingState extends State<Messaging> {
       padding: const EdgeInsets.symmetric(vertical: 8.0),
       child: TextFormField(
         maxLines: 7,
+        onTap: () {
+          totalTeachers = teachersContact.length;
+          totalSupport = supportContact.length;
+        },
         controller: messageController,
         validator: (v) => v.isNotEmpty ? null : 'recipents are empty',
         decoration: InputDecoration(
@@ -756,19 +760,22 @@ class _MessagingState extends State<Messaging> {
           onPressed: () {
             if (_currentClass == custom) {
               sendSMS(individualController.text, messageController.text);
-              Fluttertoast.showToast(msg: 'Message Sent successfuly');
+              Fluttertoast.showToast(msg: 'Custom Message Sent');
             }
             if (_currentClass == board) {
               sendSMS(boardtextController.text, messageController.text);
+              Fluttertoast.showToast(msg: 'Board Message Sent');
             }
             if (_currentClass == support) {
               sendSMS(supporttextController.text, messageController.text);
+              Fluttertoast.showToast(msg: 'Support staff Message Sent');
             }
             if (_currentClass == teachers) {
               sendSMS(teacherstextController.text, messageController.text);
-              Fluttertoast.showToast(msg: 'Message Sent ');
+              Fluttertoast.showToast(msg: 'Teacher Message Sent ');
             } else {
               sendSMS(recipentController.text, messageController.text);
+              Fluttertoast.showToast(msg: 'Parent Messages Sent');
             }
 
             sendMessage(context);

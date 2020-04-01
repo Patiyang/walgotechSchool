@@ -8,7 +8,7 @@ class _SubOrdinateCategoryState extends State<SubOrdinateCategory> {
   @override
   Widget build(BuildContext context) {
     return Container(
-      child: Center(child: Text('Subordinate is here'),),
+      child: Center(child: Text('Schedule is Here'),),
     );
   }
 }
