@@ -40,14 +40,14 @@ class _MessagingState extends State<Messaging> {
   List<DropdownMenuItem<String>> classesDropDown = <DropdownMenuItem<String>>[];
   List<ParentsContacts> parentContact;
   List<TeacherContacts> teachersContact;
-  List<SubOrdinateContact> subordinateContact;
+  List<SubOrdinateContact> supportContact;
   List<CurrentClasses> classes = <CurrentClasses>[];
 
   String recipent = "";
   Text userName;
   String _userName;
   SMS sms;
-  String groupValue = allRegistred;
+  String groupValue;
   String category;
   static const allRegistred = 'All Registered';
   static const oneParent = 'One Parent';
@@ -62,19 +62,25 @@ class _MessagingState extends State<Messaging> {
   int totalMessages;
   List totalContacts = [];
   int totalStudents;
-
+  int totalTeachers;
+  int totalSupport;
+  int totalBoard;
+  int totalParents;
   String _currentClass;
   @override
   void initState() {
     super.initState();
-    // totalContacts = parentContact.length;
+
     totalContacts.clear();
     _getClasses();
     getUserName();
-    // _currentClass = '';
     totalMessages = 0;
     totalContacts = [];
     totalStudents = 0;
+    totalTeachers = 0;
+    totalSupport = 0;
+    totalBoard = 0;
+    totalParents = 0;
     messageController.addListener(_messageLength);
     classesDropDown = _getClassesDropDown();
   }
@@ -113,7 +119,7 @@ class _MessagingState extends State<Messaging> {
                               ),
                               hint: Text('Select Category'),
                               items: classesDropDown,
-                              onChanged:  changeSelectedCategory,
+                              onChanged: changeSelectedCategory,
                               disabledHint: Text('Select Categry'),
                               value: classes.isEmpty ? null : _currentClass,
                             ),
@@ -219,6 +225,7 @@ class _MessagingState extends State<Messaging> {
                                   builder: (BuildContext context, AsyncSnapshot snapshot) {
                                     if (snapshot.hasData) {
                                       parentContact = snapshot.data;
+                                      totalStudents = parentContact.length;
                                       recipent = "";
                                       return Container(
                                         decoration: BoxDecoration(border: Border.all()),
@@ -231,7 +238,7 @@ class _MessagingState extends State<Messaging> {
                                           itemCount: parentContact == null ? 0 : parentContact.length,
                                           itemBuilder: (BuildContext context, int index) {
                                             ParentsContacts contacts = parentContact[index];
-
+                                            print("total Students are ${parentContact.length}");
                                             if (groupValue == allRegistred) {
                                               recipentController.text += contacts.fatherNumber +
                                                   "," +
@@ -279,6 +286,7 @@ class _MessagingState extends State<Messaging> {
                                   builder: (BuildContext context, AsyncSnapshot snapshot) {
                                     if (snapshot.hasData) {
                                       parentContact = snapshot.data;
+                                      totalParents = parentContact.length;
                                       return Container(
                                         decoration: BoxDecoration(border: Border.all()),
                                         height: 150,
@@ -289,6 +297,7 @@ class _MessagingState extends State<Messaging> {
                                           shrinkWrap: true,
                                           itemCount: parentContact == null ? 0 : parentContact.length,
                                           itemBuilder: (BuildContext context, int index) {
+                                            print("total contacts are ${parentContact.length}");
                                             ParentsContacts contacts = parentContact[index];
                                             if (groupValue == allRegistred) {
                                               recipentController.text += contacts.fatherNumber +
@@ -335,6 +344,7 @@ class _MessagingState extends State<Messaging> {
                                   builder: (BuildContext context, AsyncSnapshot snapshot) {
                                     if (snapshot.hasData) {
                                       teachersContact = snapshot.data;
+                                      totalTeachers = teachersContact.length;
                                       return Container(
                                         decoration: BoxDecoration(border: Border.all()),
                                         height: 150,
@@ -361,41 +371,43 @@ class _MessagingState extends State<Messaging> {
                               ],
                             ),
                           ),
-                          // Visibility(
-                          //   visible: _currentClass == board,
-                          //   child: Column(
-                          //     children: <Widget>[
-                          //       FutureBuilder(
-                          //         future: _smsManager.getAllTeacherContacts(),
-                          //         builder: (BuildContext context, AsyncSnapshot snapshot) {
-                          //           if (snapshot.hasData) {
-                          //             teachersContact = snapshot.data;
-                          //             return Container(
-                          //               decoration: BoxDecoration(border: Border.all()),
-                          //               height: 150,
-                          //               child: ListView.builder(
-                          //                 scrollDirection: Axis.vertical,
-                          //                 physics: BouncingScrollPhysics(),
-                          //                 shrinkWrap: true,
-                          //                 itemCount: teachersContact == null ? 0 : teachersContact.length,
-                          //                 itemBuilder: (BuildContext context, int index) {
-                          //                   print(teachersContact.length);
-                          //                   TeacherContacts teachersContacts = teachersContact[index];
-                          //                   if (groupValue == board) {
-                          //                     boardtextController.text = teachersContacts.phoneNumber + ',';
-                          //                   }
-                          //                   return Text(teachersContacts.phoneNumber + ',');
-                          //                 },
-                          //               ),
-                          //             );
-                          //           }
-                          //           return Loading();
-                          //         },
-                          //       ),
-                          //       messageInput()
-                          //     ],
-                          //   ),
-                          // ),
+                          Visibility(
+                            visible: _currentClass == board,
+                            child: Column(
+                              children: <Widget>[
+                                FutureBuilder(
+                                  future: _smsManager.getAllTeacherContacts(),
+                                  builder: (BuildContext context, AsyncSnapshot snapshot) {
+                                    if (snapshot.hasData) {
+                                      teachersContact = snapshot.data;
+                                      totalTeachers = teachersContact.length;
+
+                                      return Container(
+                                        decoration: BoxDecoration(border: Border.all()),
+                                        height: 150,
+                                        child: ListView.builder(
+                                          scrollDirection: Axis.vertical,
+                                          physics: BouncingScrollPhysics(),
+                                          shrinkWrap: true,
+                                          itemCount: teachersContact == null ? 0 : teachersContact.length,
+                                          itemBuilder: (BuildContext context, int index) {
+                                            print(teachersContact.length);
+                                            TeacherContacts teachersContacts = teachersContact[index];
+                                            if (groupValue == board) {
+                                              boardtextController.text = teachersContacts.phoneNumber + ',';
+                                            }
+                                            return Text(teachersContacts.phoneNumber + ',');
+                                          },
+                                        ),
+                                      );
+                                    }
+                                    return Loading();
+                                  },
+                                ),
+                                messageInput()
+                              ],
+                            ),
+                          ),
                           Visibility(
                             visible: _currentClass == support,
                             child: Column(
@@ -404,16 +416,18 @@ class _MessagingState extends State<Messaging> {
                                   future: _smsManager.getSubordinateContacts(),
                                   builder: (BuildContext context, AsyncSnapshot snapshot) {
                                     if (snapshot.hasData) {
-                                      subordinateContact = snapshot.data;
+                                      supportContact = snapshot.data;
+                                      totalSupport = supportContact.length;
                                       return Container(
                                         decoration: BoxDecoration(border: Border.all()),
                                         height: 150,
                                         child: ListView.builder(
                                           physics: BouncingScrollPhysics(),
                                           shrinkWrap: true,
-                                          itemCount: subordinateContact == null ? 0 : subordinateContact.length,
+                                          itemCount: supportContact == null ? 0 : supportContact.length,
                                           itemBuilder: (BuildContext context, int index) {
-                                            SubOrdinateContact subOrdinate = subordinateContact[index];
+                                            print(supportContact.length);
+                                            SubOrdinateContact subOrdinate = supportContact[index];
                                             if (_currentClass == support) {
                                               supporttextController.text = subOrdinate.phone + ',';
                                             }
@@ -485,9 +499,34 @@ class _MessagingState extends State<Messaging> {
                           SizedBox(
                             height: 10,
                           ),
-                          Text(
-                            'Sent:$totalMessages /${totalContacts.length}',
-                            style: categoryTextStyle.copyWith(color: accentColor),
+                          Stack(
+                            children: <Widget>[
+                              Visibility(
+                                visible: _currentClass == parents ||
+                                    _currentClass == 'Form1' ||
+                                    _currentClass == 'Form2' ||
+                                    _currentClass == 'Form3' ||
+                                    _currentClass == 'Form4',
+                                child: Text(
+                                  'Sending:$totalMessages /${totalContacts.length}',
+                                  style: categoryTextStyle.copyWith(color: accentColor),
+                                ),
+                              ),
+                              Visibility(
+                                visible: _currentClass == teachers,
+                                child: Text(
+                                  'Sending:$totalMessages /$totalTeachers',
+                                  style: categoryTextStyle.copyWith(color: accentColor),
+                                ),
+                              ),
+                              Visibility(
+                                visible: _currentClass == support,
+                                child: Text(
+                                  'Sending:$totalMessages /$totalSupport',
+                                  style: categoryTextStyle.copyWith(color: accentColor),
+                                ),
+                              ),
+                            ],
                           ),
                         ],
                       ),
@@ -604,16 +643,15 @@ class _MessagingState extends State<Messaging> {
       classes = data;
       classesDropDown = _getClassesDropDown();
       _currentClass = classes[0].registeredClasses;
-      // print(_currentClass);
     });
   }
 
   changeSelectedCategory(String selectedClass) {
     setState(() {
       _currentClass = selectedClass;
+      totalStudents = parentContact.length;
     });
-    totalStudents = parentContact.length;
-    print('total students are $totalStudents');
+
     print(_currentClass);
     totalContacts.clear();
   }
@@ -641,9 +679,15 @@ class _MessagingState extends State<Messaging> {
         if (value == allRegistred) {
           groupValue = value;
           category = value;
-          totalContacts.add(contacts.guardianNumber);
-          totalContacts.add(contacts.motherNumber);
-          totalContacts.add(contacts.fatherNumber);
+          if (contacts.fatherNumber.isNotEmpty) {
+            totalContacts.add(contacts.fatherNumber);
+          }
+          if (contacts.motherNumber.isNotEmpty) {
+            totalContacts.add(contacts.motherNumber);
+          }
+          if (contacts.guardianNumber.isNotEmpty) {
+            totalContacts.add(contacts.guardianNumber);
+          }
         } else if (value == oneParent) {
           groupValue = value;
           category = value;

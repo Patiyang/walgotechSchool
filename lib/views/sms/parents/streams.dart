@@ -428,9 +428,15 @@ class _CurrentStreamClassesState extends State<CurrentStreamClasses> {
         if (value == allRegistred) {
           groupValue = value;
           category = value;
-          totalContacts.add(contacts.guardianNumber);
-          totalContacts.add(contacts.motherNumber);
-          totalContacts.add(contacts.fatherNumber);
+          if (contacts.fatherNumber.isNotEmpty) {
+            totalContacts.add(contacts.fatherNumber);
+          }
+          if (contacts.motherNumber.isNotEmpty) {
+            totalContacts.add(contacts.motherNumber);
+          }
+          if (contacts.guardianNumber.isNotEmpty) {
+            totalContacts.add(contacts.guardianNumber);
+          }
         } else if (value == oneParent) {
           groupValue = value;
           category = value;
