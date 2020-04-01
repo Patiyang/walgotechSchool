@@ -33,10 +33,14 @@ class _CurrentStreamClassesState extends State<CurrentStreamClasses> {
   SMS sms;
 
   int totalMessages = 0;
-  int totalStudents = 0;
+  int totalStudents;
   List totalContacts = [];
+  int totalTeachers;
+  int totalSupport;
+  int totalBoard;
+  int totalParents;
 
-  String groupValue = allRegistred;
+  String groupValue = '';
   String category;
   static const allRegistred = 'All Registered';
   static const oneParent = 'One Parent';
@@ -48,6 +52,7 @@ class _CurrentStreamClassesState extends State<CurrentStreamClasses> {
     super.initState();
     _getStreams();
     getUserName();
+    totalStudents = 0;
     messageController.addListener(_messageLength);
     _currentStream = 'stream';
     streamsDropDown = _getStreamsDropDown();
@@ -92,7 +97,7 @@ class _CurrentStreamClassesState extends State<CurrentStreamClasses> {
                             hint: Text('Select Stream'),
                             items: streamsDropDown,
                             onChanged: changeSelectedStream,
-                            value: null,
+                            value: streams.isEmpty ? null : _currentStream,
                           ),
                         ),
                       ),
@@ -160,39 +165,46 @@ class _CurrentStreamClassesState extends State<CurrentStreamClasses> {
                               builder: (BuildContext context, AsyncSnapshot snapshot) {
                                 if (snapshot.hasData) {
                                   parentContact = snapshot.data;
-                                  return Container(
-                                    decoration: BoxDecoration(border: Border.all(color: Colors.black54)),
-                                    height: 150,
-                                    child: ListView.builder(
-                                      controller: _scrollController,
-                                      reverse: true,
-                                      physics: BouncingScrollPhysics(),
-                                      shrinkWrap: true,
-                                      itemCount: parentContact == null ? 0 : parentContact.length,
-                                      itemBuilder: (BuildContext context, int index) {
-                                        ParentsContacts contacts = parentContact[index];
-                                        if (groupValue == allRegistred) {
-                                          recipentController.text +=
-                                              contacts.fatherNumber + "," + contacts.motherNumber + "," + contacts.guardianNumber;
-                                          return Text(contacts.fatherNumber +
-                                              "," +
-                                              contacts.motherNumber +
-                                              "," +
-                                              contacts.guardianNumber);
-                                        } else if (groupValue == oneParent) {
-                                          if (contacts.fatherNumber.isEmpty) {
-                                            recipentController.text += contacts.motherNumber + ",";
-                                            return Text(contacts.motherNumber);
-                                          }
-                                          recipentController.text += contacts.fatherNumber + ",";
-                                          return Text(contacts.fatherNumber);
-                                        } else if (groupValue == bothParents) {
-                                          recipentController.text += contacts.fatherNumber + "," + contacts.motherNumber + ",";
-                                          return Text(contacts.motherNumber + "," + contacts.fatherNumber);
-                                        }
-                                      },
-                                    ),
-                                  );
+                                  return groupValue == ''
+                                      ? Text('Please Pick a Contact Group Above First')
+                                      : Container(
+                                          decoration: BoxDecoration(border: Border.all(color: Colors.black54)),
+                                          height: 150,
+                                          child: ListView.builder(
+                                            controller: _scrollController,
+                                            reverse: true,
+                                            physics: BouncingScrollPhysics(),
+                                            shrinkWrap: true,
+                                            itemCount: parentContact == null ? 0 : parentContact.length,
+                                            itemBuilder: (BuildContext context, int index) {
+                                              ParentsContacts contacts = parentContact[index];
+                                              totalStudents = parentContact.length;
+                                              if (groupValue == allRegistred) {
+                                                recipentController.text += contacts.fatherNumber +
+                                                    "," +
+                                                    contacts.motherNumber +
+                                                    "," +
+                                                    contacts.guardianNumber;
+                                                return Text(contacts.fatherNumber +
+                                                    "," +
+                                                    contacts.motherNumber +
+                                                    "," +
+                                                    contacts.guardianNumber);
+                                              } else if (groupValue == oneParent) {
+                                                if (contacts.fatherNumber.isEmpty) {
+                                                  recipentController.text += contacts.motherNumber + ",";
+                                                  return Text(contacts.motherNumber);
+                                                }
+                                                recipentController.text += contacts.fatherNumber + ",";
+                                                return Text(contacts.fatherNumber);
+                                              } else if (groupValue == bothParents) {
+                                                recipentController.text +=
+                                                    contacts.fatherNumber + "," + contacts.motherNumber + ",";
+                                                return Text(contacts.motherNumber + "," + contacts.fatherNumber);
+                                              }
+                                            },
+                                          ),
+                                        );
                                 }
 
                                 return Loading();
@@ -324,11 +336,11 @@ class _CurrentStreamClassesState extends State<CurrentStreamClasses> {
 
   changeSelectedStream(String selectedStream) async {
     setState(() {
-      totalStudents = parentContact.length;
-
       _currentStream = selectedStream;
-      print(_currentStream);
-      print(totalStudents);
+      // totalStudents = parentContact.length;
+      groupValue = '';
+      totalStudents = 0;
+      totalContacts.length = 0;
     });
   }
 

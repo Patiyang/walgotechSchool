@@ -48,16 +48,27 @@ class _MessageHistoryState extends State<MessageHistory> {
                     color: Colors.black38,
                     child: ListTile(
                       title: Text('Message: ${message.message}',style: TextStyle(color: Colors.black),),
-                      leading: userName,
+                      leading: Padding(
+                        padding: const EdgeInsets.symmetric(vertical:8.0),
+                        child: Column(
+                          children: <Widget>[
+                            Text('Sent By'),
+                            userName,
+                          ],
+                        ),
+                      ),
                       subtitle: Text('Sent on: \n${message.dateTime}'),
                       trailing: Container(
                         height: 115,
                         child: Column(
                           mainAxisAlignment: MainAxisAlignment.start,
                           children: <Widget>[
-                            Text('Sent to:'),
+                            Padding(
+                              padding: const EdgeInsets.symmetric(vertical:8.0),
+                              child: Text('Sent to:'),
+                            ),
                             SizedBox(
-                              height: 15,
+                              height: 5,
                             ),
                             Text('${message.recipent}'),
                           ],

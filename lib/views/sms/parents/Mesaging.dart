@@ -75,7 +75,7 @@ class _MessagingState extends State<Messaging> {
     totalContacts.clear();
     _getClasses();
     getUserName();
-    groupValue = allRegistred;
+    groupValue = '';
     totalMessages = 0;
     totalContacts = [];
     totalStudents = 0;
@@ -127,6 +127,28 @@ class _MessagingState extends State<Messaging> {
                             ),
                           ),
                         ),
+                      ),
+                    ),
+                    Visibility(
+                        visible: _currentClass != custom &&
+                            _currentClass != board &&
+                            _currentClass != teachers &&
+                            _currentClass != support,
+                        child: Text('OR')),
+                    SizedBox(
+                      height: 10,
+                    ),
+                    Visibility(
+                      visible: _currentClass != custom &&
+                          _currentClass != board &&
+                          _currentClass != teachers &&
+                          _currentClass != support,
+                      child: GestureDetector(
+                        onTap: () {
+                          Navigator.push(context, MaterialPageRoute(builder: (_) => CurrentStreamClasses()));
+                        },
+                        child: Text('Tap to Choose Specific Streams',
+                            style: categoryTextStyle.copyWith(color: accentColor, fontSize: 19)),
                       ),
                     ),
                     Visibility(
@@ -183,31 +205,6 @@ class _MessagingState extends State<Messaging> {
                         ),
                       ),
                     ),
-                    Visibility(
-                        visible: _currentClass != custom &&
-                            _currentClass != board &&
-                            _currentClass != teachers &&
-                            _currentClass != support,
-                        child: Text('OR')),
-                    SizedBox(
-                      height: 10,
-                    ),
-                    Visibility(
-                      visible: _currentClass != custom &&
-                          _currentClass != board &&
-                          _currentClass != teachers &&
-                          _currentClass != support,
-                      child: GestureDetector(
-                        onTap: () {
-                          Navigator.push(context, MaterialPageRoute(builder: (_) => CurrentStreamClasses()));
-                        },
-                        child: Text('Tap to Choose Specific Streams',
-                            style: categoryTextStyle.copyWith(color: accentColor, fontSize: 19)),
-                      ),
-                    ),
-                    SizedBox(
-                      height: 10,
-                    ),
                     Divider(),
                     Padding(
                       padding: const EdgeInsets.all(8.0),
@@ -228,49 +225,51 @@ class _MessagingState extends State<Messaging> {
                                     if (snapshot.hasData) {
                                       parentContact = snapshot.data;
                                       totalStudents = parentContact.length;
-                                      recipent = "";
-                                      return Container(
-                                        decoration: BoxDecoration(border: Border.all()),
-                                        height: 150,
-                                        child: ListView.builder(
-                                          reverse: true,
-                                          controller: _scrollController,
-                                          physics: BouncingScrollPhysics(),
-                                          shrinkWrap: true,
-                                          itemCount: parentContact == null ? 0 : parentContact.length,
-                                          itemBuilder: (BuildContext context, int index) {
-                                            ParentsContacts contacts = parentContact[index];
-                                            print("total Students are ${parentContact.length}");
-                                            if (groupValue == allRegistred) {
-                                              recipentController.text += contacts.fatherNumber +
-                                                  "," +
-                                                  contacts.motherNumber +
-                                                  "," +
-                                                  contacts.guardianNumber;
+                                      // recipent = "";
+                                      return groupValue == ''
+                                          ? Text('Please Pick a Contact Group Above First')
+                                          : Container(
+                                              decoration: BoxDecoration(border: Border.all()),
+                                              height: 150,
+                                              child: ListView.builder(
+                                                reverse: true,
+                                                controller: _scrollController,
+                                                physics: BouncingScrollPhysics(),
+                                                shrinkWrap: true,
+                                                itemCount: parentContact == null ? 0 : parentContact.length,
+                                                itemBuilder: (BuildContext context, int index) {
+                                                  ParentsContacts contacts = parentContact[index];
+                                                  print("total Students are ${parentContact.length}");
+                                                  if (groupValue == allRegistred) {
+                                                    recipentController.text += contacts.fatherNumber +
+                                                        "," +
+                                                        contacts.motherNumber +
+                                                        "," +
+                                                        contacts.guardianNumber;
 
-                                              return Text(contacts.fatherNumber +
-                                                  "," +
-                                                  contacts.motherNumber +
-                                                  "," +
-                                                  contacts.guardianNumber);
-                                            }
-                                            if (groupValue == oneParent) {
-                                              if (contacts.fatherNumber.isEmpty) {
-                                                recipentController.text += contacts.motherNumber + ",";
-                                                return Text(contacts.motherNumber);
-                                              } else {
-                                                recipentController.text += contacts.fatherNumber + ",";
-                                                return Text(contacts.fatherNumber);
-                                              }
-                                            }
-                                            if (groupValue == bothParents) {
-                                              recipentController.text +=
-                                                  contacts.fatherNumber + "," + contacts.motherNumber + ",";
-                                              return Text(contacts.motherNumber + "," + contacts.fatherNumber);
-                                            }
-                                          },
-                                        ),
-                                      );
+                                                    return Text(contacts.fatherNumber +
+                                                        "," +
+                                                        contacts.motherNumber +
+                                                        "," +
+                                                        contacts.guardianNumber);
+                                                  }
+                                                  if (groupValue == oneParent) {
+                                                    if (contacts.fatherNumber.isEmpty) {
+                                                      recipentController.text += contacts.motherNumber + ",";
+                                                      return Text(contacts.motherNumber);
+                                                    } else {
+                                                      recipentController.text += contacts.fatherNumber + ",";
+                                                      return Text(contacts.fatherNumber);
+                                                    }
+                                                  }
+                                                  if (groupValue == bothParents) {
+                                                    recipentController.text +=
+                                                        contacts.fatherNumber + "," + contacts.motherNumber + ",";
+                                                    return Text(contacts.motherNumber + "," + contacts.fatherNumber);
+                                                  }
+                                                },
+                                              ),
+                                            );
                                     }
                                     return Loading();
                                   },
@@ -288,7 +287,7 @@ class _MessagingState extends State<Messaging> {
                                   builder: (BuildContext context, AsyncSnapshot snapshot) {
                                     if (snapshot.hasData) {
                                       parentContact = snapshot.data;
-                                      totalParents = parentContact.length;
+                                      totalStudents= parentContact.length;
                                       return Container(
                                         decoration: BoxDecoration(border: Border.all()),
                                         height: 150,
@@ -468,7 +467,7 @@ class _MessagingState extends State<Messaging> {
                                     },
                                     decoration: InputDecoration(
                                       enabled: true,
-                                      hintText: 'Message Separated by Commas e.g +254xxxxxxxx,+254xxxxxxxx',
+                                      hintText: 'Message Separated by Commas e.g +254xxxxx,+254xxxxx',
                                       border: OutlineInputBorder(),
                                     ),
                                   ),
@@ -657,12 +656,11 @@ class _MessagingState extends State<Messaging> {
   changeSelectedCategory(String selectedClass) {
     setState(() {
       _currentClass = selectedClass;
-      totalStudents = parentContact.length;
-      groupValue='';
-      totalStudents=0;
-      totalTeachers=0;
-      totalSupport=0;
-      totalBoard=0;
+      groupValue = '';
+      totalStudents = 0;
+      totalTeachers = 0;
+      totalSupport = 0;
+      totalBoard = 0;
     });
 
     print(_currentClass);
