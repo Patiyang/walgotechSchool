@@ -1,5 +1,6 @@
 import 'package:curved_navigation_bar/curved_navigation_bar.dart';
 import 'package:flutter/material.dart';
+import 'package:shared_preferences/shared_preferences.dart';
 import 'package:walgotech_final/styling.dart';
 import 'package:walgotech_final/views/sms/parents/Mesaging.dart';
 import 'package:walgotech_final/views/sms/parents/messageHistory.dart';
@@ -13,12 +14,13 @@ class AllContactCategories extends StatefulWidget {
 
 class _AllContactCategoriesState extends State<AllContactCategories> {
   String bal;
-  Text balance;
+
   int page = 0;
   final barKey = GlobalKey();
   @override
   void initState() {
     super.initState();
+    getUserBalance();
     page = 0;
   }
 
@@ -26,13 +28,12 @@ class _AllContactCategoriesState extends State<AllContactCategories> {
     return Scaffold(
       backgroundColor: primaryColor,
       appBar: AppBar(
-        
         actions: <Widget>[
           Center(
               child: Text(
-                'Balance:',
-                style: TextStyle(fontSize: 20, color: Colors.green),
-              ))
+            'Balance: $bal',
+            style: TextStyle(fontSize: 20, color: Colors.green),
+          ))
         ],
         elevation: .7,
         centerTitle: true,
@@ -82,9 +83,9 @@ class _AllContactCategoriesState extends State<AllContactCategories> {
             ),
     );
   }
-getSchoolDetails(){
-  
-}
-  getUserBalance() {}
- 
+
+  getUserBalance() async {
+    SharedPreferences prefs = await SharedPreferences.getInstance();
+    prefs.getString('balance');
+  }
 }
