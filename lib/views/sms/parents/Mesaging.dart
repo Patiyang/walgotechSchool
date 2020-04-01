@@ -67,13 +67,15 @@ class _MessagingState extends State<Messaging> {
   int totalBoard;
   int totalParents;
   String _currentClass;
+
   @override
   void initState() {
     super.initState();
-
+    _smsManager.getParentContacts(_currentClass);
     totalContacts.clear();
     _getClasses();
     getUserName();
+    groupValue = allRegistred;
     totalMessages = 0;
     totalContacts = [];
     totalStudents = 0;
@@ -291,7 +293,7 @@ class _MessagingState extends State<Messaging> {
                                         decoration: BoxDecoration(border: Border.all()),
                                         height: 150,
                                         child: ListView.builder(
-                                          // controller: _scrollController,
+                                          controller: _scrollController,
                                           reverse: true,
                                           physics: BouncingScrollPhysics(),
                                           shrinkWrap: true,
@@ -349,9 +351,11 @@ class _MessagingState extends State<Messaging> {
                                         decoration: BoxDecoration(border: Border.all()),
                                         height: 150,
                                         child: ListView.builder(
+                                          controller: _scrollController,
                                           scrollDirection: Axis.vertical,
                                           physics: BouncingScrollPhysics(),
                                           shrinkWrap: true,
+                                          reverse: true,
                                           itemCount: teachersContact == null ? 0 : teachersContact.length,
                                           itemBuilder: (BuildContext context, int index) {
                                             print(teachersContact.length);
@@ -386,9 +390,11 @@ class _MessagingState extends State<Messaging> {
                                         decoration: BoxDecoration(border: Border.all()),
                                         height: 150,
                                         child: ListView.builder(
+                                          controller: _scrollController,
                                           scrollDirection: Axis.vertical,
                                           physics: BouncingScrollPhysics(),
                                           shrinkWrap: true,
+                                          reverse: true,
                                           itemCount: teachersContact == null ? 0 : teachersContact.length,
                                           itemBuilder: (BuildContext context, int index) {
                                             print(teachersContact.length);
@@ -422,8 +428,10 @@ class _MessagingState extends State<Messaging> {
                                         decoration: BoxDecoration(border: Border.all()),
                                         height: 150,
                                         child: ListView.builder(
+                                          controller: _scrollController,
                                           physics: BouncingScrollPhysics(),
                                           shrinkWrap: true,
+                                          reverse: true,
                                           itemCount: supportContact == null ? 0 : supportContact.length,
                                           itemBuilder: (BuildContext context, int index) {
                                             print(supportContact.length);
@@ -650,13 +658,18 @@ class _MessagingState extends State<Messaging> {
     setState(() {
       _currentClass = selectedClass;
       totalStudents = parentContact.length;
+      groupValue='';
+      totalStudents=0;
+      totalTeachers=0;
+      totalSupport=0;
+      totalBoard=0;
     });
 
     print(_currentClass);
     totalContacts.clear();
   }
 
-// =================================================SAVEUSERNAMEFOR SIGN IN========================================
+// =================================================SAVEUSERNAME FOR SIGN IN========================================
   Future getUserName() async {
     SharedPreferences prefs = await SharedPreferences.getInstance();
     setState(() {
