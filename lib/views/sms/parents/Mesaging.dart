@@ -773,7 +773,8 @@ class _MessagingState extends State<Messaging> {
             if (_currentClass == teachers) {
               sendSMS(teacherstextController.text, messageController.text);
               Fluttertoast.showToast(msg: 'Teacher Message Sent ');
-            } else {
+            }
+            if (_currentClass == parents) {
               sendSMS(recipentController.text, messageController.text);
               Fluttertoast.showToast(msg: 'Parent Messages Sent');
             }

@@ -13,7 +13,7 @@ class DBManagement {
 
   String apiKey = '';
   String smsId = '';
-  String url = 'http://192.168.122.1:8000/backend/operations/login.php';
+  String url = 'http://192.168.43.101:8000/backend/operations/login.php';
   Future<User> signInUser(String userName, String password) async {
     final response = await client.post(url,
         body: jsonEncode({
@@ -31,7 +31,7 @@ class DBManagement {
   }
 
   sendMessages(String phone, String message) async {
-    String url = 'http://192.168.122.1:8000/backend/operations/send.php';
+    String url = 'http://192.168.43.101:8000/backend/operations/send.php';
     List<SchoolDetails> data = await _smsManager.getSchoolDetails();
     schoolDetails = data;
     apiKey = schoolDetails[0].smsKey;
@@ -43,7 +43,9 @@ class DBManagement {
           'apiKey': apiKey,
           'smsId': smsId,
         }));
-    print(response.statusCode);
+    print('\n\n\n\n\n\n\n${response.statusCode}');
+    print(smsId);
+    print(apiKey);
     if (response.statusCode == 200) {
       print('message sent');
       await showBalance();
@@ -53,10 +55,12 @@ class DBManagement {
   }
 
   showBalance() async {
-    String url = 'https://payments.africastalking.com/query/wallet/balance?username=AKITHIGIRLS';
     List<SchoolDetails> data = await _smsManager.getSchoolDetails();
     schoolDetails = data;
     apiKey = schoolDetails[0].smsKey;
+    smsId = schoolDetails[0].smsID;
+    String url = 'https://payments.africastalking.com/query/wallet/balance?username=$smsId';
+
     final response = await client.get(
       url,
       headers: {"Authorization": apiKey},
@@ -66,7 +70,7 @@ class DBManagement {
     if (response.statusCode == 200) {
       saveBalance(result['balance']);
     } else {
-      throw Exception('failed to send message');
+      throw Exception('failed to show balance');
     }
   }
 
