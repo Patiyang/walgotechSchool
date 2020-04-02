@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:fluttertoast/fluttertoast.dart';
+import 'package:shared_preferences/shared_preferences.dart';
 import 'package:walgotech_final/models/classes.dart';
 import 'package:walgotech_final/models/contacts.dart';
 import 'dart:convert';
@@ -46,11 +47,39 @@ class _SettingsState extends State<Settings> {
                     await saveSubOrdinate(context);
                     Fluttertoast.showToast(msg: 'Data Has Been Updated');
                   }),
+              Padding(
+                padding: const EdgeInsets.symmetric(horizontal:8.0),
+                child: MaterialButton(
+                    height: 50,
+                    color: Colors.red[400],
+                    shape: RoundedRectangleBorder(borderRadius: BorderRadius.all(Radius.circular(5))),
+                    child: Column(
+                      mainAxisAlignment: MainAxisAlignment.center,
+                      children: <Widget>[
+                        Icon(
+                          Icons.refresh,
+                          size: 30,
+                        ),
+                        Text('Log Out')
+                      ],
+                    ),
+                    onPressed: () async {
+                      logOut();
+                    }),
+              ),
             ],
           ),
         ),
       ],
     ));
+  }
+
+  logOut() async {
+    SharedPreferences prefs = await SharedPreferences.getInstance();
+    await prefs.setString('userName', "");
+    setState(() {
+      build(context);
+    });
   }
 
   saveParentContacts(BuildContext context) async {
