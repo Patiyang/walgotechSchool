@@ -2,6 +2,7 @@ import 'package:curved_navigation_bar/curved_navigation_bar.dart';
 import 'package:flutter/material.dart';
 import 'package:gradient_app_bar/gradient_app_bar.dart';
 import 'package:shared_preferences/shared_preferences.dart';
+import 'package:walgotech_final/resources/APIProvider.dart';
 import 'package:walgotech_final/styling.dart';
 import 'package:walgotech_final/views/sms/parents/Mesaging.dart';
 import 'package:walgotech_final/views/sms/parents/messageHistory.dart';
@@ -16,6 +17,7 @@ class AllContactCategories extends StatefulWidget {
 
 class _AllContactCategoriesState extends State<AllContactCategories> {
   String bal;
+  DBManagement _dbManagement = DBManagement();
 
   int page = 0;
   final barKey = GlobalKey();
@@ -34,8 +36,8 @@ class _AllContactCategoriesState extends State<AllContactCategories> {
         actions: <Widget>[
           Center(
               child: Text(
-            'Balance: $bal',
-            style: TextStyle(fontSize: 20, color: Colors.white),
+            'Bal: $bal',
+            style: TextStyle(fontSize: 15, color: Colors.white),
           ))
         ],
         elevation: .7,
@@ -50,10 +52,10 @@ class _AllContactCategoriesState extends State<AllContactCategories> {
         ),
         title: Stack(
           children: <Widget>[
-            Visibility(visible: page == 0, child: Text('Create Message',style: TextStyle(color: Colors.white))),
-            Visibility(visible: page == 1, child: Text('Your History',style: TextStyle(color: Colors.white))),
-            Visibility(visible: page == 2, child: Text('Schedule Message',style: TextStyle(color: Colors.white))),
-            Visibility(visible: page == 3, child: Text('Settings',style: TextStyle(color: Colors.white))),
+            Visibility(visible: page == 0, child: Text('Create Message', style: TextStyle(color: Colors.white))),
+            Visibility(visible: page == 1, child: Text('Your History', style: TextStyle(color: Colors.white))),
+            Visibility(visible: page == 2, child: Text('Schedule Message', style: TextStyle(color: Colors.white))),
+            Visibility(visible: page == 3, child: Text('Settings', style: TextStyle(color: Colors.white))),
           ],
         ),
       ),
@@ -89,7 +91,8 @@ class _AllContactCategoriesState extends State<AllContactCategories> {
 
   getUserBalance() async {
     SharedPreferences prefs = await SharedPreferences.getInstance();
-    bal = prefs.getString('balance');
-    // Future.delayed(Duration(days: 3,hours: ))
+    setState(() {
+      bal = prefs.getString('balance');
+    });
   }
 }

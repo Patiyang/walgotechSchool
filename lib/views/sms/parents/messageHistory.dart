@@ -52,7 +52,7 @@ class _MessageHistoryState extends State<MessageHistory> {
                         padding: const EdgeInsets.symmetric(vertical:8.0),
                         child: Column(
                           children: <Widget>[
-                            Text('Sent By'),
+                            Text('Sent By:'),
                             userName,
                           ],
                         ),

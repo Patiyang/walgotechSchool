@@ -27,19 +27,6 @@ class _LoginState extends State<Login> {
     return Scaffold(
       key: scaffoldKey,
       backgroundColor: primaryColor,
-      appBar: AppBar(
-        backgroundColor: accentColor,
-        elevation: 0,
-        leading: IconButton(
-          icon: Icon(
-            Icons.arrow_back_ios,
-            color: Colors.white,
-          ),
-          onPressed: () {
-            // Navigator.popUntil(context, ModalRoute.withName('name'));
-          },
-        ),
-      ),
       body: ListView(
         // addAutomaticKeepAlives: true,
         physics: BouncingScrollPhysics(),
@@ -127,6 +114,15 @@ class _LoginState extends State<Login> {
                 ],
               ),
             ),
+          ),
+          Container(
+            child: Column(
+              children: <Widget>[
+                Text('Powered By'),
+                SizedBox(height: 10,),
+                Text('WALGOTECH',style: TextStyle(fontWeight: FontWeight.bold,fontSize: 17),),
+              ],
+            ),
           )
         ],
       ),
@@ -144,9 +140,9 @@ class _LoginState extends State<Login> {
   }
 
   saveSchoolDetails(BuildContext context) async {
-    Client client=Client();
+    Client client = Client();
     final SmsManager smsManager = new SmsManager();
-    String url = 'http://192.168.43.101:8000/backend/operations/readSchoolDetails.php';
+    String url = 'http://192.168.8.129:8000/backend/operations/readSchoolDetails.php';
 
     final response = await client.get(url);
     final Map result = json.decode(response.body);

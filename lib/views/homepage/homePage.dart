@@ -67,55 +67,53 @@ class _HomePageState extends State<HomePage> {
   }
 
   Widget getHomePage() {
-    return SafeArea(
-      child: Scaffold(
-        appBar: GradientAppBar(
-          leading: Padding(
-            padding: const EdgeInsets.all(10.0),
-            child: CircleAvatar(
-              backgroundImage: AssetImage('images/student.jpg'),
+    return Scaffold(
+      appBar: GradientAppBar(
+        leading: Padding(
+          padding: const EdgeInsets.all(10.0),
+          child: CircleAvatar(
+            backgroundImage: AssetImage('images/student.jpg'),
+          ),
+        ),
+        title: Text(
+          schoolName,
+          style: TextStyle(color: Colors.white),
+        ),
+        gradient: LinearGradient(colors: [Colors.cyan, Colors.indigo]),
+        centerTitle: true,
+        elevation: 0,
+        actions: <Widget>[
+          Padding(
+            padding: const EdgeInsets.all(8.0),
+            child: Icon(
+              Icons.search,
+              color: Colors.white,
             ),
-          ),
-          title: Text(
-            schoolName,
-            style: TextStyle(color: Colors.white),
-          ),
-          gradient: LinearGradient(colors: [Colors.cyan, Colors.indigo]),
-          centerTitle: true,
-          elevation: 0,
-          actions: <Widget>[
-            Padding(
-              padding: const EdgeInsets.all(8.0),
-              child: Icon(
-                Icons.search,
-                color: Colors.white,
-              ),
-            )
-          ],
-        ),
-        body: Column(
-          children: <Widget>[
-            ImageCarousel(),
-            Expanded(
-              child: Stack(
-                children: <Widget>[
-                  Container(
-                    height: MediaQuery.of(context).size.height,
-                    child: Image.asset(
-                      'images/student.jpg',
-                      fit: BoxFit.cover,
-                    ),
+          )
+        ],
+      ),
+      body: Column(
+        children: <Widget>[
+          ImageCarousel(),
+          Expanded(
+            child: Stack(
+              children: <Widget>[
+                Container(
+                  height: MediaQuery.of(context).size.height,
+                  child: Image.asset(
+                    'images/student.jpg',
+                    fit: BoxFit.cover,
                   ),
-                  Container(
-                    height: MediaQuery.of(context).size.height,
-                    decoration: BoxDecoration(color: accentColor.withOpacity(.7)),
-                  ),
-                  Modules()
-                ],
-              ),
-            )
-          ],
-        ),
+                ),
+                Container(
+                  height: MediaQuery.of(context).size.height,
+                  decoration: BoxDecoration(color: accentColor.withOpacity(.7)),
+                ),
+                Modules()
+              ],
+            ),
+          )
+        ],
       ),
     );
   }

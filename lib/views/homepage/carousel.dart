@@ -7,13 +7,19 @@ class ImageCarousel extends StatelessWidget {
   Widget build(BuildContext context) {
     return Container(
       height: 180,
-      color: primaryColor,
+      decoration: BoxDecoration(
+        gradient: LinearGradient(
+          begin: Alignment.topRight,
+          end: Alignment.bottomLeft,
+          colors: [Colors.indigo,Colors.cyan, ],
+        ),
+      ),
       child: Carousel(
         boxFit: BoxFit.fitWidth,
         images: [
           Container(
             margin: const EdgeInsets.all(3.0),
-            decoration: BoxDecoration(border: Border.all(color: accentColor)),
+            decoration: BoxDecoration(border: Border.all(color: Colors.white30)),
             child: Row(
               children: <Widget>[
                 Padding(
@@ -22,7 +28,7 @@ class ImageCarousel extends StatelessWidget {
                     children: <Widget>[
                       Text(
                         '10th\nApril\n2020',
-                        style: TextStyle(fontSize: 20),
+                        style: TextStyle(fontSize: 20,color: Colors.white),
                       ),
                     ],
                   ),
@@ -47,7 +53,7 @@ class ImageCarousel extends StatelessWidget {
                         padding: const EdgeInsets.symmetric(horizontal: 20.0),
                         child: Text(
                           'The scheduled date for the annual general meeting is to be respected and everyone shound show up ',
-                          style: TextStyle(fontSize: 15),
+                          style: TextStyle(fontSize: 15,color: Colors.white),
                         ),
                       ),
                     ],
@@ -58,7 +64,7 @@ class ImageCarousel extends StatelessWidget {
           ),
           Container(
             margin: const EdgeInsets.all(3.0),
-            decoration: BoxDecoration(border: Border.all(color: accentColor)),
+            decoration: BoxDecoration(border: Border.all(color: Colors.white30)),
             child: Row(
               children: <Widget>[
                 Padding(
@@ -67,7 +73,7 @@ class ImageCarousel extends StatelessWidget {
                     children: <Widget>[
                       Text(
                         '17th\nNovember\n2020',
-                        style: TextStyle(fontSize: 20),
+                        style: TextStyle(fontSize: 20,color: Colors.white),
                       ),
                     ],
                   ),
@@ -91,7 +97,7 @@ class ImageCarousel extends StatelessWidget {
                         padding: const EdgeInsets.symmetric(horizontal: 20.0),
                         child: Text(
                           'It is Important that every parent shows up on the scheduled date as it will also be the release date for the mock results',
-                          style: TextStyle(fontSize: 15),
+                          style: TextStyle(fontSize: 15,color: Colors.white),
                         ),
                       ),
                     ],
@@ -102,7 +108,7 @@ class ImageCarousel extends StatelessWidget {
           ),
           Container(
             margin: const EdgeInsets.all(3.0),
-            decoration: BoxDecoration(border: Border.all(color: accentColor)),
+            decoration: BoxDecoration(border: Border.all(color: Colors.white30)),
             child: Row(
               children: <Widget>[
                 Padding(
@@ -111,7 +117,7 @@ class ImageCarousel extends StatelessWidget {
                     children: <Widget>[
                       Text(
                         '18th\nMay\n2020',
-                        style: TextStyle(fontSize: 20),
+                        style: TextStyle(fontSize: 20,color: Colors.white),
                       ),
                     ],
                   ),
@@ -127,7 +133,7 @@ class ImageCarousel extends StatelessWidget {
                           textAlign: TextAlign.center,
                           style: TextStyle(
                             fontSize: 20,
-                            color: Colors.orange,
+                            color: Colors.orange[400],
                             fontWeight: FontWeight.bold,
                           ),
                         ),
@@ -136,7 +142,7 @@ class ImageCarousel extends StatelessWidget {
                         padding: const EdgeInsets.symmetric(horizontal: 20.0),
                         child: Text(
                           'On this day, we recommend that you equip your kids with all the necessary equipment',
-                          style: TextStyle(fontSize: 15),
+                          style: TextStyle(fontSize: 15,color: Colors.white),
                         ),
                       ),
                     ],
@@ -155,9 +161,9 @@ class ImageCarousel extends StatelessWidget {
         indicatorBgPadding: 5,
         overlayShadow: false,
         borderRadius: false,
-        dotSize: 5,
+        dotSize: 3,
         animationCurve: Curves.easeOutQuart,
-        autoplay: false,
+        autoplay: true,
         animationDuration: Duration(milliseconds: 1000),
       ),
     );

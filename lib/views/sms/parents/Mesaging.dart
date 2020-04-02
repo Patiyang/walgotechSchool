@@ -6,6 +6,7 @@ import 'package:walgotech_final/helperClasses/loading.dart';
 import 'package:walgotech_final/models/classes.dart';
 import 'package:walgotech_final/models/contacts.dart';
 import 'package:walgotech_final/models/sms.dart';
+import 'package:walgotech_final/resources/APIProvider.dart';
 import 'package:walgotech_final/resources/repository.dart';
 import 'package:walgotech_final/views/sms/parents/streams.dart';
 import '../../../styling.dart';
@@ -53,7 +54,7 @@ class _MessagingState extends State<Messaging> {
   static const oneParent = 'One Parent';
   static const bothParents = 'Both Parents';
 
-  static const custom = 'Custom Message';
+  static const custom = 'Custom Contacts';
   static const support = 'Support Staff';
   static const board = 'BoM';
   static const teachers = 'Teachers';
@@ -71,6 +72,7 @@ class _MessagingState extends State<Messaging> {
   @override
   void initState() {
     super.initState();
+
     _smsManager.getParentContacts(_currentClass);
     totalContacts.clear();
     _getClasses();
@@ -114,6 +116,7 @@ class _MessagingState extends State<Messaging> {
                           child: Padding(
                             padding: const EdgeInsets.symmetric(horizontal: 8.0),
                             child: DropdownButton(
+                              underline: SizedBox(),
                               isExpanded: true,
                               icon: Icon(
                                 Icons.arrow_downward,
@@ -459,7 +462,7 @@ class _MessagingState extends State<Messaging> {
                                     controller: individualController,
                                     maxLines: 7,
                                     validator: (v) {
-                                      if (v.length < 13) return 'plese enter a valid message length';
+                                      if (v.length < 13) return 'The Number is too short';
                                       if (v.isEmpty)
                                         return 'cannot send a blank text';
                                       else
