@@ -47,9 +47,24 @@ class _MessageHistoryState extends State<MessageHistory> {
                     shape: RoundedRectangleBorder(borderRadius: BorderRadius.all(Radius.circular(10))),
                     color: Colors.cyan,
                     child: ListTile(
-                      title: Text('Message: ${message.message}',style: TextStyle(color: Colors.black),),
+                      title: Padding(
+                        padding: const EdgeInsets.only(top: 20.0),
+                        child: Column(
+                          crossAxisAlignment: CrossAxisAlignment.start,
+                          children: <Widget>[
+                            Text(
+                              'Message:',
+                              style: TextStyle(color: Colors.orange[200],fontWeight: FontWeight.bold),
+                            ),
+                            Text(
+                              '${message.message}',
+                              style: TextStyle(color: Colors.white),
+                            ),
+                          ],
+                        ),
+                      ),
                       leading: Padding(
-                        padding: const EdgeInsets.symmetric(vertical:8.0),
+                        padding: const EdgeInsets.symmetric(vertical: 8.0),
                         child: Column(
                           children: <Widget>[
                             Text('Sent By:'),
@@ -64,7 +79,7 @@ class _MessageHistoryState extends State<MessageHistory> {
                           mainAxisAlignment: MainAxisAlignment.start,
                           children: <Widget>[
                             Padding(
-                              padding: const EdgeInsets.symmetric(vertical:8.0),
+                              padding: const EdgeInsets.symmetric(vertical: 8.0),
                               child: Text('Sent to:'),
                             ),
                             SizedBox(

@@ -5,6 +5,7 @@ import 'package:walgotech_final/database/database.dart';
 import 'package:walgotech_final/helperClasses/error.dart';
 import 'package:walgotech_final/helperClasses/loading.dart';
 import 'package:walgotech_final/models/schoolDetails.dart';
+import 'package:walgotech_final/resources/APIProvider.dart';
 import 'package:walgotech_final/styling.dart';
 import 'package:walgotech_final/views/login/login.dart';
 import 'carousel.dart';
@@ -20,6 +21,7 @@ class HomePage extends StatefulWidget {
 
 class _HomePageState extends State<HomePage> {
   final SmsManager _smsManager = new SmsManager();
+  DBManagement _dbManagement = DBManagement();
   List<SchoolDetails> schoolDetails = <SchoolDetails>[];
   String name = '';
   String schoolName = '';
@@ -27,6 +29,7 @@ class _HomePageState extends State<HomePage> {
   void initState() {
     signInUser();
     name = '';
+    _dbManagement.showBalance();
     getSchoolName();
     super.initState();
   }
@@ -132,4 +135,5 @@ class _HomePageState extends State<HomePage> {
     print('object\n\n\n\n\n\n ' + schoolName);
     return schoolName;
   }
+ 
 }

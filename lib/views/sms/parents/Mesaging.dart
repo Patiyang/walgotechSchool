@@ -22,17 +22,13 @@ class _MessagingState extends State<Messaging> {
   final SmsManager _smsManager = new SmsManager();
   final messageController = new TextEditingController();
   final recipentController = new TextEditingController();
+  final singleClassController = new TextEditingController();
   final individualController = new TextEditingController();
   final boardtextController = new TextEditingController();
   final teacherstextController = new TextEditingController();
   final supporttextController = new TextEditingController();
 
   ScrollController _scrollController = ScrollController();
-  final teacherController = ScrollController();
-  final parentController = ScrollController();
-  final parentsController = ScrollController(initialScrollOffset: 0);
-  final boardController = ScrollController();
-  final supportController = ScrollController();
 
   final key = new GlobalKey<ScaffoldState>();
   final formKey = new GlobalKey<FormState>();
@@ -58,7 +54,7 @@ class _MessagingState extends State<Messaging> {
   static const support = 'Support Staff';
   static const board = 'BoM';
   static const teachers = 'Teachers';
-  static const parents = 'Parents';
+  static const parents = 'All Parents';
 
   int totalMessages;
   List totalContacts = [];
@@ -151,7 +147,8 @@ class _MessagingState extends State<Messaging> {
                           Navigator.push(context, MaterialPageRoute(builder: (_) => CurrentStreamClasses()));
                         },
                         child: Text('Tap to Choose Specific Streams',
-                            style: categoryTextStyle.copyWith(color: accentColor, fontSize: 19)),
+                            style: categoryTextStyle.copyWith(
+                                color: Colors.green, fontSize: 19, decoration: TextDecoration.underline)),
                       ),
                     ),
                     Visibility(
@@ -244,8 +241,12 @@ class _MessagingState extends State<Messaging> {
                                                 itemBuilder: (BuildContext context, int index) {
                                                   ParentsContacts contacts = parentContact[index];
                                                   print("total Students are ${parentContact.length}");
-                                                  if (groupValue == allRegistred) {
-                                                    recipentController.text += contacts.fatherNumber +
+                                                  print(singleClassController.text);
+                                                  if (_currentClass == 'Form1' ||
+                                                      _currentClass == 'Form2' ||
+                                                      _currentClass == 'Form3' ||
+                                                      _currentClass == 'Form4') if (groupValue == allRegistred) {
+                                                    singleClassController.text += contacts.fatherNumber +
                                                         "," +
                                                         contacts.motherNumber +
                                                         "," +
@@ -256,18 +257,16 @@ class _MessagingState extends State<Messaging> {
                                                         contacts.motherNumber +
                                                         "," +
                                                         contacts.guardianNumber);
-                                                  }
-                                                  if (groupValue == oneParent) {
+                                                  } else if (groupValue == oneParent) {
                                                     if (contacts.fatherNumber.isEmpty) {
-                                                      recipentController.text += contacts.motherNumber + ",";
+                                                      singleClassController.text += contacts.motherNumber + ",";
                                                       return Text(contacts.motherNumber);
                                                     } else {
-                                                      recipentController.text += contacts.fatherNumber + ",";
+                                                      singleClassController.text += contacts.fatherNumber + ",";
                                                       return Text(contacts.fatherNumber);
                                                     }
-                                                  }
-                                                  if (groupValue == bothParents) {
-                                                    recipentController.text +=
+                                                  } else if (groupValue == bothParents) {
+                                                    singleClassController.text +=
                                                         contacts.fatherNumber + "," + contacts.motherNumber + ",";
                                                     return Text(contacts.motherNumber + "," + contacts.fatherNumber);
                                                   }
@@ -304,30 +303,34 @@ class _MessagingState extends State<Messaging> {
                                           itemBuilder: (BuildContext context, int index) {
                                             print("total contacts are ${parentContact.length}");
                                             ParentsContacts contacts = parentContact[index];
-                                            if (groupValue == allRegistred) {
-                                              recipentController.text += contacts.fatherNumber +
-                                                  "," +
-                                                  contacts.motherNumber +
-                                                  "," +
-                                                  contacts.guardianNumber;
-
-                                              return Text(contacts.fatherNumber +
-                                                  "," +
-                                                  contacts.motherNumber +
-                                                  "," +
-                                                  contacts.guardianNumber);
-                                            } else if (groupValue == oneParent) {
-                                              if (contacts.fatherNumber.isEmpty) {
-                                                recipentController.text += contacts.motherNumber + ",";
-                                                return Text(contacts.motherNumber);
-                                              } else {
-                                                recipentController.text += contacts.fatherNumber + ",";
-                                                return Text(contacts.fatherNumber);
+                                            if (_currentClass == parents) {
+                                              if (groupValue == allRegistred) {
+                                                recipentController.text += contacts.fatherNumber +
+                                                    "," +
+                                                    contacts.motherNumber +
+                                                    "," +
+                                                    contacts.guardianNumber;
+                                                print('all parents');
+                                                return Text(contacts.fatherNumber +
+                                                    "," +
+                                                    contacts.motherNumber +
+                                                    "," +
+                                                    contacts.guardianNumber);
+                                              } else if (groupValue == oneParent) {
+                                                if (contacts.fatherNumber.isEmpty) {
+                                                  recipentController.text += contacts.motherNumber + ",";
+                                                  print('mother');
+                                                  return Text(contacts.motherNumber);
+                                                } else {
+                                                  recipentController.text += contacts.fatherNumber + ",";
+                                                  print('father');
+                                                  return Text(contacts.fatherNumber);
+                                                }
+                                              } else if (groupValue == bothParents) {
+                                                recipentController.text +=
+                                                    contacts.fatherNumber + "," + contacts.motherNumber + ",";
+                                                return Text(contacts.motherNumber + "," + contacts.fatherNumber);
                                               }
-                                            } else if (groupValue == bothParents) {
-                                              recipentController.text +=
-                                                  contacts.fatherNumber + "," + contacts.motherNumber + ",";
-                                              return Text(contacts.motherNumber + "," + contacts.fatherNumber);
                                             }
                                           },
                                         ),
@@ -361,10 +364,10 @@ class _MessagingState extends State<Messaging> {
                                           reverse: true,
                                           itemCount: teachersContact == null ? 0 : teachersContact.length,
                                           itemBuilder: (BuildContext context, int index) {
-                                            print(teachersContact.length);
                                             TeacherContacts teachersContacts = teachersContact[index];
-                                            if (groupValue == teachers) {
+                                            if (_currentClass == teachers) {
                                               teacherstextController.text += teachersContacts.phoneNumber + ',';
+                                              print(teacherstextController.text);
                                             }
                                             return Text(teachersContacts.phoneNumber + ',');
                                           },
@@ -378,45 +381,45 @@ class _MessagingState extends State<Messaging> {
                               ],
                             ),
                           ),
-                          Visibility(
-                            visible: _currentClass == board,
-                            child: Column(
-                              children: <Widget>[
-                                FutureBuilder(
-                                  future: _smsManager.getAllTeacherContacts(),
-                                  builder: (BuildContext context, AsyncSnapshot snapshot) {
-                                    if (snapshot.hasData) {
-                                      teachersContact = snapshot.data;
-                                      totalTeachers = teachersContact.length;
+                          // Visibility(
+                          //   visible: _currentClass == board,
+                          //   child: Column(
+                          //     children: <Widget>[
+                          //       FutureBuilder(
+                          //         future: _smsManager.getAllTeacherContacts(),
+                          //         builder: (BuildContext context, AsyncSnapshot snapshot) {
+                          //           if (snapshot.hasData) {
+                          //             teachersContact = snapshot.data;
+                          //             totalTeachers = teachersContact.length;
 
-                                      return Container(
-                                        decoration: BoxDecoration(border: Border.all()),
-                                        height: 150,
-                                        child: ListView.builder(
-                                          controller: _scrollController,
-                                          scrollDirection: Axis.vertical,
-                                          physics: BouncingScrollPhysics(),
-                                          shrinkWrap: true,
-                                          reverse: true,
-                                          itemCount: teachersContact == null ? 0 : teachersContact.length,
-                                          itemBuilder: (BuildContext context, int index) {
-                                            print(teachersContact.length);
-                                            TeacherContacts teachersContacts = teachersContact[index];
-                                            if (groupValue == board) {
-                                              boardtextController.text = teachersContacts.phoneNumber + ',';
-                                            }
-                                            return Text(teachersContacts.phoneNumber + ',');
-                                          },
-                                        ),
-                                      );
-                                    }
-                                    return Loading();
-                                  },
-                                ),
-                                messageInput()
-                              ],
-                            ),
-                          ),
+                          //             return Container(
+                          //               decoration: BoxDecoration(border: Border.all()),
+                          //               height: 150,
+                          //               child: ListView.builder(
+                          //                 controller: _scrollController,
+                          //                 scrollDirection: Axis.vertical,
+                          //                 physics: BouncingScrollPhysics(),
+                          //                 shrinkWrap: true,
+                          //                 reverse: true,
+                          //                 itemCount: teachersContact == null ? 0 : teachersContact.length,
+                          //                 itemBuilder: (BuildContext context, int index) {
+                          //                   print(teachersContact.length);
+                          //                   TeacherContacts teachersContacts = teachersContact[index];
+                          //                   if (groupValue == board) {
+                          //                     boardtextController.text = teachersContacts.phoneNumber + ',';
+                          //                   }
+                          //                   return Text(teachersContacts.phoneNumber + ',');
+                          //                 },
+                          //               ),
+                          //             );
+                          //           }
+                          //           return Loading();
+                          //         },
+                          //       ),
+                          //       messageInput()
+                          //     ],
+                          //   ),
+                          // ),
                           Visibility(
                             visible: _currentClass == support,
                             child: Column(
@@ -627,7 +630,7 @@ class _MessagingState extends State<Messaging> {
 
   // =====================================classes dd menu====================
   List<DropdownMenuItem<String>> _getClassesDropDown() {
-    List<String> additonal = [custom, support, board, teachers, parents];
+    List<String> additonal = [custom, support, teachers, parents];
     List<DropdownMenuItem<String>> dropDownItems = new List();
     for (int f = 0; f < additonal.length; f++) {
       setState(() {
@@ -766,30 +769,43 @@ class _MessagingState extends State<Messaging> {
         ),
         FlatButton.icon(
           color: Colors.green[300],
-          onPressed: () {
+          onPressed: () async {
             if (_currentClass == custom) {
-              sendSMS(individualController.text, messageController.text);
+              await sendSMS(individualController.text, messageController.text);
               Fluttertoast.showToast(msg: 'Custom Message Sent');
             }
-            if (_currentClass == board) {
-              sendSMS(boardtextController.text, messageController.text);
-              Fluttertoast.showToast(msg: 'Board Message Sent');
-            }
+            // if (_currentClass == board) {
+            //   sendSMS(boardtextController.text, messageController.text);
+            //   Fluttertoast.showToast(msg: 'Board Message Sent');
+            // }
             if (_currentClass == support) {
-              sendSMS(supporttextController.text, messageController.text);
+              await sendSMS(supporttextController.text, messageController.text);
               Fluttertoast.showToast(msg: 'Support staff Message Sent');
             }
             if (_currentClass == teachers) {
-              sendSMS(teacherstextController.text, messageController.text);
+              await sendSMS(teacherstextController.text, messageController.text);
               Fluttertoast.showToast(msg: 'Teacher Message Sent ');
             }
             if (_currentClass == parents) {
-              sendSMS(recipentController.text, messageController.text);
-              Fluttertoast.showToast(msg: 'Parent Messages Sent');
+              await sendSMS(recipentController.text, messageController.text);
+              Fluttertoast.showToast(msg: 'Sent to $groupValue');
             }
-
+            if (_currentClass == 'Form1' || _currentClass == 'Form2' || _currentClass == 'Form3' || _currentClass == 'Form4') {
+              await sendSMS(singleClassController.text, messageController.text);
+              if (_currentClass == 'Form1') {
+                Fluttertoast.showToast(msg: 'Sent to $groupValue in Form1');
+              }
+              if (_currentClass == 'Form2') {
+                Fluttertoast.showToast(msg: 'Sent to $groupValue in Form2');
+              }
+              if (_currentClass == 'Form3') {
+                Fluttertoast.showToast(msg: 'Sent to $groupValue in Form3');
+              }
+              if (_currentClass == 'Form4') {
+                Fluttertoast.showToast(msg: 'Sent to $groupValue in Form4');
+              }
+            }
             sendMessage(context);
-
             Navigator.pop(context);
           },
           icon: Icon(

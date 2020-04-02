@@ -13,7 +13,7 @@ class DBManagement {
 
   String apiKey = '';
   String smsId = '';
-  String url = 'http://192.168.8.129:8000/backend/operations/login.php';
+  String url = 'http://192.168.122.1:8000/backend/operations/login.php';
   Future<User> signInUser(String userName, String password) async {
     final response = await client.post(url,
         body: jsonEncode({
@@ -31,7 +31,7 @@ class DBManagement {
   }
 
   sendMessages(String phone, String message) async {
-    String url = 'http://192.168.8.129:8000/backend/operations/send.php';
+    String url = 'http://192.168.122.1:8000/backend/operations/send.php';
     // List<SchoolDetails> data = await _smsManager.getSchoolDetails();
     // schoolDetails = data;
     // apiKey = schoolDetails[0].smsKey;
@@ -48,7 +48,7 @@ class DBManagement {
     print(apiKey);
     if (response.statusCode == 200) {
       print('message sent');
-      await showBalance();
+      showBalance();
     } else {
       throw Exception('failed to send message');
     }

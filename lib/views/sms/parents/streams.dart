@@ -6,6 +6,7 @@ import 'package:walgotech_final/helperClasses/loading.dart';
 import 'package:walgotech_final/models/classes.dart';
 import 'package:walgotech_final/models/contacts.dart';
 import 'package:walgotech_final/models/sms.dart';
+import 'package:walgotech_final/resources/repository.dart';
 
 import '../../../styling.dart';
 
@@ -22,6 +23,8 @@ class _CurrentStreamClassesState extends State<CurrentStreamClasses> {
 
   final formKey = new GlobalKey<FormState>();
   final scafoldKey = new GlobalKey<ScaffoldState>();
+  Repository _repository = Repository();
+
   List<DropdownMenuItem<String>> classesDropDown = <DropdownMenuItem<String>>[];
   List<DropdownMenuItem<String>> streamsDropDown = <DropdownMenuItem<String>>[];
   List<ParentsContacts> parentContact;
@@ -82,13 +85,14 @@ class _CurrentStreamClassesState extends State<CurrentStreamClasses> {
                     padding: const EdgeInsets.symmetric(horizontal: 3.0),
                     child: Material(
                       elevation: 0,
-                      color: Colors.black26,
+                      color: Colors.cyan,
                       shape: RoundedRectangleBorder(borderRadius: BorderRadius.all(Radius.circular(6))),
                       child: Padding(
                         padding: const EdgeInsets.symmetric(horizontal: 8.0),
                         child: Visibility(
                           visible: true,
                           child: DropdownButton(
+                            underline: SizedBox(),
                             isExpanded: true,
                             icon: Icon(
                               Icons.arrow_downward,
@@ -180,28 +184,31 @@ class _CurrentStreamClassesState extends State<CurrentStreamClasses> {
                                             itemBuilder: (BuildContext context, int index) {
                                               ParentsContacts contacts = parentContact[index];
                                               // totalStudents = parentContact.length;
-                                              if (groupValue == allRegistred) {
-                                                recipentController.text += contacts.fatherNumber +
-                                                    "," +
-                                                    contacts.motherNumber +
-                                                    "," +
-                                                    contacts.guardianNumber;
-                                                return Text(contacts.fatherNumber +
-                                                    "," +
-                                                    contacts.motherNumber +
-                                                    "," +
-                                                    contacts.guardianNumber);
-                                              } else if (groupValue == oneParent) {
-                                                if (contacts.fatherNumber.isEmpty) {
-                                                  recipentController.text += contacts.motherNumber + ",";
-                                                  return Text(contacts.motherNumber);
+                                              if (_currentStream == _currentStream) {
+                                                print(recipentController.text);
+                                                if (groupValue == allRegistred) {
+                                                  recipentController.text += contacts.fatherNumber +
+                                                      "," +
+                                                      contacts.motherNumber +
+                                                      "," +
+                                                      contacts.guardianNumber;
+                                                  return Text(contacts.fatherNumber +
+                                                      "," +
+                                                      contacts.motherNumber +
+                                                      "," +
+                                                      contacts.guardianNumber);
+                                                } else if (groupValue == oneParent) {
+                                                  if (contacts.fatherNumber.isEmpty) {
+                                                    recipentController.text += contacts.motherNumber + ",";
+                                                    return Text(contacts.motherNumber);
+                                                  }
+                                                  recipentController.text += contacts.fatherNumber + ",";
+                                                  return Text(contacts.fatherNumber);
+                                                } else if (groupValue == bothParents) {
+                                                  recipentController.text +=
+                                                      contacts.fatherNumber + "," + contacts.motherNumber + ",";
+                                                  return Text(contacts.motherNumber + "," + contacts.fatherNumber);
                                                 }
-                                                recipentController.text += contacts.fatherNumber + ",";
-                                                return Text(contacts.fatherNumber);
-                                              } else if (groupValue == bothParents) {
-                                                recipentController.text +=
-                                                    contacts.fatherNumber + "," + contacts.motherNumber + ",";
-                                                return Text(contacts.motherNumber + "," + contacts.fatherNumber);
                                               }
                                             },
                                           ),
@@ -252,16 +259,19 @@ class _CurrentStreamClassesState extends State<CurrentStreamClasses> {
                     child: Container(
                       alignment: Alignment.bottomCenter,
                       child: MaterialButton(
-                        color: accentColor,
+                        color: Colors.cyan,
                         elevation: 0,
                         shape: RoundedRectangleBorder(borderRadius: BorderRadius.all(Radius.circular(10))),
                         minWidth: MediaQuery.of(context).size.width * .3,
                         child: Text(
                           'Send',
-                          style: categoriesStyle,
+                          style: categoriesStyle.copyWith(color: accentColor),
                         ),
                         onPressed: () {
-                          if (messageController.text.isNotEmpty) {
+                          if (groupValue == '') {
+                            Fluttertoast.showToast(msg: 'No Contact Category Selected');
+                          }
+                          else if (messageController.text.isNotEmpty) {
                             messageAlert();
                           } else if (messageController.text.isEmpty && formKey.currentState.validate()) {
                             scafoldKey.currentState.showSnackBar(SnackBar(
@@ -293,10 +303,10 @@ class _CurrentStreamClassesState extends State<CurrentStreamClasses> {
           maxLines: 7,
           controller: messageController,
           validator: (v) {
-            if (v.length < 13) return 'plese enter a valid message length';
             if (v.isEmpty) return 'cannot send a blank text';
           },
           decoration: InputDecoration(
+            focusedBorder: OutlineInputBorder(borderSide: BorderSide(color: Colors.grey)),
             enabled: true,
             hintText: 'Type in Message',
             border: OutlineInputBorder(),
@@ -359,62 +369,6 @@ class _CurrentStreamClassesState extends State<CurrentStreamClasses> {
     });
   }
 
-// =========================================DIALOG===================================
-  void messageAlert() {
-    var alerts = new AlertDialog(
-      shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(20)),
-      elevation: .3,
-      content: Container(
-        alignment: Alignment.topLeft,
-        width: 320,
-        height: 90,
-        child: Center(
-          child: Text(
-            'Are You Sure You Want To Send This Message?'.toUpperCase(),
-            textAlign: TextAlign.center,
-          ),
-        ),
-      ),
-      actions: <Widget>[
-        FlatButton.icon(
-          color: Colors.red[300],
-          onPressed: () {
-            messageController.clear();
-            Navigator.pop(context);
-          },
-          icon: Icon(
-            Icons.cancel,
-            color: accentColor,
-          ),
-          label: Text(
-            'Cancel',
-            style: categoriesStyle.copyWith(color: accentColor),
-          ),
-          shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(20)),
-        ),
-        FlatButton.icon(
-          color: Colors.green[300],
-          onPressed: () {
-            sendMessage(context);
-            Fluttertoast.showToast(msg: 'Message Sent successfuly');
-            Navigator.pop(context);
-          },
-          icon: Icon(
-            Icons.check,
-            color: accentColor,
-          ),
-          label: Text(
-            'Done',
-            style: categoriesStyle.copyWith(color: accentColor),
-          ),
-          shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(20)),
-        ),
-      ],
-    );
-
-    showDialog(context: context, builder: (_) => alerts);
-  }
-
 // ============================================================SEND SAVE=======================
   void sendMessage(BuildContext context) {
     if (formKey.currentState.validate()) {
@@ -468,6 +422,67 @@ class _CurrentStreamClassesState extends State<CurrentStreamClasses> {
         }
       }
     });
+  }
+
+// =========================================DIALOG===================================
+  void messageAlert() {
+    var alerts = new AlertDialog(
+      shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(20)),
+      elevation: .3,
+      content: Container(
+        alignment: Alignment.topLeft,
+        width: 320,
+        height: 90,
+        child: Center(
+          child: Text(
+            'Are You Sure You Want To Send This Message?'.toUpperCase(),
+            textAlign: TextAlign.center,
+          ),
+        ),
+      ),
+      actions: <Widget>[
+        FlatButton.icon(
+          color: Colors.red[300],
+          onPressed: () {
+            messageController.clear();
+            Navigator.pop(context);
+          },
+          icon: Icon(
+            Icons.cancel,
+            color: accentColor,
+          ),
+          label: Text(
+            'Cancel',
+            style: categoriesStyle.copyWith(color: accentColor),
+          ),
+          shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(20)),
+        ),
+        FlatButton.icon(
+          color: Colors.green[300],
+          onPressed: () async {
+            await sendSMS(recipentController.text, messageController.text);
+            sendMessage(context);
+            Fluttertoast.showToast(msg: 'Message Sent to $groupValue in $_currentStream');
+            Navigator.pop(context);
+          },
+          icon: Icon(
+            Icons.check,
+            color: accentColor,
+          ),
+          label: Text(
+            'Done',
+            style: categoriesStyle.copyWith(color: accentColor),
+          ),
+          shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(20)),
+        ),
+      ],
+    );
+
+    showDialog(context: context, builder: (_) => alerts);
+  }
+
+  sendSMS(String phone, String message) async {
+    await _repository.addMessage(phone, message);
   }
 
   _messageLength() {
