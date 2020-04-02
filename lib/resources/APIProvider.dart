@@ -43,7 +43,7 @@ class DBManagement {
           // 'apiKey': apiKey,
           // 'smsId': smsId,
         }));
-    print('\n\n\n\n\n\n\n${response.statusCode}');
+    print('\n\n\n\${response.statusCode}');
     print(smsId);
     print(apiKey);
     if (response.statusCode == 200) {
@@ -59,16 +59,16 @@ class DBManagement {
     schoolDetails = data;
     apiKey = schoolDetails[0].smsKey;
     smsId = schoolDetails[0].smsID;
-    String url = 'https://payments.africastalking.com/query/wallet/balance?username=$smsId';
+    String url = 'https://payments.africastalking.com/query/wallet/balance?username=mgpatto';
 
     final response = await client.get(
       url,
-      headers: {"Authorization": apiKey},
+      headers: {"apiKey": "0e33d3656655659ffcde61e3b34b215f930a9905d3548d897b4504b2b679c1a5"},
     );
     final Map result = json.decode(response.body);
     print(response.statusCode);
     if (response.statusCode == 200) {
-      saveBalance(result['balance']);
+      saveBalance(result['status']);
     } else {
       throw Exception('failed to show balance');
     }

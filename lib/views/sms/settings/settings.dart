@@ -48,7 +48,7 @@ class _SettingsState extends State<Settings> {
                     Fluttertoast.showToast(msg: 'Data Has Been Updated');
                   }),
               Padding(
-                padding: const EdgeInsets.symmetric(horizontal:8.0),
+                padding: const EdgeInsets.symmetric(horizontal: 8.0),
                 child: MaterialButton(
                     height: 50,
                     color: Colors.red[400],
@@ -64,7 +64,9 @@ class _SettingsState extends State<Settings> {
                       ],
                     ),
                     onPressed: () async {
-                      logOut();
+                      await logOut();
+                      Navigator.pop(context);
+                      Fluttertoast.showToast(msg: 'Logged Out');
                     }),
               ),
             ],
