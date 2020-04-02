@@ -6,7 +6,8 @@ import 'package:walgotech_final/styling.dart';
 import 'package:walgotech_final/views/sms/parents/Mesaging.dart';
 import 'package:walgotech_final/views/sms/parents/messageHistory.dart';
 import 'package:walgotech_final/views/sms/settings/settings.dart';
-import 'package:walgotech_final/views/sms/subordinateStaff/subordinatecategory.dart';
+
+import 'Schedule/schedule.dart';
 
 class AllContactCategories extends StatefulWidget {
   @override
@@ -89,5 +90,6 @@ class _AllContactCategoriesState extends State<AllContactCategories> {
   getUserBalance() async {
     SharedPreferences prefs = await SharedPreferences.getInstance();
     bal = prefs.getString('balance');
+    // Future.delayed(Duration(days: 3,hours: ))
   }
 }

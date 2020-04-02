@@ -169,7 +169,6 @@ class _MessagingState extends State<Messaging> {
                                   children: <Widget>[
                                     Text(allRegistred),
                                     Radio(
-                                      
                                       autofocus: true,
                                       value: allRegistred,
                                       groupValue: groupValue,
@@ -457,7 +456,6 @@ class _MessagingState extends State<Messaging> {
                               child: Column(
                                 children: <Widget>[
                                   TextFormField(
-                                    keyboardType: TextInputType.phone,
                                     controller: individualController,
                                     maxLines: 7,
                                     validator: (v) {
@@ -470,6 +468,7 @@ class _MessagingState extends State<Messaging> {
                                     decoration: InputDecoration(
                                       enabled: true,
                                       hintText: 'Message Separated by Commas e.g +254xxxxx,+254xxxxx',
+                                      focusedBorder: OutlineInputBorder(borderSide: BorderSide(color: Colors.grey)),
                                       border: OutlineInputBorder(),
                                     ),
                                   ),
@@ -587,12 +586,17 @@ class _MessagingState extends State<Messaging> {
       child: TextFormField(
         maxLines: 7,
         onTap: () {
-          totalTeachers = teachersContact.length;
-          totalSupport = supportContact.length;
+          if (_currentClass == teachers) {
+            totalTeachers = teachersContact.length;
+          }
+          if (_currentClass == support) {
+            totalSupport = supportContact.length;
+          }
         },
         controller: messageController,
         validator: (v) => v.isNotEmpty ? null : 'recipents are empty',
         decoration: InputDecoration(
+          focusedBorder: OutlineInputBorder(borderSide: BorderSide(color: Colors.grey)),
           enabled: true,
           hintText: 'Type in Message',
           border: OutlineInputBorder(),
