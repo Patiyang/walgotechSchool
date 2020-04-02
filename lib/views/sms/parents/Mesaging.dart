@@ -109,7 +109,7 @@ class _MessagingState extends State<Messaging> {
                         padding: const EdgeInsets.symmetric(horizontal: 8.0),
                         child: Material(
                           elevation: 0,
-                          color: customBtns,
+                          color: Colors.cyan,
                           shape: RoundedRectangleBorder(borderRadius: BorderRadius.all(Radius.circular(6))),
                           child: Padding(
                             padding: const EdgeInsets.symmetric(horizontal: 8.0),
@@ -122,7 +122,7 @@ class _MessagingState extends State<Messaging> {
                               hint: Text('Select Category'),
                               items: classesDropDown,
                               onChanged: changeSelectedCategory,
-                              disabledHint: Text('Select Categry'),
+                              disabledHint: Text('Select Category'),
                               value: classes.isEmpty ? null : _currentClass,
                             ),
                           ),
@@ -545,7 +545,7 @@ class _MessagingState extends State<Messaging> {
                       child: Container(
                         alignment: Alignment.bottomCenter,
                         child: MaterialButton(
-                          color: customBtns,
+                          color: Colors.cyan,
                           elevation: 0,
                           shape: RoundedRectangleBorder(borderRadius: BorderRadius.all(Radius.circular(10))),
                           minWidth: MediaQuery.of(context).size.width * .3,

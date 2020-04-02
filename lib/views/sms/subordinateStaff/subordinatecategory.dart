@@ -27,6 +27,7 @@ class _ScheduleState extends State<Schedule> {
             mainAxisAlignment: MainAxisAlignment.center,
             children: <Widget>[
               RaisedButton(
+                color: Colors.cyan,
                 shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(5.0)),
                 elevation: .6,
                 onPressed: () {
@@ -74,12 +75,12 @@ class _ScheduleState extends State<Schedule> {
                     ],
                   ),
                 ),
-                color: customBtns,
               ),
               SizedBox(
                 height: 20.0,
               ),
               RaisedButton(
+                color: Colors.cyan,
                 shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(5.0)),
                 elevation: .6,
                 onPressed: () {
@@ -95,7 +96,6 @@ class _ScheduleState extends State<Schedule> {
                   setState(() {});
                 },
                 child: Container(
-
                   alignment: Alignment.center,
                   height: 50.0,
                   child: Row(
@@ -127,7 +127,6 @@ class _ScheduleState extends State<Schedule> {
                     ],
                   ),
                 ),
-                color: customBtns,
               )
             ],
           ),

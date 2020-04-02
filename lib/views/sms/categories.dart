@@ -49,21 +49,21 @@ class _AllContactCategoriesState extends State<AllContactCategories> {
         ),
         title: Stack(
           children: <Widget>[
-            Visibility(visible: page == 0, child: Text('Create Message')),
-            Visibility(visible: page == 1, child: Text('Your History')),
-            Visibility(visible: page == 2, child: Text('Schedule Message')),
-            Visibility(visible: page == 3, child: Text('Settings')),
+            Visibility(visible: page == 0, child: Text('Create Message',style: TextStyle(color: Colors.white))),
+            Visibility(visible: page == 1, child: Text('Your History',style: TextStyle(color: Colors.white))),
+            Visibility(visible: page == 2, child: Text('Schedule Message',style: TextStyle(color: Colors.white))),
+            Visibility(visible: page == 3, child: Text('Settings',style: TextStyle(color: Colors.white))),
           ],
         ),
       ),
       bottomNavigationBar: CurvedNavigationBar(
-        color: customBtns,
+        color: Colors.cyan,
         key: barKey,
         animationDuration: Duration(milliseconds: 150),
         index: 0,
         height: 45,
         animationCurve: Curves.easeInOut,
-        buttonBackgroundColor: customBtns,
+        buttonBackgroundColor: Colors.cyan,
         backgroundColor: primaryColor,
         items: <Widget>[
           Icon(Icons.face, size: 19, color: Colors.black),
@@ -88,6 +88,6 @@ class _AllContactCategoriesState extends State<AllContactCategories> {
 
   getUserBalance() async {
     SharedPreferences prefs = await SharedPreferences.getInstance();
-    prefs.getString('balance');
+    bal = prefs.getString('balance');
   }
 }

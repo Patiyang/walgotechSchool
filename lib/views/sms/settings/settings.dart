@@ -26,7 +26,7 @@ class _SettingsState extends State<Settings> {
             children: <Widget>[
               MaterialButton(
                   height: 50,
-                  color: customBtns,
+                  color: Colors.cyan,
                   shape: RoundedRectangleBorder(borderRadius: BorderRadius.all(Radius.circular(5))),
                   child: Column(
                     mainAxisAlignment: MainAxisAlignment.center,
@@ -154,6 +154,4 @@ class _SettingsState extends State<Settings> {
       throw Exception('failed to add subordinate');
     }
   }
-
-  
 }
