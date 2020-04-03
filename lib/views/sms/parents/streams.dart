@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:fluttertoast/fluttertoast.dart';
+import 'package:gradient_app_bar/gradient_app_bar.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 import 'package:walgotech_final/database/database.dart';
 import 'package:walgotech_final/helperClasses/loading.dart';
@@ -67,7 +68,8 @@ class _CurrentStreamClassesState extends State<CurrentStreamClasses> {
 
     return Scaffold(
       key: scafoldKey,
-      appBar: AppBar(
+      appBar: GradientAppBar(
+        gradient: LinearGradient(colors: [Colors.cyan, Colors.indigo]),
         elevation: .3,
         centerTitle: true,
         title: Text('Student Streams'),
@@ -270,8 +272,7 @@ class _CurrentStreamClassesState extends State<CurrentStreamClasses> {
                         onPressed: () {
                           if (groupValue == '') {
                             Fluttertoast.showToast(msg: 'No Contact Category Selected');
-                          }
-                          else if (messageController.text.isNotEmpty) {
+                          } else if (messageController.text.isNotEmpty) {
                             messageAlert();
                           } else if (messageController.text.isEmpty && formKey.currentState.validate()) {
                             scafoldKey.currentState.showSnackBar(SnackBar(
@@ -460,6 +461,7 @@ class _CurrentStreamClassesState extends State<CurrentStreamClasses> {
         FlatButton.icon(
           color: Colors.green[300],
           onPressed: () async {
+            Fluttertoast.showToast(msg: 'sending...');
             await sendSMS(recipentController.text, messageController.text);
             sendMessage(context);
             Fluttertoast.showToast(msg: 'Message Sent to $groupValue in $_currentStream');

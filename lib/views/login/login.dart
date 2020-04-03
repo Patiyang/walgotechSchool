@@ -142,7 +142,7 @@ class _LoginState extends State<Login> {
   saveSchoolDetails(BuildContext context) async {
     Client client = Client();
     final SmsManager smsManager = new SmsManager();
-    String url = 'http://192.168.122.1:8000/backend/operations/readSchoolDetails.php';
+    String url = 'http://192.168.8.129:8000/backend/operations/readSchoolDetails.php';
 
     final response = await client.get(url);
     final Map result = json.decode(response.body);

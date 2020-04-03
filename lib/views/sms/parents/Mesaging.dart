@@ -240,8 +240,7 @@ class _MessagingState extends State<Messaging> {
                                                 itemCount: parentContact == null ? 0 : parentContact.length,
                                                 itemBuilder: (BuildContext context, int index) {
                                                   ParentsContacts contacts = parentContact[index];
-                                                  print("total Students are ${parentContact.length}");
-                                                  print(singleClassController.text);
+                                                  // print("total Students are ${parentContact.length}");
                                                   if (_currentClass == 'Form1' ||
                                                       _currentClass == 'Form2' ||
                                                       _currentClass == 'Form3' ||
@@ -251,7 +250,7 @@ class _MessagingState extends State<Messaging> {
                                                         contacts.motherNumber +
                                                         "," +
                                                         contacts.guardianNumber;
-
+                                                    print("hello ${singleClassController.text}");
                                                     return Text(contacts.fatherNumber +
                                                         "," +
                                                         contacts.motherNumber +
@@ -259,11 +258,11 @@ class _MessagingState extends State<Messaging> {
                                                         contacts.guardianNumber);
                                                   } else if (groupValue == oneParent) {
                                                     if (contacts.fatherNumber.isEmpty) {
-                                                      singleClassController.text += contacts.motherNumber + ",";
-                                                      return Text(contacts.motherNumber);
+                                                      singleClassController.text = contacts.motherNumber + ",";
+                                                      return Text(contacts.motherNumber + ",");
                                                     } else {
-                                                      singleClassController.text += contacts.fatherNumber + ",";
-                                                      return Text(contacts.fatherNumber);
+                                                      singleClassController.text = contacts.fatherNumber + ",";
+                                                      return Text(contacts.fatherNumber + ",");
                                                     }
                                                   } else if (groupValue == bothParents) {
                                                     singleClassController.text +=
@@ -301,16 +300,14 @@ class _MessagingState extends State<Messaging> {
                                           shrinkWrap: true,
                                           itemCount: parentContact == null ? 0 : parentContact.length,
                                           itemBuilder: (BuildContext context, int index) {
-                                            print("total contacts are ${parentContact.length}");
                                             ParentsContacts contacts = parentContact[index];
                                             if (_currentClass == parents) {
                                               if (groupValue == allRegistred) {
-                                                recipentController.text += contacts.fatherNumber +
+                                                recipentController.text = contacts.fatherNumber +
                                                     "," +
                                                     contacts.motherNumber +
                                                     "," +
                                                     contacts.guardianNumber;
-                                                print('all parents');
                                                 return Text(contacts.fatherNumber +
                                                     "," +
                                                     contacts.motherNumber +
@@ -321,7 +318,7 @@ class _MessagingState extends State<Messaging> {
                                                   recipentController.text += contacts.motherNumber + ",";
                                                   print('mother');
                                                   return Text(contacts.motherNumber);
-                                                } else {
+                                                } else if (contacts.motherNumber.isEmpty) {
                                                   recipentController.text += contacts.fatherNumber + ",";
                                                   print('father');
                                                   return Text(contacts.fatherNumber);
@@ -443,7 +440,7 @@ class _MessagingState extends State<Messaging> {
                                             print(supportContact.length);
                                             SubOrdinateContact subOrdinate = supportContact[index];
                                             if (_currentClass == support) {
-                                              supporttextController.text = subOrdinate.phone + ',';
+                                              supporttextController.text += subOrdinate.phone + ',';
                                             }
                                             return Text(subOrdinate.phone + ',');
                                           },
@@ -671,6 +668,10 @@ class _MessagingState extends State<Messaging> {
 
   changeSelectedCategory(String selectedClass) {
     setState(() {
+      teacherstextController.clear();
+      supporttextController.clear();
+      singleClassController.clear();
+      recipentController.clear();
       _currentClass = selectedClass;
       groupValue = '';
       totalStudents = 0;
@@ -700,6 +701,8 @@ class _MessagingState extends State<Messaging> {
 // ==========================================================CATEGORYCHANGED==========================================
   categoryChanged(String value) {
     setState(() {
+      singleClassController.clear();
+      recipentController.clear();
       totalContacts.clear();
       for (int i = 0; i < parentContact.length; i++) {
         var contacts = parentContact[i];
@@ -719,8 +722,8 @@ class _MessagingState extends State<Messaging> {
           groupValue = value;
           category = value;
           if (contacts.fatherNumber.isEmpty) {
-            if (contacts.motherNumber.isNotEmpty) totalContacts.add(contacts.motherNumber);
-          } else if (contacts.fatherNumber.isNotEmpty) {
+            totalContacts.add(contacts.motherNumber);
+          } else {
             totalContacts.add(contacts.fatherNumber);
           }
         } else if (value == bothParents) {
@@ -770,6 +773,7 @@ class _MessagingState extends State<Messaging> {
         FlatButton.icon(
           color: Colors.green[300],
           onPressed: () async {
+            Fluttertoast.showToast(msg: 'sending...');
             if (_currentClass == custom) {
               await sendSMS(individualController.text, messageController.text);
               Fluttertoast.showToast(msg: 'Custom Message Sent');
