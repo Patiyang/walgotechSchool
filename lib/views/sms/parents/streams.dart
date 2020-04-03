@@ -198,18 +198,22 @@ class _CurrentStreamClassesState extends State<CurrentStreamClasses> {
                                                       "," +
                                                       contacts.motherNumber +
                                                       "," +
-                                                      contacts.guardianNumber);
+                                                      contacts.guardianNumber +
+                                                      ",");
                                                 } else if (groupValue == oneParent) {
                                                   if (contacts.fatherNumber.isEmpty) {
                                                     recipentController.text += contacts.motherNumber + ",";
-                                                    return Text(contacts.motherNumber);
+                                                    print("hello ${recipentController.text}");
+                                                    return Text(contacts.motherNumber + ",");
+                                                  } else {
+                                                    recipentController.text += contacts.fatherNumber + ",";
+                                                    print("hello ${recipentController.text}");
+                                                    return Text(contacts.fatherNumber + ",");
                                                   }
-                                                  recipentController.text += contacts.fatherNumber + ",";
-                                                  return Text(contacts.fatherNumber);
                                                 } else if (groupValue == bothParents) {
                                                   recipentController.text +=
                                                       contacts.fatherNumber + "," + contacts.motherNumber + ",";
-                                                  return Text(contacts.motherNumber + "," + contacts.fatherNumber);
+                                                  return Text(contacts.motherNumber + "," + contacts.fatherNumber + ",");
                                                 }
                                               }
                                             },
@@ -348,6 +352,7 @@ class _CurrentStreamClassesState extends State<CurrentStreamClasses> {
 
   changeSelectedStream(String selectedStream) async {
     setState(() {
+      recipentController.clear();
       _currentStream = selectedStream;
       // totalStudents = parentContact.length;
       groupValue = '';
@@ -389,6 +394,8 @@ class _CurrentStreamClassesState extends State<CurrentStreamClasses> {
 
 // ======================================RADIO===========================
   categoryChanged(String value) {
+    recipentController.clear();
+
     setState(() {
       totalContacts.clear();
       for (int i = 0; i < parentContact.length; i++) {

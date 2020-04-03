@@ -226,7 +226,6 @@ class _MessagingState extends State<Messaging> {
                                     if (snapshot.hasData) {
                                       parentContact = snapshot.data;
                                       totalStudents = parentContact.length;
-                                      // recipent = "";
                                       return groupValue == ''
                                           ? Text('Please Pick a Contact Group Above First')
                                           : Container(
@@ -258,15 +257,18 @@ class _MessagingState extends State<Messaging> {
                                                         contacts.guardianNumber);
                                                   } else if (groupValue == oneParent) {
                                                     if (contacts.fatherNumber.isEmpty) {
-                                                      singleClassController.text = contacts.motherNumber + ",";
+                                                      singleClassController.text += contacts.motherNumber + ",";
+                                                      print("hello ${singleClassController.text}");
                                                       return Text(contacts.motherNumber + ",");
                                                     } else {
-                                                      singleClassController.text = contacts.fatherNumber + ",";
+                                                      singleClassController.text += contacts.fatherNumber + ",";
+                                                      print("hello ${singleClassController.text}");
                                                       return Text(contacts.fatherNumber + ",");
                                                     }
                                                   } else if (groupValue == bothParents) {
                                                     singleClassController.text +=
                                                         contacts.fatherNumber + "," + contacts.motherNumber + ",";
+                                                    print("hello mom and dad ${singleClassController.text}");
                                                     return Text(contacts.motherNumber + "," + contacts.fatherNumber);
                                                   }
                                                 },
@@ -316,12 +318,12 @@ class _MessagingState extends State<Messaging> {
                                               } else if (groupValue == oneParent) {
                                                 if (contacts.fatherNumber.isEmpty) {
                                                   recipentController.text += contacts.motherNumber + ",";
-                                                  print('mother');
-                                                  return Text(contacts.motherNumber);
-                                                } else if (contacts.motherNumber.isEmpty) {
+                                                  print("hello ${recipentController.text}");
+                                                  return Text(contacts.motherNumber + ",");
+                                                } else {
                                                   recipentController.text += contacts.fatherNumber + ",";
-                                                  print('father');
-                                                  return Text(contacts.fatherNumber);
+                                                  print("hello ${recipentController.text}");
+                                                  return Text(contacts.fatherNumber + ",");
                                                 }
                                               } else if (groupValue == bothParents) {
                                                 recipentController.text +=
