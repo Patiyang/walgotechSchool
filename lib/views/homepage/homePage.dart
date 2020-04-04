@@ -45,7 +45,7 @@ class _HomePageState extends State<HomePage> {
           return name.length > 0 ? getHomePage() : Login(loginPressed: login);
         }
         if (snapshot.hasError || snapshot.connectionState == ConnectionState.waiting) {
-          return Loading();
+          return PlainLoading();
         }
         return ErrorLog();
       },

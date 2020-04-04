@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:fluttertoast/fluttertoast.dart';
 import 'package:shared_preferences/shared_preferences.dart';
+import 'package:walgotech_final/helperClasses/loading.dart';
 import 'package:walgotech_final/models/classes.dart';
 import 'package:walgotech_final/models/contacts.dart';
 import 'dart:convert';
@@ -15,65 +16,72 @@ class Settings extends StatefulWidget {
 
 class _SettingsState extends State<Settings> {
   Client client = Client();
+  bool loading = false;
   @override
   Widget build(BuildContext context) {
-    return Container(
-        child: Column(
+    return Stack(
       children: <Widget>[
-        Padding(
-          padding: const EdgeInsets.symmetric(horizontal: 20.0, vertical: 8),
-          child: Row(
-            mainAxisAlignment: MainAxisAlignment.center,
+        Container(
+          child: Column(
             children: <Widget>[
-              MaterialButton(
-                  height: 50,
-                  color: Colors.cyan,
-                  shape: RoundedRectangleBorder(borderRadius: BorderRadius.all(Radius.circular(5))),
-                  child: Column(
-                    mainAxisAlignment: MainAxisAlignment.center,
-                    children: <Widget>[
-                      Icon(
-                        Icons.refresh,
-                        size: 30,
-                      ),
-                      Text('Sync Data')
-                    ],
-                  ),
-                  onPressed: () async {
-                    await saveParentContacts(context);
-                    await saveTeacherContacts(context);
-                    await saveClasses(context);
-                    await saveStreams(context);
-                    await saveSubOrdinate(context);
-                    Fluttertoast.showToast(msg: 'Data Has Been Updated');
-                  }),
               Padding(
-                padding: const EdgeInsets.symmetric(horizontal: 8.0),
-                child: MaterialButton(
-                    height: 50,
-                    color: Colors.red[400],
-                    shape: RoundedRectangleBorder(borderRadius: BorderRadius.all(Radius.circular(5))),
-                    child: Column(
-                      mainAxisAlignment: MainAxisAlignment.center,
-                      children: <Widget>[
-                        Icon(
-                          Icons.refresh,
-                          size: 30,
+                padding: const EdgeInsets.symmetric(horizontal: 20.0, vertical: 8),
+                child: Row(
+                  mainAxisAlignment: MainAxisAlignment.center,
+                  children: <Widget>[
+                    MaterialButton(
+                        height: 50,
+                        color: Colors.cyan,
+                        shape: RoundedRectangleBorder(borderRadius: BorderRadius.all(Radius.circular(5))),
+                        child: Column(
+                          mainAxisAlignment: MainAxisAlignment.center,
+                          children: <Widget>[
+                            Icon(
+                              Icons.refresh,
+                              size: 30,
+                            ),
+                            Text('Sync Data')
+                          ],
                         ),
-                        Text('Log Out')
-                      ],
+                        onPressed: () async {
+                          await saveParentContacts(context);
+                          await saveTeacherContacts(context);
+                          await saveClasses(context);
+                          await saveStreams(context);
+                          await saveSubOrdinate(context);
+                          Fluttertoast.showToast(msg: 'Data Has Been Updated');
+                        }),
+                    Padding(
+                      padding: const EdgeInsets.symmetric(horizontal: 8.0),
+                      child: MaterialButton(
+                          height: 50,
+                          color: Colors.red[400],
+                          shape: RoundedRectangleBorder(borderRadius: BorderRadius.all(Radius.circular(5))),
+                          child: Column(
+                            mainAxisAlignment: MainAxisAlignment.center,
+                            children: <Widget>[
+                              Icon(
+                                Icons.refresh,
+                                size: 30,
+                              ),
+                              Text('Log Out')
+                            ],
+                          ),
+                          onPressed: () async {
+                            await logOut();
+                            Navigator.pop(context);
+                            Fluttertoast.showToast(msg: 'Logged Out');
+                          }),
                     ),
-                    onPressed: () async {
-                      await logOut();
-                      Navigator.pop(context);
-                      Fluttertoast.showToast(msg: 'Logged Out');
-                    }),
+                  ],
+                ),
               ),
             ],
           ),
         ),
+        Visibility(visible: loading ?? true, child: Loading())
       ],
-    ));
+    );
   }
 
   logOut() async {

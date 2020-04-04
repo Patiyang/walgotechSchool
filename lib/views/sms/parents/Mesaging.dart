@@ -92,13 +92,13 @@ class _MessagingState extends State<Messaging> {
     return Scaffold(
       key: key,
       backgroundColor: primaryColor,
-      body: Padding(
-        padding: const EdgeInsets.symmetric(vertical: 8.0),
-        child: SingleChildScrollView(
-          physics: BouncingScrollPhysics(),
-          child: Stack(
-            children: <Widget>[
-              Column(
+      body: Stack(
+        children: <Widget>[
+          Padding(
+            padding: const EdgeInsets.symmetric(vertical: 8.0),
+            child: SingleChildScrollView(
+              physics: BouncingScrollPhysics(),
+              child: Column(
                 children: <Widget>[
                   Form(
                     key: formKey,
@@ -278,7 +278,7 @@ class _MessagingState extends State<Messaging> {
                                                   ),
                                                 );
                                         }
-                                        return Loading();
+                                        return PlainLoading();
                                       },
                                     ),
                                     messageInput()
@@ -338,7 +338,7 @@ class _MessagingState extends State<Messaging> {
                                             ),
                                           );
                                         }
-                                        return Loading();
+                                        return PlainLoading();
                                       },
                                     ),
                                     messageInput()
@@ -376,7 +376,7 @@ class _MessagingState extends State<Messaging> {
                                             ),
                                           );
                                         }
-                                        return Loading();
+                                        return PlainLoading();
                                       },
                                     ),
                                     messageInput()
@@ -452,7 +452,7 @@ class _MessagingState extends State<Messaging> {
                                             ),
                                           );
                                         }
-                                        return Loading();
+                                        return PlainLoading();
                                       },
                                     ),
                                     messageInput()
@@ -524,21 +524,21 @@ class _MessagingState extends State<Messaging> {
                                         _currentClass == 'Form3' ||
                                         _currentClass == 'Form4',
                                     child: Text(
-                                      'Sending:$totalMessages /${totalContacts.length}',
+                                      'Sending:$totalMessages /${totalContacts.length * totalMessages}',
                                       style: categoryTextStyle.copyWith(color: accentColor),
                                     ),
                                   ),
                                   Visibility(
                                     visible: _currentClass == teachers,
                                     child: Text(
-                                      'Sending:$totalMessages /$totalTeachers',
+                                      'Sending:$totalMessages /${totalTeachers * totalMessages}',
                                       style: categoryTextStyle.copyWith(color: accentColor),
                                     ),
                                   ),
                                   Visibility(
                                     visible: _currentClass == support,
                                     child: Text(
-                                      'Sending:$totalMessages /$totalSupport',
+                                      'Sending:$totalMessages /${totalSupport * totalMessages}',
                                       style: categoryTextStyle.copyWith(color: accentColor),
                                     ),
                                   ),
@@ -572,8 +572,6 @@ class _MessagingState extends State<Messaging> {
                                     ),
                                   ));
                                 }
-
-                                // print(recipentController.text.toString());
                               },
                             ),
                           ),
@@ -583,12 +581,10 @@ class _MessagingState extends State<Messaging> {
                   )
                 ],
               ),
-              Visibility(
-                visible: false,
-                child: Center(child: Loading()))
-            ],
+            ),
           ),
-        ),
+          Visibility(visible: loading ?? true, child: Loading())
+        ],
       ),
     );
   }
@@ -783,50 +779,92 @@ class _MessagingState extends State<Messaging> {
         FlatButton.icon(
           color: Colors.green[300],
           onPressed: () async {
-            setState(() {
-              loading = true;
-            });
             Fluttertoast.showToast(msg: 'sending...');
             if (_currentClass == custom) {
+              setState(() {
+                loading = true;
+              });
+              Navigator.pop(context);
               await sendSMS(individualController.text, messageController.text);
+              setState(() {
+                loading = false;
+              });
               Fluttertoast.showToast(msg: 'Custom Message Sent');
             }
+
             // if (_currentClass == board) {
             //   sendSMS(boardtextController.text, messageController.text);
             //   Fluttertoast.showToast(msg: 'Board Message Sent');
             // }
             if (_currentClass == support) {
+              setState(() {
+                loading = true;
+              });
+              Navigator.pop(context);
               await sendSMS(supporttextController.text, messageController.text);
+              setState(() {
+                loading = false;
+              });
               Fluttertoast.showToast(msg: 'Support staff Message Sent');
             }
             if (_currentClass == teachers) {
+              setState(() {
+                loading = true;
+              });
+              Navigator.pop(context);
               await sendSMS(teacherstextController.text, messageController.text);
+              setState(() {
+                loading = false;
+              });
               Fluttertoast.showToast(msg: 'Teacher Message Sent ');
+              setState(() {
+                loading = false;
+              });
             }
             if (_currentClass == parents) {
+              setState(() {
+                loading = true;
+              });
+              Navigator.pop(context);
               await sendSMS(recipentController.text, messageController.text);
               Fluttertoast.showToast(msg: 'Sent to $groupValue');
+              setState(() {
+                loading = false;
+              });
             }
             if (_currentClass == 'Form1' || _currentClass == 'Form2' || _currentClass == 'Form3' || _currentClass == 'Form4') {
+              setState(() {
+                loading = true;
+              });
+              Navigator.pop(context);
               await sendSMS(singleClassController.text, messageController.text);
               if (_currentClass == 'Form1') {
                 Fluttertoast.showToast(msg: 'Sent to $groupValue in Form1');
+                setState(() {
+                  loading = false;
+                });
               }
               if (_currentClass == 'Form2') {
                 Fluttertoast.showToast(msg: 'Sent to $groupValue in Form2');
+                setState(() {
+                  loading = false;
+                });
               }
               if (_currentClass == 'Form3') {
                 Fluttertoast.showToast(msg: 'Sent to $groupValue in Form3');
+                setState(() {
+                  loading = false;
+                });
               }
               if (_currentClass == 'Form4') {
                 Fluttertoast.showToast(msg: 'Sent to $groupValue in Form4');
+                setState(() {
+                  loading = false;
+                });
               }
             }
-            setState(() {
-              loading = false;
-            });
+
             sendMessage(context);
-            Navigator.pop(context);
           },
           icon: Icon(
             Icons.check,

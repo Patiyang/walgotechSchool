@@ -13,7 +13,7 @@ class DBManagement {
 
   String apiKey = '';
   String smsId = '';
-  String url = 'http://z:8000/backend/operations/login.php';
+  String url = 'http://192.168.122.1:8000/backend/operations/login.php';
   Future<User> signInUser(String userName, String password) async {
     final response = await client.post(url,
         body: jsonEncode({
@@ -43,7 +43,7 @@ class DBManagement {
           // 'apiKey': apiKey,
           // 'smsId': smsId,
         }));
-    print('\n\n\n\${response.statusCode}');
+    print('${response.statusCode}');
     print(smsId);
     print(apiKey);
     if (response.statusCode == 200) {
