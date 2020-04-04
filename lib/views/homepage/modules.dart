@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:walgotech_final/styling.dart';
+import 'package:walgotech_final/views/biometrics/security.dart';
 import 'package:walgotech_final/views/sms/categories.dart';
 
 import 'customdivider.dart';
@@ -68,15 +69,20 @@ class Modules extends StatelessWidget {
               ),
             ),
             CustomDivider(),
-            Row(
-              children: <Widget>[
-                CircleAvatar(
-                  radius: 35,
-                  backgroundImage: AssetImage('images/modules/biometrics.png'),
-                ),
-                HorizontalDIvider(),
-                Text('Biometrics', style: modules)
-              ],
+            GestureDetector(
+              onTap: (){
+                Navigator.push(context, MaterialPageRoute(builder: (_)=>Biometrics()));
+              },
+                          child: Row(
+                children: <Widget>[
+                  CircleAvatar(
+                    radius: 35,
+                    backgroundImage: AssetImage('images/modules/biometrics.png'),
+                  ),
+                  HorizontalDIvider(),
+                  Text('Biometrics', style: modules)
+                ],
+              ),
             ),
             CustomDivider(),
             Row(

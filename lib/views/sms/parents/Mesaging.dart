@@ -40,6 +40,7 @@ class _MessagingState extends State<Messaging> {
   List<SubOrdinateContact> supportContact;
   List<CurrentClasses> classes = <CurrentClasses>[];
 
+  bool loading = false;
   String recipent = "";
   Text userName;
   String _userName;
@@ -95,161 +96,223 @@ class _MessagingState extends State<Messaging> {
         padding: const EdgeInsets.symmetric(vertical: 8.0),
         child: SingleChildScrollView(
           physics: BouncingScrollPhysics(),
-          child: Column(
+          child: Stack(
             children: <Widget>[
-              Form(
-                key: formKey,
-                child: Column(
-                  children: <Widget>[
-                    Padding(
-                      padding: const EdgeInsets.symmetric(vertical: 8.0),
-                      child: Padding(
-                        padding: const EdgeInsets.symmetric(horizontal: 8.0),
-                        child: Material(
-                          elevation: 0,
-                          color: Colors.cyan,
-                          shape: RoundedRectangleBorder(borderRadius: BorderRadius.all(Radius.circular(6))),
+              Column(
+                children: <Widget>[
+                  Form(
+                    key: formKey,
+                    child: Column(
+                      children: <Widget>[
+                        Padding(
+                          padding: const EdgeInsets.symmetric(vertical: 8.0),
                           child: Padding(
                             padding: const EdgeInsets.symmetric(horizontal: 8.0),
-                            child: DropdownButton(
-                              underline: SizedBox(),
-                              isExpanded: true,
-                              icon: Icon(
-                                Icons.arrow_downward,
-                                color: Colors.black,
+                            child: Material(
+                              elevation: 0,
+                              color: Colors.cyan,
+                              shape: RoundedRectangleBorder(borderRadius: BorderRadius.all(Radius.circular(6))),
+                              child: Padding(
+                                padding: const EdgeInsets.symmetric(horizontal: 8.0),
+                                child: DropdownButton(
+                                  underline: SizedBox(),
+                                  isExpanded: true,
+                                  icon: Icon(
+                                    Icons.arrow_downward,
+                                    color: Colors.black,
+                                  ),
+                                  hint: Text('Select Category'),
+                                  items: classesDropDown,
+                                  onChanged: changeSelectedCategory,
+                                  disabledHint: Text('Select Category'),
+                                  value: classes.isEmpty ? null : _currentClass,
+                                ),
                               ),
-                              hint: Text('Select Category'),
-                              items: classesDropDown,
-                              onChanged: changeSelectedCategory,
-                              disabledHint: Text('Select Category'),
-                              value: classes.isEmpty ? null : _currentClass,
                             ),
                           ),
                         ),
-                      ),
-                    ),
-                    Visibility(
-                        visible: _currentClass != custom &&
-                            _currentClass != board &&
-                            _currentClass != teachers &&
-                            _currentClass != support,
-                        child: Text('OR')),
-                    SizedBox(
-                      height: 10,
-                    ),
-                    Visibility(
-                      visible: _currentClass != custom &&
-                          _currentClass != board &&
-                          _currentClass != teachers &&
-                          _currentClass != support,
-                      child: GestureDetector(
-                        onTap: () {
-                          Navigator.push(context, MaterialPageRoute(builder: (_) => CurrentStreamClasses()));
-                        },
-                        child: Text('Tap to Choose Specific Streams',
-                            style: categoryTextStyle.copyWith(
-                                color: Colors.green, fontSize: 19, decoration: TextDecoration.underline)),
-                      ),
-                    ),
-                    Visibility(
-                      visible: _currentClass != board &&
-                          _currentClass != custom &&
-                          _currentClass != support &&
-                          _currentClass != teachers,
-                      child: Padding(
-                        padding: const EdgeInsets.all(15.0),
-                        child: SingleChildScrollView(
-                          physics: BouncingScrollPhysics(),
-                          scrollDirection: Axis.horizontal,
-                          child: Row(
-                            mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                            children: <Widget>[
-                              Container(
-                                child: Row(
-                                  children: <Widget>[
-                                    Text(allRegistred),
-                                    Radio(
-                                      autofocus: true,
-                                      value: allRegistred,
-                                      groupValue: groupValue,
-                                      onChanged: (value) => categoryChanged(value),
-                                    )
-                                  ],
-                                ),
-                              ),
-                              Container(
-                                child: Row(
-                                  children: <Widget>[
-                                    Text(oneParent),
-                                    Radio(
-                                      value: oneParent,
-                                      groupValue: groupValue,
-                                      onChanged: (value) => categoryChanged(value),
-                                    )
-                                  ],
-                                ),
-                              ),
-                              Container(
-                                child: Row(
-                                  children: <Widget>[
-                                    Text(bothParents),
-                                    Radio(
-                                      value: bothParents,
-                                      groupValue: groupValue,
-                                      onChanged: (value) => categoryChanged(value),
-                                    )
-                                  ],
-                                ),
-                              ),
-                            ],
+                        Visibility(
+                            visible: _currentClass != custom &&
+                                _currentClass != board &&
+                                _currentClass != teachers &&
+                                _currentClass != support,
+                            child: Text('OR')),
+                        SizedBox(
+                          height: 10,
+                        ),
+                        Visibility(
+                          visible: _currentClass != custom &&
+                              _currentClass != board &&
+                              _currentClass != teachers &&
+                              _currentClass != support,
+                          child: GestureDetector(
+                            onTap: () {
+                              Navigator.push(context, MaterialPageRoute(builder: (_) => CurrentStreamClasses()));
+                            },
+                            child: Text('Tap to Choose Specific Streams',
+                                style: categoryTextStyle.copyWith(
+                                    color: Colors.green, fontSize: 19, decoration: TextDecoration.underline)),
                           ),
                         ),
-                      ),
-                    ),
-                    Divider(),
-                    Padding(
-                      padding: const EdgeInsets.all(8.0),
-                      child: Column(
-                        children: <Widget>[
-                          Visibility(
-                            visible: _currentClass == _currentClass &&
-                                _currentClass != parents &&
-                                _currentClass != support &&
-                                _currentClass != board &&
-                                _currentClass != custom &&
-                                _currentClass != teachers,
-                            child: Column(
-                              children: <Widget>[
-                                FutureBuilder(
-                                  future: _smsManager.getParentContacts(_currentClass),
-                                  builder: (BuildContext context, AsyncSnapshot snapshot) {
-                                    if (snapshot.hasData) {
-                                      parentContact = snapshot.data;
-                                      totalStudents = parentContact.length;
-                                      return groupValue == ''
-                                          ? Text('Please Pick a Contact Group Above First')
-                                          : Container(
-                                              decoration: BoxDecoration(border: Border.all()),
-                                              height: 150,
-                                              child: ListView.builder(
-                                                reverse: true,
-                                                controller: _scrollController,
-                                                physics: BouncingScrollPhysics(),
-                                                shrinkWrap: true,
-                                                itemCount: parentContact == null ? 0 : parentContact.length,
-                                                itemBuilder: (BuildContext context, int index) {
-                                                  ParentsContacts contacts = parentContact[index];
-                                                  // print("total Students are ${parentContact.length}");
-                                                  if (_currentClass == 'Form1' ||
-                                                      _currentClass == 'Form2' ||
-                                                      _currentClass == 'Form3' ||
-                                                      _currentClass == 'Form4') if (groupValue == allRegistred) {
-                                                    singleClassController.text += contacts.fatherNumber +
+                        Visibility(
+                          visible: _currentClass != board &&
+                              _currentClass != custom &&
+                              _currentClass != support &&
+                              _currentClass != teachers,
+                          child: Padding(
+                            padding: const EdgeInsets.all(15.0),
+                            child: SingleChildScrollView(
+                              physics: BouncingScrollPhysics(),
+                              scrollDirection: Axis.horizontal,
+                              child: Row(
+                                mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                                children: <Widget>[
+                                  Container(
+                                    child: Row(
+                                      children: <Widget>[
+                                        Text(allRegistred),
+                                        Radio(
+                                          autofocus: true,
+                                          value: allRegistred,
+                                          groupValue: groupValue,
+                                          onChanged: (value) => categoryChanged(value),
+                                        )
+                                      ],
+                                    ),
+                                  ),
+                                  Container(
+                                    child: Row(
+                                      children: <Widget>[
+                                        Text(oneParent),
+                                        Radio(
+                                          value: oneParent,
+                                          groupValue: groupValue,
+                                          onChanged: (value) => categoryChanged(value),
+                                        )
+                                      ],
+                                    ),
+                                  ),
+                                  Container(
+                                    child: Row(
+                                      children: <Widget>[
+                                        Text(bothParents),
+                                        Radio(
+                                          value: bothParents,
+                                          groupValue: groupValue,
+                                          onChanged: (value) => categoryChanged(value),
+                                        )
+                                      ],
+                                    ),
+                                  ),
+                                ],
+                              ),
+                            ),
+                          ),
+                        ),
+                        Divider(),
+                        Padding(
+                          padding: const EdgeInsets.all(8.0),
+                          child: Column(
+                            children: <Widget>[
+                              Visibility(
+                                visible: _currentClass == _currentClass &&
+                                    _currentClass != parents &&
+                                    _currentClass != support &&
+                                    _currentClass != board &&
+                                    _currentClass != custom &&
+                                    _currentClass != teachers,
+                                child: Column(
+                                  children: <Widget>[
+                                    FutureBuilder(
+                                      future: _smsManager.getParentContacts(_currentClass),
+                                      builder: (BuildContext context, AsyncSnapshot snapshot) {
+                                        if (snapshot.hasData) {
+                                          parentContact = snapshot.data;
+                                          totalStudents = parentContact.length;
+                                          return groupValue == ''
+                                              ? Text('Please Pick a Contact Group Above First')
+                                              : Container(
+                                                  decoration: BoxDecoration(border: Border.all()),
+                                                  height: 150,
+                                                  child: ListView.builder(
+                                                    reverse: true,
+                                                    controller: _scrollController,
+                                                    physics: BouncingScrollPhysics(),
+                                                    shrinkWrap: true,
+                                                    itemCount: parentContact == null ? 0 : parentContact.length,
+                                                    itemBuilder: (BuildContext context, int index) {
+                                                      ParentsContacts contacts = parentContact[index];
+                                                      // print("total Students are ${parentContact.length}");
+                                                      if (_currentClass == 'Form1' ||
+                                                          _currentClass == 'Form2' ||
+                                                          _currentClass == 'Form3' ||
+                                                          _currentClass == 'Form4') if (groupValue == allRegistred) {
+                                                        singleClassController.text += contacts.fatherNumber +
+                                                            "," +
+                                                            contacts.motherNumber +
+                                                            "," +
+                                                            contacts.guardianNumber;
+                                                        print("hello ${singleClassController.text}");
+                                                        return Text(contacts.fatherNumber +
+                                                            "," +
+                                                            contacts.motherNumber +
+                                                            "," +
+                                                            contacts.guardianNumber);
+                                                      } else if (groupValue == oneParent) {
+                                                        if (contacts.fatherNumber.isEmpty) {
+                                                          singleClassController.text += contacts.motherNumber + ",";
+                                                          print("hello ${singleClassController.text}");
+                                                          return Text(contacts.motherNumber + ",");
+                                                        } else {
+                                                          singleClassController.text += contacts.fatherNumber + ",";
+                                                          print("hello ${singleClassController.text}");
+                                                          return Text(contacts.fatherNumber + ",");
+                                                        }
+                                                      } else if (groupValue == bothParents) {
+                                                        singleClassController.text +=
+                                                            contacts.fatherNumber + "," + contacts.motherNumber + ",";
+                                                        print("hello mom and dad ${singleClassController.text}");
+                                                        return Text(contacts.motherNumber + "," + contacts.fatherNumber);
+                                                      }
+                                                    },
+                                                  ),
+                                                );
+                                        }
+                                        return Loading();
+                                      },
+                                    ),
+                                    messageInput()
+                                  ],
+                                ),
+                              ),
+                              Visibility(
+                                visible: _currentClass == parents,
+                                child: Column(
+                                  children: <Widget>[
+                                    FutureBuilder(
+                                      future: _smsManager.getAllParentContacts(),
+                                      builder: (BuildContext context, AsyncSnapshot snapshot) {
+                                        if (snapshot.hasData) {
+                                          parentContact = snapshot.data;
+                                          totalStudents = parentContact.length;
+                                          return Container(
+                                            decoration: BoxDecoration(border: Border.all()),
+                                            height: 150,
+                                            child: ListView.builder(
+                                              controller: _scrollController,
+                                              reverse: true,
+                                              physics: BouncingScrollPhysics(),
+                                              shrinkWrap: true,
+                                              itemCount: parentContact == null ? 0 : parentContact.length,
+                                              itemBuilder: (BuildContext context, int index) {
+                                                ParentsContacts contacts = parentContact[index];
+                                                if (_currentClass == parents) {
+                                                  if (groupValue == allRegistred) {
+                                                    recipentController.text = contacts.fatherNumber +
                                                         "," +
                                                         contacts.motherNumber +
                                                         "," +
                                                         contacts.guardianNumber;
-                                                    print("hello ${singleClassController.text}");
                                                     return Text(contacts.fatherNumber +
                                                         "," +
                                                         contacts.motherNumber +
@@ -257,327 +320,272 @@ class _MessagingState extends State<Messaging> {
                                                         contacts.guardianNumber);
                                                   } else if (groupValue == oneParent) {
                                                     if (contacts.fatherNumber.isEmpty) {
-                                                      singleClassController.text += contacts.motherNumber + ",";
-                                                      print("hello ${singleClassController.text}");
+                                                      recipentController.text += contacts.motherNumber + ",";
+                                                      print("hello ${recipentController.text}");
                                                       return Text(contacts.motherNumber + ",");
                                                     } else {
-                                                      singleClassController.text += contacts.fatherNumber + ",";
-                                                      print("hello ${singleClassController.text}");
+                                                      recipentController.text += contacts.fatherNumber + ",";
+                                                      print("hello ${recipentController.text}");
                                                       return Text(contacts.fatherNumber + ",");
                                                     }
                                                   } else if (groupValue == bothParents) {
-                                                    singleClassController.text +=
+                                                    recipentController.text +=
                                                         contacts.fatherNumber + "," + contacts.motherNumber + ",";
-                                                    print("hello mom and dad ${singleClassController.text}");
                                                     return Text(contacts.motherNumber + "," + contacts.fatherNumber);
                                                   }
-                                                },
-                                              ),
-                                            );
-                                    }
-                                    return Loading();
-                                  },
-                                ),
-                                messageInput()
-                              ],
-                            ),
-                          ),
-                          Visibility(
-                            visible: _currentClass == parents,
-                            child: Column(
-                              children: <Widget>[
-                                FutureBuilder(
-                                  future: _smsManager.getAllParentContacts(),
-                                  builder: (BuildContext context, AsyncSnapshot snapshot) {
-                                    if (snapshot.hasData) {
-                                      parentContact = snapshot.data;
-                                      totalStudents = parentContact.length;
-                                      return Container(
-                                        decoration: BoxDecoration(border: Border.all()),
-                                        height: 150,
-                                        child: ListView.builder(
-                                          controller: _scrollController,
-                                          reverse: true,
-                                          physics: BouncingScrollPhysics(),
-                                          shrinkWrap: true,
-                                          itemCount: parentContact == null ? 0 : parentContact.length,
-                                          itemBuilder: (BuildContext context, int index) {
-                                            ParentsContacts contacts = parentContact[index];
-                                            if (_currentClass == parents) {
-                                              if (groupValue == allRegistred) {
-                                                recipentController.text = contacts.fatherNumber +
-                                                    "," +
-                                                    contacts.motherNumber +
-                                                    "," +
-                                                    contacts.guardianNumber;
-                                                return Text(contacts.fatherNumber +
-                                                    "," +
-                                                    contacts.motherNumber +
-                                                    "," +
-                                                    contacts.guardianNumber);
-                                              } else if (groupValue == oneParent) {
-                                                if (contacts.fatherNumber.isEmpty) {
-                                                  recipentController.text += contacts.motherNumber + ",";
-                                                  print("hello ${recipentController.text}");
-                                                  return Text(contacts.motherNumber + ",");
-                                                } else {
-                                                  recipentController.text += contacts.fatherNumber + ",";
-                                                  print("hello ${recipentController.text}");
-                                                  return Text(contacts.fatherNumber + ",");
                                                 }
-                                              } else if (groupValue == bothParents) {
-                                                recipentController.text +=
-                                                    contacts.fatherNumber + "," + contacts.motherNumber + ",";
-                                                return Text(contacts.motherNumber + "," + contacts.fatherNumber);
-                                              }
-                                            }
-                                          },
-                                        ),
-                                      );
-                                    }
-                                    return Loading();
-                                  },
-                                ),
-                                messageInput()
-                              ],
-                            ),
-                          ),
-                          Visibility(
-                            visible: _currentClass == teachers,
-                            child: Column(
-                              children: <Widget>[
-                                FutureBuilder(
-                                  future: _smsManager.getAllTeacherContacts(),
-                                  builder: (BuildContext context, AsyncSnapshot snapshot) {
-                                    if (snapshot.hasData) {
-                                      teachersContact = snapshot.data;
-                                      totalTeachers = teachersContact.length;
-                                      return Container(
-                                        decoration: BoxDecoration(border: Border.all()),
-                                        height: 150,
-                                        child: ListView.builder(
-                                          controller: _scrollController,
-                                          scrollDirection: Axis.vertical,
-                                          physics: BouncingScrollPhysics(),
-                                          shrinkWrap: true,
-                                          reverse: true,
-                                          itemCount: teachersContact == null ? 0 : teachersContact.length,
-                                          itemBuilder: (BuildContext context, int index) {
-                                            TeacherContacts teachersContacts = teachersContact[index];
-                                            if (_currentClass == teachers) {
-                                              teacherstextController.text += teachersContacts.phoneNumber + ',';
-                                              print(teacherstextController.text);
-                                            }
-                                            return Text(teachersContacts.phoneNumber + ',');
-                                          },
-                                        ),
-                                      );
-                                    }
-                                    return Loading();
-                                  },
-                                ),
-                                messageInput()
-                              ],
-                            ),
-                          ),
-                          // Visibility(
-                          //   visible: _currentClass == board,
-                          //   child: Column(
-                          //     children: <Widget>[
-                          //       FutureBuilder(
-                          //         future: _smsManager.getAllTeacherContacts(),
-                          //         builder: (BuildContext context, AsyncSnapshot snapshot) {
-                          //           if (snapshot.hasData) {
-                          //             teachersContact = snapshot.data;
-                          //             totalTeachers = teachersContact.length;
-
-                          //             return Container(
-                          //               decoration: BoxDecoration(border: Border.all()),
-                          //               height: 150,
-                          //               child: ListView.builder(
-                          //                 controller: _scrollController,
-                          //                 scrollDirection: Axis.vertical,
-                          //                 physics: BouncingScrollPhysics(),
-                          //                 shrinkWrap: true,
-                          //                 reverse: true,
-                          //                 itemCount: teachersContact == null ? 0 : teachersContact.length,
-                          //                 itemBuilder: (BuildContext context, int index) {
-                          //                   print(teachersContact.length);
-                          //                   TeacherContacts teachersContacts = teachersContact[index];
-                          //                   if (groupValue == board) {
-                          //                     boardtextController.text = teachersContacts.phoneNumber + ',';
-                          //                   }
-                          //                   return Text(teachersContacts.phoneNumber + ',');
-                          //                 },
-                          //               ),
-                          //             );
-                          //           }
-                          //           return Loading();
-                          //         },
-                          //       ),
-                          //       messageInput()
-                          //     ],
-                          //   ),
-                          // ),
-                          Visibility(
-                            visible: _currentClass == support,
-                            child: Column(
-                              children: <Widget>[
-                                FutureBuilder(
-                                  future: _smsManager.getSubordinateContacts(),
-                                  builder: (BuildContext context, AsyncSnapshot snapshot) {
-                                    if (snapshot.hasData) {
-                                      supportContact = snapshot.data;
-                                      totalSupport = supportContact.length;
-                                      return Container(
-                                        decoration: BoxDecoration(border: Border.all()),
-                                        height: 150,
-                                        child: ListView.builder(
-                                          controller: _scrollController,
-                                          physics: BouncingScrollPhysics(),
-                                          shrinkWrap: true,
-                                          reverse: true,
-                                          itemCount: supportContact == null ? 0 : supportContact.length,
-                                          itemBuilder: (BuildContext context, int index) {
-                                            print(supportContact.length);
-                                            SubOrdinateContact subOrdinate = supportContact[index];
-                                            if (_currentClass == support) {
-                                              supporttextController.text += subOrdinate.phone + ',';
-                                            }
-                                            return Text(subOrdinate.phone + ',');
-                                          },
-                                        ),
-                                      );
-                                    }
-                                    return Loading();
-                                  },
-                                ),
-                                messageInput()
-                              ],
-                            ),
-                          ),
-                          Visibility(
-                              visible: _currentClass == custom,
-                              child: Column(
-                                children: <Widget>[
-                                  TextFormField(
-                                    controller: individualController,
-                                    maxLines: 7,
-                                    validator: (v) {
-                                      if (v.length < 13) return 'The Number is too short';
-                                      if (v.isEmpty)
-                                        return 'cannot send a blank text';
-                                      else
-                                        return null;
-                                    },
-                                    decoration: InputDecoration(
-                                      enabled: true,
-                                      hintText: 'Message Separated by Commas e.g +254xxxxx,+254xxxxx',
-                                      focusedBorder: OutlineInputBorder(borderSide: BorderSide(color: Colors.grey)),
-                                      border: OutlineInputBorder(),
+                                              },
+                                            ),
+                                          );
+                                        }
+                                        return Loading();
+                                      },
                                     ),
-                                  ),
-                                  messageInput(),
-                                ],
-                              ))
-                        ],
-                      ),
-                    ),
-                    Divider(),
-                    SizedBox(
-                      height: 10,
-                    ),
-                    Padding(
-                      padding: const EdgeInsets.all(8.0),
-                      child: Column(
-                        crossAxisAlignment: CrossAxisAlignment.stretch,
-                        children: <Widget>[
-                          Visibility(
-                            visible: _currentClass != teachers &&
-                                _currentClass != board &&
-                                _currentClass != custom &&
-                                _currentClass != support,
-                            child: Text(
-                              'Number Of Students: $totalStudents',
-                              style: categoryTextStyle.copyWith(color: accentColor),
-                            ),
-                          ),
-                          SizedBox(
-                            height: 10,
-                          ),
-                          Text(
-                            'Number Of SMS: $totalMessages',
-                            style: categoryTextStyle.copyWith(color: accentColor),
-                          ),
-                          SizedBox(
-                            height: 10,
-                          ),
-                          Stack(
-                            children: <Widget>[
-                              Visibility(
-                                visible: _currentClass == parents ||
-                                    _currentClass == 'Form1' ||
-                                    _currentClass == 'Form2' ||
-                                    _currentClass == 'Form3' ||
-                                    _currentClass == 'Form4',
-                                child: Text(
-                                  'Sending:$totalMessages /${totalContacts.length}',
-                                  style: categoryTextStyle.copyWith(color: accentColor),
+                                    messageInput()
+                                  ],
                                 ),
                               ),
                               Visibility(
                                 visible: _currentClass == teachers,
-                                child: Text(
-                                  'Sending:$totalMessages /$totalTeachers',
-                                  style: categoryTextStyle.copyWith(color: accentColor),
+                                child: Column(
+                                  children: <Widget>[
+                                    FutureBuilder(
+                                      future: _smsManager.getAllTeacherContacts(),
+                                      builder: (BuildContext context, AsyncSnapshot snapshot) {
+                                        if (snapshot.hasData) {
+                                          teachersContact = snapshot.data;
+                                          totalTeachers = teachersContact.length;
+                                          return Container(
+                                            decoration: BoxDecoration(border: Border.all()),
+                                            height: 150,
+                                            child: ListView.builder(
+                                              controller: _scrollController,
+                                              scrollDirection: Axis.vertical,
+                                              physics: BouncingScrollPhysics(),
+                                              shrinkWrap: true,
+                                              reverse: true,
+                                              itemCount: teachersContact == null ? 0 : teachersContact.length,
+                                              itemBuilder: (BuildContext context, int index) {
+                                                TeacherContacts teachersContacts = teachersContact[index];
+                                                if (_currentClass == teachers) {
+                                                  teacherstextController.text += teachersContacts.phoneNumber + ',';
+                                                  print(teacherstextController.text);
+                                                }
+                                                return Text(teachersContacts.phoneNumber + ',');
+                                              },
+                                            ),
+                                          );
+                                        }
+                                        return Loading();
+                                      },
+                                    ),
+                                    messageInput()
+                                  ],
+                                ),
+                              ),
+                              // Visibility(
+                              //   visible: _currentClass == board,
+                              //   child: Column(
+                              //     children: <Widget>[
+                              //       FutureBuilder(
+                              //         future: _smsManager.getAllTeacherContacts(),
+                              //         builder: (BuildContext context, AsyncSnapshot snapshot) {
+                              //           if (snapshot.hasData) {
+                              //             teachersContact = snapshot.data;
+                              //             totalTeachers = teachersContact.length;
+
+                              //             return Container(
+                              //               decoration: BoxDecoration(border: Border.all()),
+                              //               height: 150,
+                              //               child: ListView.builder(
+                              //                 controller: _scrollController,
+                              //                 scrollDirection: Axis.vertical,
+                              //                 physics: BouncingScrollPhysics(),
+                              //                 shrinkWrap: true,
+                              //                 reverse: true,
+                              //                 itemCount: teachersContact == null ? 0 : teachersContact.length,
+                              //                 itemBuilder: (BuildContext context, int index) {
+                              //                   print(teachersContact.length);
+                              //                   TeacherContacts teachersContacts = teachersContact[index];
+                              //                   if (groupValue == board) {
+                              //                     boardtextController.text = teachersContacts.phoneNumber + ',';
+                              //                   }
+                              //                   return Text(teachersContacts.phoneNumber + ',');
+                              //                 },
+                              //               ),
+                              //             );
+                              //           }
+                              //           return Loading();
+                              //         },
+                              //       ),
+                              //       messageInput()
+                              //     ],
+                              //   ),
+                              // ),
+                              Visibility(
+                                visible: _currentClass == support,
+                                child: Column(
+                                  children: <Widget>[
+                                    FutureBuilder(
+                                      future: _smsManager.getSubordinateContacts(),
+                                      builder: (BuildContext context, AsyncSnapshot snapshot) {
+                                        if (snapshot.hasData) {
+                                          supportContact = snapshot.data;
+                                          totalSupport = supportContact.length;
+                                          return Container(
+                                            decoration: BoxDecoration(border: Border.all()),
+                                            height: 150,
+                                            child: ListView.builder(
+                                              controller: _scrollController,
+                                              physics: BouncingScrollPhysics(),
+                                              shrinkWrap: true,
+                                              reverse: true,
+                                              itemCount: supportContact == null ? 0 : supportContact.length,
+                                              itemBuilder: (BuildContext context, int index) {
+                                                print(supportContact.length);
+                                                SubOrdinateContact subOrdinate = supportContact[index];
+                                                if (_currentClass == support) {
+                                                  supporttextController.text += subOrdinate.phone + ',';
+                                                }
+                                                return Text(subOrdinate.phone + ',');
+                                              },
+                                            ),
+                                          );
+                                        }
+                                        return Loading();
+                                      },
+                                    ),
+                                    messageInput()
+                                  ],
                                 ),
                               ),
                               Visibility(
-                                visible: _currentClass == support,
+                                  visible: _currentClass == custom,
+                                  child: Column(
+                                    children: <Widget>[
+                                      TextFormField(
+                                        controller: individualController,
+                                        maxLines: 7,
+                                        validator: (v) {
+                                          if (v.length < 13) return 'The Number is too short';
+                                          if (v.isEmpty)
+                                            return 'cannot send a blank text';
+                                          else
+                                            return null;
+                                        },
+                                        decoration: InputDecoration(
+                                          enabled: true,
+                                          hintText: 'Message Separated by Commas e.g +254xxxxx,+254xxxxx',
+                                          focusedBorder: OutlineInputBorder(borderSide: BorderSide(color: Colors.grey)),
+                                          border: OutlineInputBorder(),
+                                        ),
+                                      ),
+                                      messageInput(),
+                                    ],
+                                  ))
+                            ],
+                          ),
+                        ),
+                        Divider(),
+                        SizedBox(
+                          height: 10,
+                        ),
+                        Padding(
+                          padding: const EdgeInsets.all(8.0),
+                          child: Column(
+                            crossAxisAlignment: CrossAxisAlignment.stretch,
+                            children: <Widget>[
+                              Visibility(
+                                visible: _currentClass != teachers &&
+                                    _currentClass != board &&
+                                    _currentClass != custom &&
+                                    _currentClass != support,
                                 child: Text(
-                                  'Sending:$totalMessages /$totalSupport',
+                                  'Number Of Students: $totalStudents',
                                   style: categoryTextStyle.copyWith(color: accentColor),
                                 ),
                               ),
+                              SizedBox(
+                                height: 10,
+                              ),
+                              Text(
+                                'Number Of SMS: $totalMessages',
+                                style: categoryTextStyle.copyWith(color: accentColor),
+                              ),
+                              SizedBox(
+                                height: 10,
+                              ),
+                              Stack(
+                                children: <Widget>[
+                                  Visibility(
+                                    visible: _currentClass == parents ||
+                                        _currentClass == 'Form1' ||
+                                        _currentClass == 'Form2' ||
+                                        _currentClass == 'Form3' ||
+                                        _currentClass == 'Form4',
+                                    child: Text(
+                                      'Sending:$totalMessages /${totalContacts.length}',
+                                      style: categoryTextStyle.copyWith(color: accentColor),
+                                    ),
+                                  ),
+                                  Visibility(
+                                    visible: _currentClass == teachers,
+                                    child: Text(
+                                      'Sending:$totalMessages /$totalTeachers',
+                                      style: categoryTextStyle.copyWith(color: accentColor),
+                                    ),
+                                  ),
+                                  Visibility(
+                                    visible: _currentClass == support,
+                                    child: Text(
+                                      'Sending:$totalMessages /$totalSupport',
+                                      style: categoryTextStyle.copyWith(color: accentColor),
+                                    ),
+                                  ),
+                                ],
+                              ),
                             ],
                           ),
-                        ],
-                      ),
-                    ),
-                    Padding(
-                      padding: const EdgeInsets.all(8.0),
-                      child: Container(
-                        alignment: Alignment.bottomCenter,
-                        child: MaterialButton(
-                          color: Colors.cyan,
-                          elevation: 0,
-                          shape: RoundedRectangleBorder(borderRadius: BorderRadius.all(Radius.circular(10))),
-                          minWidth: MediaQuery.of(context).size.width * .3,
-                          child: Text(
-                            'Send',
-                            style: categoriesStyle.copyWith(color: accentColor),
-                          ),
-                          onPressed: () {
-                            if (messageController.text.isNotEmpty && formKey.currentState.validate()) {
-                              messageAlert();
-                            } else if (messageController.text.isEmpty) {
-                              key.currentState.showSnackBar(SnackBar(
-                                content: Text(
-                                  'Cannot send a blank text',
-                                  textAlign: TextAlign.center,
-                                  style: TextStyle(color: Colors.red[400]),
-                                ),
-                              ));
-                            }
-
-                            // print(recipentController.text.toString());
-                          },
                         ),
-                      ),
+                        Padding(
+                          padding: const EdgeInsets.all(8.0),
+                          child: Container(
+                            alignment: Alignment.bottomCenter,
+                            child: MaterialButton(
+                              color: Colors.cyan,
+                              elevation: 0,
+                              shape: RoundedRectangleBorder(borderRadius: BorderRadius.all(Radius.circular(10))),
+                              minWidth: MediaQuery.of(context).size.width * .3,
+                              child: Text(
+                                'Send',
+                                style: categoriesStyle.copyWith(color: accentColor),
+                              ),
+                              onPressed: () {
+                                if (messageController.text.isNotEmpty && formKey.currentState.validate()) {
+                                  messageAlert();
+                                } else if (messageController.text.isEmpty) {
+                                  key.currentState.showSnackBar(SnackBar(
+                                    content: Text(
+                                      'Cannot send a blank text',
+                                      textAlign: TextAlign.center,
+                                      style: TextStyle(color: Colors.red[400]),
+                                    ),
+                                  ));
+                                }
+
+                                // print(recipentController.text.toString());
+                              },
+                            ),
+                          ),
+                        ),
+                      ],
                     ),
-                  ],
-                ),
-              )
+                  )
+                ],
+              ),
+              Visibility(
+                visible: false,
+                child: Center(child: Loading()))
             ],
           ),
         ),
@@ -775,6 +783,9 @@ class _MessagingState extends State<Messaging> {
         FlatButton.icon(
           color: Colors.green[300],
           onPressed: () async {
+            setState(() {
+              loading = true;
+            });
             Fluttertoast.showToast(msg: 'sending...');
             if (_currentClass == custom) {
               await sendSMS(individualController.text, messageController.text);
@@ -811,6 +822,9 @@ class _MessagingState extends State<Messaging> {
                 Fluttertoast.showToast(msg: 'Sent to $groupValue in Form4');
               }
             }
+            setState(() {
+              loading = false;
+            });
             sendMessage(context);
             Navigator.pop(context);
           },

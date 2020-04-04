@@ -1,11 +1,13 @@
 import 'package:flutter/material.dart';
 import 'package:fluttertoast/fluttertoast.dart';
+import 'package:shared_preferences/shared_preferences.dart';
 import 'package:walgotech_final/blocs/userBloc.dart';
 import 'package:walgotech_final/database/database.dart';
 import 'package:http/http.dart' show Client;
 import 'dart:convert';
 import 'package:walgotech_final/helperClasses/button.dart';
 import 'package:walgotech_final/models/schoolDetails.dart';
+import 'package:walgotech_final/resources/APIProvider.dart';
 import 'package:walgotech_final/styling.dart';
 
 class Login extends StatefulWidget {
@@ -17,10 +19,17 @@ class Login extends StatefulWidget {
 }
 
 class _LoginState extends State<Login> {
+  DBManagement _dbManagement = DBManagement();
+
   final scaffoldKey = GlobalKey<ScaffoldState>();
   final formKey = GlobalKey<FormState>();
   final userName = new TextEditingController();
   final password = new TextEditingController();
+  @override
+  void initState() {
+    super.initState();
+    saveSchoolDetails(context);
+  }
 
   @override
   Widget build(BuildContext context) {
@@ -108,8 +117,6 @@ class _LoginState extends State<Login> {
                       ),
                       callback: () async {
                         await signInValidate();
-                        await saveSchoolDetails(context);
-                        // Fluttertoast.showToast(msg: 'Login Success');
                       }),
                 ],
               ),
@@ -119,8 +126,13 @@ class _LoginState extends State<Login> {
             child: Column(
               children: <Widget>[
                 Text('Powered By'),
-                SizedBox(height: 10,),
-                Text('WALGOTECH',style: TextStyle(fontWeight: FontWeight.bold,fontSize: 17),),
+                SizedBox(
+                  height: 10,
+                ),
+                Text(
+                  'WALGOTECH',
+                  style: TextStyle(fontWeight: FontWeight.bold, fontSize: 17),
+                ),
               ],
             ),
           )
@@ -131,7 +143,7 @@ class _LoginState extends State<Login> {
 
   signInValidate() async {
     if (formKey.currentState.validate()) {
-      // formKey.currentState.reset();
+      Fluttertoast.showToast(msg: 'User Not Found');
       await userBloc.signInUser(userName.text, password.text).then((_) => widget.loginPressed());
       Fluttertoast.showToast(msg: 'Login Success');
     } else {
@@ -142,21 +154,27 @@ class _LoginState extends State<Login> {
   saveSchoolDetails(BuildContext context) async {
     Client client = Client();
     final SmsManager smsManager = new SmsManager();
-    String url = 'http://192.168.8.129:8000/backend/operations/readSchoolDetails.php';
+    String url = 'http://192.168.122.1:8000/backend/operations/readSchoolDetails.php';
 
     final response = await client.get(url);
     final Map result = json.decode(response.body);
     print(response.statusCode);
     if (response.statusCode == 200) {
-      for (int i = 0; i < result['school'][i]['schoolName'].length; i++) {
+      for (int i = 0; i < result['school'].length; i++) {
         SchoolDetails school = new SchoolDetails(
             schoolName: result['school'][i]['schoolName'],
             smsID: result['school'][i]['smsKey'],
             smsKey: result['school'][i]['smsID']);
         smsManager.addSchool(school).then((school) => print('$school has been added'));
+        saveSchoolName(result['school'][i]['schoolName']);
       }
     } else {
-      throw Exception('failed to add subordinate');
+      throw Exception('failed to add school');
     }
+  }
+
+  saveSchoolName(String schoolName) async {
+    SharedPreferences prefs = await SharedPreferences.getInstance();
+    prefs.setString('schoolName', schoolName);
   }
 }

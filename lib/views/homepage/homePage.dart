@@ -30,7 +30,6 @@ class _HomePageState extends State<HomePage> {
     signInUser();
     name = '';
     _dbManagement.showBalance();
-    getSchoolName();
     super.initState();
   }
 
@@ -61,6 +60,7 @@ class _HomePageState extends State<HomePage> {
 
   Future signInUser() async {
     name = await getUName();
+    schoolName = await getschoolName();
     if (name != null) {
       if (name.length > 0) {}
     } else {
@@ -126,14 +126,18 @@ class _HomePageState extends State<HomePage> {
     return preferences.getString('userName');
   }
 
+  getschoolName() async {
+    SharedPreferences prefs = await SharedPreferences.getInstance();
+    return prefs.getString('schoolName');
+  }
+
   getSchoolName() async {
     List<SchoolDetails> data = await _smsManager.getSchoolDetails();
     schoolDetails = data;
     setState(() {
       schoolName = schoolDetails[0].schoolName;
     });
-    print('object\n\n\n\n\n\n ' + schoolName);
+    print('School is: ' + schoolName);
     return schoolName;
   }
- 
 }
