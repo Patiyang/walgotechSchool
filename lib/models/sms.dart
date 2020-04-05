@@ -8,7 +8,7 @@ class SMS {
   String sender;
   String recipent;
 
-  SMS({id, @required this.message, @required this.sender, @required this.dateTime, this.recipent});
+  SMS({id, @required this.message, @required this.sender, @required this.dateTime,@required this.recipent});
 
   Map<String, dynamic> toMap() {
     return {

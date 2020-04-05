@@ -1,6 +1,5 @@
 import 'package:carousel_pro/carousel_pro.dart';
 import 'package:flutter/material.dart';
-import 'package:walgotech_final/styling.dart';
 
 class ImageCarousel extends StatelessWidget {
   @override

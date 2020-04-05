@@ -7,7 +7,7 @@ import 'package:walgotech_final/models/contacts.dart';
 import 'dart:convert';
 import 'package:http/http.dart' show Client;
 import 'package:walgotech_final/database/database.dart';
-import 'package:walgotech_final/styling.dart';
+import 'package:walgotech_final/models/sms.dart';
 
 class Settings extends StatefulWidget {
   @override
@@ -17,6 +17,7 @@ class Settings extends StatefulWidget {
 class _SettingsState extends State<Settings> {
   Client client = Client();
   bool loading = false;
+  SmsManager smsManager = new SmsManager();
   @override
   Widget build(BuildContext context) {
     return Stack(
@@ -49,6 +50,7 @@ class _SettingsState extends State<Settings> {
                           await saveClasses(context);
                           await saveStreams(context);
                           await saveSubOrdinate(context);
+                          await saveMessages(context);
                           Fluttertoast.showToast(msg: 'Data Has Been Updated');
                         }),
                     Padding(
@@ -94,7 +96,7 @@ class _SettingsState extends State<Settings> {
 
   saveParentContacts(BuildContext context) async {
     final SmsManager smsManager = new SmsManager();
-    String url = 'http://192.168.122.1:8000/backend/operations/readAll.php';
+    String url = 'http://192.168.8.129:8000/backend/operations/readAll.php';
     final response = await client.get(url);
     final Map result = json.decode(response.body);
     if (response.statusCode == 200) {
@@ -116,7 +118,7 @@ class _SettingsState extends State<Settings> {
 
   saveTeacherContacts(BuildContext context) async {
     final SmsManager smsManager = new SmsManager();
-    String url = 'http://192.168.122.1:8000/backend/operations/readAllTeachers.php';
+    String url = 'http://192.168.8.129:8000/backend/operations/readAllTeachers.php';
     final response = await client.get(url);
     final Map result = json.decode(response.body);
     if (response.statusCode == 200) {
@@ -133,7 +135,7 @@ class _SettingsState extends State<Settings> {
 
   saveClasses(BuildContext context) async {
     final SmsManager smsManager = new SmsManager();
-    String url = 'http://192.168.122.1:8000/backend/operations/readClass.php';
+    String url = 'http://192.168.8.129:8000/backend/operations/readClass.php';
 
     final response = await client.get(url);
     final Map result = json.decode(response.body);
@@ -153,7 +155,7 @@ class _SettingsState extends State<Settings> {
 
   saveStreams(BuildContext context) async {
     final SmsManager smsManager = new SmsManager();
-    String url = 'http://192.168.122.1:8000/backend/operations/readStream.php';
+    String url = 'http://192.168.8.129:8000/backend/operations/readStream.php';
 
     final response = await client.get(url);
     final Map result = json.decode(response.body);
@@ -173,7 +175,7 @@ class _SettingsState extends State<Settings> {
 
   saveSubOrdinate(BuildContext context) async {
     final SmsManager smsManager = new SmsManager();
-    String url = 'http://192.168.122.1:8000/backend/operations/readAllSubOrdinate.php';
+    String url = 'http://192.168.8.129:8000/backend/operations/readAllSubOrdinate.php';
 
     final response = await client.get(url);
     final Map result = json.decode(response.body);
@@ -191,6 +193,26 @@ class _SettingsState extends State<Settings> {
       }
     } else {
       throw Exception('failed to add subordinate');
+    }
+  }
+
+  saveMessages(BuildContext context) async {
+    String url = 'http://192.168.8.129:8000/backend/operations/readMessages.php';
+    final response = await client.get(url);
+
+    final Map result = json.decode(response.body);
+
+    print(response.statusCode);
+    if (response.statusCode == 200) {
+      for (int i = 0; i < result['messages'].length; i++) {
+        SMS sms = new SMS(
+          message: result['messages'][i]['message'],
+          sender: result['messages'][i]['userName'],
+          dateTime: result['messages'][i]['time'],
+          recipent: result['messages'][i]['recipent'],
+        );
+        smsManager.insertSMS(sms).then((sms) => print('$sms Messages have been added'));
+      }
     }
   }
 }

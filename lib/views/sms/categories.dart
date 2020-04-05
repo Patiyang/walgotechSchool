@@ -2,7 +2,6 @@ import 'package:curved_navigation_bar/curved_navigation_bar.dart';
 import 'package:flutter/material.dart';
 import 'package:gradient_app_bar/gradient_app_bar.dart';
 import 'package:shared_preferences/shared_preferences.dart';
-import 'package:walgotech_final/resources/APIProvider.dart';
 import 'package:walgotech_final/styling.dart';
 import 'package:walgotech_final/views/sms/parents/Mesaging.dart';
 import 'package:walgotech_final/views/sms/parents/messageHistory.dart';
@@ -17,7 +16,6 @@ class AllContactCategories extends StatefulWidget {
 
 class _AllContactCategoriesState extends State<AllContactCategories> {
   String bal;
-  DBManagement _dbManagement = DBManagement();
 
   int page = 0;
   final barKey = GlobalKey();

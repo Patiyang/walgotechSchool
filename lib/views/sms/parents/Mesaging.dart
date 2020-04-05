@@ -6,10 +6,10 @@ import 'package:walgotech_final/helperClasses/loading.dart';
 import 'package:walgotech_final/models/classes.dart';
 import 'package:walgotech_final/models/contacts.dart';
 import 'package:walgotech_final/models/sms.dart';
-import 'package:walgotech_final/resources/APIProvider.dart';
 import 'package:walgotech_final/resources/repository.dart';
 import 'package:walgotech_final/views/sms/parents/streams.dart';
 import '../../../styling.dart';
+import '../search.dart';
 
 enum Pages { Streams, Categories }
 
@@ -104,31 +104,43 @@ class _MessagingState extends State<Messaging> {
                     key: formKey,
                     child: Column(
                       children: <Widget>[
-                        Padding(
-                          padding: const EdgeInsets.symmetric(vertical: 8.0),
-                          child: Padding(
-                            padding: const EdgeInsets.symmetric(horizontal: 8.0),
-                            child: Material(
-                              elevation: 0,
-                              color: Colors.cyan,
-                              shape: RoundedRectangleBorder(borderRadius: BorderRadius.all(Radius.circular(6))),
-                              child: Padding(
-                                padding: const EdgeInsets.symmetric(horizontal: 8.0),
-                                child: DropdownButton(
-                                  underline: SizedBox(),
-                                  isExpanded: true,
-                                  icon: Icon(
-                                    Icons.arrow_downward,
-                                    color: Colors.black,
+                        ListTile(
+                          title: Row(
+                            children: <Widget>[
+                              Padding(
+                                padding: const EdgeInsets.symmetric(vertical: 8.0),
+                                child: Container(
+                                  width: 300,
+                                  child: Material(
+                                    elevation: 0,
+                                    color: Colors.cyan,
+                                    shape: RoundedRectangleBorder(borderRadius: BorderRadius.all(Radius.circular(6))),
+                                    child: Padding(
+                                      padding: const EdgeInsets.symmetric(horizontal: 8.0),
+                                      child: DropdownButton(
+                                        underline: SizedBox(),
+                                        isExpanded: true,
+                                        icon: Icon(
+                                          Icons.arrow_downward,
+                                          color: Colors.black,
+                                        ),
+                                        hint: Text('Select Category'),
+                                        items: classesDropDown,
+                                        onChanged: changeSelectedCategory,
+                                        disabledHint: Text('Select Category'),
+                                        value: classes.isEmpty ? null : _currentClass,
+                                      ),
+                                    ),
                                   ),
-                                  hint: Text('Select Category'),
-                                  items: classesDropDown,
-                                  onChanged: changeSelectedCategory,
-                                  disabledHint: Text('Select Category'),
-                                  value: classes.isEmpty ? null : _currentClass,
                                 ),
                               ),
-                            ),
+                              Spacer(),
+                              IconButton(
+                                  icon: Icon(Icons.search),
+                                  onPressed: () {
+                                    Navigator.push(context, MaterialPageRoute(builder: (_) => StudentSearch()));
+                                  })
+                            ],
                           ),
                         ),
                         Visibility(
@@ -482,7 +494,7 @@ class _MessagingState extends State<Messaging> {
                                       ),
                                       messageInput(),
                                     ],
-                                  ))
+                                  )),
                             ],
                           ),
                         ),
@@ -785,6 +797,7 @@ class _MessagingState extends State<Messaging> {
                 loading = true;
               });
               Navigator.pop(context);
+              await postSMS(_userName, messageController.text, _currentClass, DateTime.now().toString());
               await sendSMS(individualController.text, messageController.text);
               setState(() {
                 loading = false;
@@ -801,6 +814,7 @@ class _MessagingState extends State<Messaging> {
                 loading = true;
               });
               Navigator.pop(context);
+              await postSMS(_userName, messageController.text, _currentClass, DateTime.now().toString());
               await sendSMS(supporttextController.text, messageController.text);
               setState(() {
                 loading = false;
@@ -812,6 +826,7 @@ class _MessagingState extends State<Messaging> {
                 loading = true;
               });
               Navigator.pop(context);
+              await postSMS(_userName, messageController.text, _currentClass, DateTime.now().toString());
               await sendSMS(teacherstextController.text, messageController.text);
               setState(() {
                 loading = false;
@@ -826,6 +841,7 @@ class _MessagingState extends State<Messaging> {
                 loading = true;
               });
               Navigator.pop(context);
+              await postSMS(_userName, messageController.text, _currentClass, DateTime.now().toString());
               await sendSMS(recipentController.text, messageController.text);
               Fluttertoast.showToast(msg: 'Sent to $groupValue');
               setState(() {
@@ -837,6 +853,7 @@ class _MessagingState extends State<Messaging> {
                 loading = true;
               });
               Navigator.pop(context);
+              await postSMS(_userName, messageController.text, _currentClass, DateTime.now().toString());
               await sendSMS(singleClassController.text, messageController.text);
               if (_currentClass == 'Form1') {
                 Fluttertoast.showToast(msg: 'Sent to $groupValue in Form1');
@@ -884,6 +901,10 @@ class _MessagingState extends State<Messaging> {
 
   sendSMS(String phone, String message) async {
     await _repository.addMessage(phone, message);
+  }
+
+  postSMS(String userName, String message, String recipent, String time) async {
+    await _repository.uploadMessages(userName, message, recipent, time);
   }
 
   _messageLength() {

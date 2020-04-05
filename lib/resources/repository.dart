@@ -9,4 +9,7 @@ class Repository {
 
    Future addMessage(String phone,String message)=>
    apiProvider.sendMessages(phone, message);
+
+   Future uploadMessages(String userName, String message, String recipent, String time)=>
+   apiProvider.postMessage(userName, message, recipent, time);
 }
