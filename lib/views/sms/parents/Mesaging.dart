@@ -283,7 +283,7 @@ class _MessagingState extends State<Messaging> {
                                                       } else if (groupValue == bothParents) {
                                                         singleClassController.text +=
                                                             contacts.fatherNumber + "," + contacts.motherNumber + ",";
-                                                        print("hello mom and dad ${singleClassController.text}");
+                                                        // print("hello mom and dad ${singleClassController.text}");
                                                         return Text(contacts.motherNumber + "," + contacts.fatherNumber);
                                                       }
                                                     },
@@ -381,7 +381,7 @@ class _MessagingState extends State<Messaging> {
                                                 TeacherContacts teachersContacts = teachersContact[index];
                                                 if (_currentClass == teachers) {
                                                   teacherstextController.text += teachersContacts.phoneNumber + ',';
-                                                  print(teacherstextController.text);
+                                                  // print(teacherstextController.text);
                                                 }
                                                 return Text(teachersContacts.phoneNumber + ',');
                                               },
@@ -454,7 +454,7 @@ class _MessagingState extends State<Messaging> {
                                               reverse: true,
                                               itemCount: supportContact == null ? 0 : supportContact.length,
                                               itemBuilder: (BuildContext context, int index) {
-                                                print(supportContact.length);
+                                                // print(supportContact.length);
                                                 SubOrdinateContact subOrdinate = supportContact[index];
                                                 if (_currentClass == support) {
                                                   supporttextController.text += subOrdinate.phone + ',';
@@ -507,53 +507,184 @@ class _MessagingState extends State<Messaging> {
                           child: Column(
                             crossAxisAlignment: CrossAxisAlignment.stretch,
                             children: <Widget>[
-                              Visibility(
-                                visible: _currentClass != teachers &&
-                                    _currentClass != board &&
-                                    _currentClass != custom &&
-                                    _currentClass != support,
-                                child: Text(
-                                  'Number Of Students: $totalStudents',
-                                  style: categoryTextStyle.copyWith(color: accentColor),
-                                ),
-                              ),
-                              SizedBox(
-                                height: 10,
-                              ),
-                              Text(
-                                'Number Of SMS: $totalMessages',
-                                style: categoryTextStyle.copyWith(color: accentColor),
-                              ),
-                              SizedBox(
-                                height: 10,
-                              ),
                               Stack(
                                 children: <Widget>[
                                   Visibility(
-                                    visible: _currentClass == parents ||
-                                        _currentClass == 'Form1' ||
-                                        _currentClass == 'Form2' ||
-                                        _currentClass == 'Form3' ||
-                                        _currentClass == 'Form4',
-                                    child: Text(
-                                      'Sending:$totalMessages /${totalContacts.length * totalMessages}',
-                                      style: categoryTextStyle.copyWith(color: accentColor),
+                                    visible: _currentClass != teachers &&
+                                        _currentClass != board &&
+                                        _currentClass != custom &&
+                                        _currentClass != support,
+                                    child: Table(
+                                      border: TableBorder.all(),
+                                      children: [
+                                        TableRow(children: [
+                                          Column(crossAxisAlignment: CrossAxisAlignment.stretch, children: [
+                                            Padding(
+                                              padding: const EdgeInsets.all(3.0),
+                                              child: Text(
+                                                'Number Of Students: ',
+                                                style: categoryTextStyle.copyWith(color: accentColor),
+                                              ),
+                                            ),
+                                          ]),
+                                          Padding(
+                                            padding: const EdgeInsets.all(3.0),
+                                            child: Column(
+                                              crossAxisAlignment: CrossAxisAlignment.stretch,
+                                              children: <Widget>[
+                                                Text('$totalStudents'),
+                                              ],
+                                            ),
+                                          ),
+                                        ]),
+                                        TableRow(children: [
+                                          Column(crossAxisAlignment: CrossAxisAlignment.stretch, children: [
+                                            Padding(
+                                              padding: const EdgeInsets.all(3.0),
+                                              child: Text(
+                                                'Number Of SMS: ',
+                                                style: categoryTextStyle.copyWith(color: accentColor),
+                                              ),
+                                            ),
+                                          ]),
+                                          Column(
+                                            crossAxisAlignment: CrossAxisAlignment.stretch,
+                                            children: <Widget>[
+                                              Padding(
+                                                padding: const EdgeInsets.all(3.0),
+                                                child: Text('$totalMessages'),
+                                              ),
+                                            ],
+                                          ),
+                                        ]),
+                                        TableRow(children: [
+                                          Column(
+                                            crossAxisAlignment: CrossAxisAlignment.stretch,
+                                            children: [
+                                              Padding(
+                                                padding: EdgeInsets.all(3),
+                                                child: Text(
+                                                  'Sending:',
+                                                  style: categoryTextStyle.copyWith(color: accentColor),
+                                                ),
+                                              )
+                                            ],
+                                          ),
+                                          Column(
+                                            crossAxisAlignment: CrossAxisAlignment.stretch,
+                                            children: <Widget>[
+                                              Padding(
+                                                padding: const EdgeInsets.all(3.0),
+                                                child: Text('$totalMessages /${totalContacts.length * totalMessages}'),
+                                              )
+                                            ],
+                                          )
+                                        ])
+                                      ],
                                     ),
                                   ),
                                   Visibility(
                                     visible: _currentClass == teachers,
-                                    child: Text(
-                                      'Sending:$totalMessages /${totalTeachers * totalMessages}',
-                                      style: categoryTextStyle.copyWith(color: accentColor),
+                                    child: Table(
+                                      border: TableBorder.all(),
+                                      children: [
+                                        TableRow(children: [
+                                          Column(crossAxisAlignment: CrossAxisAlignment.stretch, children: [
+                                            Padding(
+                                              padding: const EdgeInsets.all(3.0),
+                                              child: Text(
+                                                'Number Of SMS: ',
+                                                style: categoryTextStyle.copyWith(color: accentColor),
+                                              ),
+                                            ),
+                                          ]),
+                                          Column(
+                                            crossAxisAlignment: CrossAxisAlignment.stretch,
+                                            children: <Widget>[
+                                              Padding(
+                                                padding: const EdgeInsets.all(3.0),
+                                                child: Text('$totalMessages'),
+                                              ),
+                                            ],
+                                          ),
+                                        ]),
+                                        TableRow(children: [
+                                          Column(
+                                            crossAxisAlignment: CrossAxisAlignment.stretch,
+                                            children: [
+                                              Padding(
+                                                padding: EdgeInsets.all(3),
+                                                child: Text(
+                                                  'Sending:',
+                                                  style: categoryTextStyle.copyWith(color: accentColor),
+                                                ),
+                                              )
+                                            ],
+                                          ),
+                                          Column(
+                                            crossAxisAlignment: CrossAxisAlignment.stretch,
+                                            children: <Widget>[
+                                              Padding(
+                                                padding: const EdgeInsets.all(3.0),
+                                                child: Text('$totalMessages /${totalTeachers * totalMessages}'),
+                                              )
+                                            ],
+                                          )
+                                        ])
+                                      ],
                                     ),
                                   ),
                                   Visibility(
                                     visible: _currentClass == support,
-                                    child: Text(
-                                      'Sending:$totalMessages /${totalSupport * totalMessages}',
-                                      style: categoryTextStyle.copyWith(color: accentColor),
+                                    child: Table(
+                                      border: TableBorder.all(),
+                                      children: [
+                                        TableRow(children: [
+                                          Column(crossAxisAlignment: CrossAxisAlignment.stretch, children: [
+                                            Padding(
+                                              padding: const EdgeInsets.all(3.0),
+                                              child: Text(
+                                                'Number Of SMS: ',
+                                                style: categoryTextStyle.copyWith(color: accentColor),
+                                              ),
+                                            ),
+                                          ]),
+                                          Column(
+                                            crossAxisAlignment: CrossAxisAlignment.stretch,
+                                            children: <Widget>[
+                                              Padding(
+                                                padding: const EdgeInsets.all(3.0),
+                                                child: Text('$totalMessages'),
+                                              ),
+                                            ],
+                                          ),
+                                        ]),
+                                        TableRow(children: [
+                                          Column(
+                                            crossAxisAlignment: CrossAxisAlignment.stretch,
+                                            children: [
+                                              Padding(
+                                                padding: EdgeInsets.all(3),
+                                                child: Text(
+                                                  'Sending:',
+                                                  style: categoryTextStyle.copyWith(color: accentColor),
+                                                ),
+                                              )
+                                            ],
+                                          ),
+                                          Column(
+                                            crossAxisAlignment: CrossAxisAlignment.stretch,
+                                            children: <Widget>[
+                                              Padding(
+                                                padding: const EdgeInsets.all(3.0),
+                                                child: Text('$totalMessages /${totalSupport * totalMessages}'),
+                                              )
+                                            ],
+                                          )
+                                        ])
+                                      ],
                                     ),
-                                  ),
+                                  )
                                 ],
                               ),
                             ],
@@ -686,6 +817,7 @@ class _MessagingState extends State<Messaging> {
 
   changeSelectedCategory(String selectedClass) {
     setState(() {
+      messageController.clear();
       teacherstextController.clear();
       supporttextController.clear();
       singleClassController.clear();
