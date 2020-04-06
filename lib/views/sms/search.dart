@@ -36,6 +36,7 @@ class _StudentSearchState extends State<StudentSearch> {
 
 class DataSearch extends SearchDelegate<String> {
   List groupContacts = <String>[];
+  List<ParentsContacts> customList = <ParentsContacts>[];
   List recents = ['Search by Admission Number'];
   List<ParentsContacts> parentContact;
   SmsManager _smsManager = SmsManager();
@@ -59,7 +60,9 @@ class DataSearch extends SearchDelegate<String> {
         icon: AnimatedIcons.menu_arrow,
         progress: transitionAnimation,
       ),
-      onPressed: () {},
+      onPressed: () {
+        Navigator.pop(context);
+      },
     );
   }
 
@@ -67,9 +70,9 @@ class DataSearch extends SearchDelegate<String> {
   Widget buildResults(BuildContext context) {
     // show results based on the selections
     return ListView.builder(
-      itemCount: 1, //PICK UP FROM HERE
+      itemCount: customList.length, //PICK UP FROM HERE
       itemBuilder: (BuildContext context, int index) {
-        return;
+        return Text(parentContact[index].guardianNumber);
       },
     );
   }
@@ -84,6 +87,7 @@ class DataSearch extends SearchDelegate<String> {
       itemBuilder: (BuildContext context, int index) {
         return ListTile(
           onTap: () {
+            customList.add(parentContact[index]);
             showResults(context);
           },
           leading: Icon(Icons.person),
@@ -102,9 +106,7 @@ class DataSearch extends SearchDelegate<String> {
     List<ParentsContacts> data = await _smsManager.getAllParentContacts();
     parentContact = data;
     for (int i = 0; i < parentContact.length; i++) {
-      // groupContacts.clear();
       groupContacts.insert(0, parentContact[i].admission);
-      // print(' this is it${groupContacts.toString()}');
     }
   }
 }

@@ -264,7 +264,7 @@ class _MessagingState extends State<Messaging> {
                                                             contacts.motherNumber +
                                                             "," +
                                                             contacts.guardianNumber;
-                                                        print("hello ${singleClassController.text}");
+                                                        // print("hello ${singleClassController.text}");
                                                         return Text(contacts.fatherNumber +
                                                             "," +
                                                             contacts.motherNumber +
@@ -273,11 +273,11 @@ class _MessagingState extends State<Messaging> {
                                                       } else if (groupValue == oneParent) {
                                                         if (contacts.fatherNumber.isEmpty) {
                                                           singleClassController.text += contacts.motherNumber + ",";
-                                                          print("hello ${singleClassController.text}");
+                                                          // print("hello ${singleClassController.text}");
                                                           return Text(contacts.motherNumber + ",");
                                                         } else {
                                                           singleClassController.text += contacts.fatherNumber + ",";
-                                                          print("hello ${singleClassController.text}");
+                                                          // print("hello ${singleClassController.text}");
                                                           return Text(contacts.fatherNumber + ",");
                                                         }
                                                       } else if (groupValue == bothParents) {
@@ -333,11 +333,11 @@ class _MessagingState extends State<Messaging> {
                                                   } else if (groupValue == oneParent) {
                                                     if (contacts.fatherNumber.isEmpty) {
                                                       recipentController.text += contacts.motherNumber + ",";
-                                                      print("hello ${recipentController.text}");
+                                                      // print("hello ${recipentController.text}");
                                                       return Text(contacts.motherNumber + ",");
                                                     } else {
                                                       recipentController.text += contacts.fatherNumber + ",";
-                                                      print("hello ${recipentController.text}");
+                                                      // print("hello ${recipentController.text}");
                                                       return Text(contacts.fatherNumber + ",");
                                                     }
                                                   } else if (groupValue == bothParents) {
@@ -817,7 +817,7 @@ class _MessagingState extends State<Messaging> {
 
   changeSelectedCategory(String selectedClass) {
     setState(() {
-      messageController.clear();
+      // messageController.clear();
       teacherstextController.clear();
       supporttextController.clear();
       singleClassController.clear();
@@ -879,9 +879,11 @@ class _MessagingState extends State<Messaging> {
         } else if (value == bothParents) {
           groupValue = value;
           category = value;
-          if (contacts.fatherNumber.isNotEmpty && contacts.motherNumber.isNotEmpty) {
-            totalContacts.add(contacts.motherNumber);
+          if (contacts.fatherNumber.isNotEmpty) {
             totalContacts.add(contacts.fatherNumber);
+          }
+          if (contacts.motherNumber.isNotEmpty) {
+            totalContacts.add(contacts.motherNumber);
           }
         }
       }
