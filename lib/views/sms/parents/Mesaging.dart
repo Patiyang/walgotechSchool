@@ -138,7 +138,8 @@ class _MessagingState extends State<Messaging> {
                               IconButton(
                                   icon: Icon(Icons.search),
                                   onPressed: () {
-                                    Navigator.push(context, MaterialPageRoute(builder: (_) => StudentSearch()));
+                                    // Navigator.push(context, MaterialPageRoute(builder: (_) => StudentSearch()));
+                                    showSearch(context: context, delegate: DataSearch());
                                   })
                             ],
                           ),
@@ -817,7 +818,6 @@ class _MessagingState extends State<Messaging> {
 
   changeSelectedCategory(String selectedClass) {
     setState(() {
-      // messageController.clear();
       teacherstextController.clear();
       supporttextController.clear();
       singleClassController.clear();

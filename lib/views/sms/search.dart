@@ -3,36 +3,32 @@ import 'package:gradient_app_bar/gradient_app_bar.dart';
 import 'package:walgotech_final/database/database.dart';
 import 'package:walgotech_final/models/contacts.dart';
 
-class StudentSearch extends StatefulWidget {
-  @override
-  _StudentSearchState createState() => _StudentSearchState();
-}
+// class StudentSearch extends StatefulWidget {
+//   @override
+//   _StudentSearchState createState() => _StudentSearchState();
+// }
 
-class _StudentSearchState extends State<StudentSearch> {
-  @override
-  Widget build(BuildContext context) {
-    return Scaffold(
-      // child: IconButton(
-      //     icon: Icon(Icons.search),
-      //     onPressed: () {
-      //       showSearch(context: context, delegate: DataSearch());
-      //     }),
-      appBar: GradientAppBar(
-        elevation: 0,
-        gradient: LinearGradient(colors: [Colors.cyan, Colors.indigo]),
-        centerTitle: true,
-        title: Text('Send Group Message'),
-        actions: <Widget>[
-          IconButton(
-              icon: Icon(Icons.search),
-              onPressed: () {
-                showSearch(context: context, delegate: DataSearch());
-              })
-        ],
-      ),
-    );
-  }
-}
+// class _StudentSearchState extends State<StudentSearch> {
+//   @override
+//   Widget build(BuildContext context) {
+//     return Scaffold(
+//       appBar: GradientAppBar(
+//         elevation: 0,
+//         gradient: LinearGradient(colors: [Colors.cyan, Colors.indigo]),
+//         centerTitle: true,
+//         title: Text('Send Group Message'),
+//         actions: <Widget>[
+//           IconButton(
+//               icon: Icon(Icons.search),
+//               onPressed: () {
+//                 showSearch(context: context, delegate: DataSearch());
+//               })
+//         ],
+//       ),
+//       body: Text('data'),
+//     );
+//   }
+// }
 
 class DataSearch extends SearchDelegate<String> {
   List groupContacts = <String>[];
@@ -61,6 +57,8 @@ class DataSearch extends SearchDelegate<String> {
         progress: transitionAnimation,
       ),
       onPressed: () {
+        groupContacts.clear();
+        customList.clear();
         Navigator.pop(context);
       },
     );
@@ -69,25 +67,64 @@ class DataSearch extends SearchDelegate<String> {
   @override
   Widget buildResults(BuildContext context) {
     // show results based on the selections
-    return ListView.builder(
-      itemCount: customList.length, //PICK UP FROM HERE
-      itemBuilder: (BuildContext context, int index) {
-        return Text(parentContact[index].guardianNumber);
-      },
+    return Padding(
+      padding: const EdgeInsets.all(8.0),
+      child: ListView.builder(
+        itemCount: customList.length, //PICK UP FROM HERE
+        itemBuilder: (BuildContext context, int index) {
+          return Column(
+            children: <Widget>[
+              Table(
+                border: TableBorder.all(),
+                children: [
+                  TableRow(children: [
+                    Column(
+                      children: <Widget>[
+                        Padding(
+                          padding: const EdgeInsets.all(3.0),
+                          child: Text(parentContact[index].admission),
+                        )
+                      ],
+                    ),
+                    Column(
+                      children: <Widget>[
+                        Padding(
+                          padding: const EdgeInsets.all(3.0),
+                          child: Text(parentContact[index].form),
+                        )
+                      ],
+                    ),
+                    Column(
+                      children: <Widget>[
+                        Padding(
+                          padding: const EdgeInsets.all(3.0),
+                          child: Text(parentContact[index].studentName),
+                        )
+                      ],
+                    )
+                  ])
+                ],
+              ),
+            ],
+          );
+        },
+      ),
     );
   }
 
   @override
   Widget buildSuggestions(BuildContext context) {
-    getParentContacts();
     @override
     final suggestionList = query.isEmpty ? recents : groupContacts.where((p) => p.startsWith(query)).toList();
     return ListView.builder(
       itemCount: suggestionList.length,
       itemBuilder: (BuildContext context, int index) {
+        getParentContacts();
         return ListTile(
           onTap: () {
             customList.add(parentContact[index]);
+            groupContacts.clear();
+            suggestionList.clear();
             showResults(context);
           },
           leading: Icon(Icons.person),
@@ -106,7 +143,7 @@ class DataSearch extends SearchDelegate<String> {
     List<ParentsContacts> data = await _smsManager.getAllParentContacts();
     parentContact = data;
     for (int i = 0; i < parentContact.length; i++) {
-      groupContacts.insert(0, parentContact[i].admission);
+      groupContacts.add(parentContact[i].admission);
     }
   }
 }

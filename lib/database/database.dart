@@ -24,7 +24,8 @@ Future openDB() async {
           "guardianNumber TEXT,"
           "form TEXT,"
           "admission TEXT,"
-          "streams TEXT"
+          "streams TEXT,"
+          "studentName TEXT"
           ")");
       await db.execute("CREATE TABLE teacherContacts ("
           "id INTEGER PRIMARYKEY,"
@@ -159,13 +160,13 @@ class SmsManager {
         await _database.query(ParentsContactsManager.tableName, where: 'form = ?', whereArgs: [form]);
     return List.generate(contacts.length, (i) {
       return ParentsContacts(
-        fatherNumber: contacts[i][ParentsContactsManager.fatherNumber],
-        motherNumber: contacts[i][ParentsContactsManager.motherNumber],
-        guardianNumber: contacts[i][ParentsContactsManager.guardianNumber],
-        form: contacts[i][ParentsContactsManager.form],
-        admission: contacts[i][ParentsContactsManager.admission],
-        streams: contacts[i][ParentsContactsManager.streams],
-      );
+          fatherNumber: contacts[i][ParentsContactsManager.fatherNumber],
+          motherNumber: contacts[i][ParentsContactsManager.motherNumber],
+          guardianNumber: contacts[i][ParentsContactsManager.guardianNumber],
+          form: contacts[i][ParentsContactsManager.form],
+          admission: contacts[i][ParentsContactsManager.admission],
+          streams: contacts[i][ParentsContactsManager.streams],
+          studentName: contacts[i][ParentsContactsManager.studentName]);
     });
   }
 
@@ -174,13 +175,13 @@ class SmsManager {
     final List<Map<String, dynamic>> contacts = await _database.query(ParentsContactsManager.tableName);
     return List.generate(contacts.length, (i) {
       return ParentsContacts(
-        fatherNumber: contacts[i][ParentsContactsManager.fatherNumber],
-        motherNumber: contacts[i][ParentsContactsManager.motherNumber],
-        guardianNumber: contacts[i][ParentsContactsManager.guardianNumber],
-        form: contacts[i][ParentsContactsManager.form],
-        admission: contacts[i][ParentsContactsManager.admission],
-        streams: contacts[i][ParentsContactsManager.streams],
-      );
+          fatherNumber: contacts[i][ParentsContactsManager.fatherNumber],
+          motherNumber: contacts[i][ParentsContactsManager.motherNumber],
+          guardianNumber: contacts[i][ParentsContactsManager.guardianNumber],
+          form: contacts[i][ParentsContactsManager.form],
+          admission: contacts[i][ParentsContactsManager.admission],
+          streams: contacts[i][ParentsContactsManager.streams],
+          studentName: contacts[i][ParentsContactsManager.studentName]);
     });
   }
 
@@ -190,13 +191,13 @@ class SmsManager {
         .query(ParentsContactsManager.tableName, where: 'form = ? AND streams = ? ', whereArgs: [classname, stream]);
     return List.generate(contacts.length, (i) {
       return ParentsContacts(
-        fatherNumber: contacts[i][ParentsContactsManager.fatherNumber],
-        motherNumber: contacts[i][ParentsContactsManager.motherNumber],
-        guardianNumber: contacts[i][ParentsContactsManager.guardianNumber],
-        form: contacts[i][ParentsContactsManager.form],
-        admission: contacts[i][ParentsContactsManager.admission],
-        streams: contacts[i][ParentsContactsManager.streams],
-      );
+          fatherNumber: contacts[i][ParentsContactsManager.fatherNumber],
+          motherNumber: contacts[i][ParentsContactsManager.motherNumber],
+          guardianNumber: contacts[i][ParentsContactsManager.guardianNumber],
+          form: contacts[i][ParentsContactsManager.form],
+          admission: contacts[i][ParentsContactsManager.admission],
+          streams: contacts[i][ParentsContactsManager.streams],
+          studentName: contacts[i][ParentsContactsManager.studentName]);
     });
   }
 
@@ -240,6 +241,7 @@ class ParentsContactsManager {
   static const form = 'form';
   static const admission = 'admission';
   static const streams = 'streams';
+  static const studentName = 'studentName';
 }
 
 class TeacherManager {

@@ -9,6 +9,7 @@ class ParentsContacts {
   String form;
   String admission;
   String streams;
+  String studentName;
 
   ParentsContacts(
       {@required this.motherNumber,
@@ -16,7 +17,8 @@ class ParentsContacts {
       @required this.guardianNumber,
       @required this.form,
       @required this.admission,
-      @required this.streams});
+      @required this.streams,
+      @required this.studentName});
 
   Map<String, dynamic> toMap() {
     return {
@@ -25,10 +27,10 @@ class ParentsContacts {
       ParentsContactsManager.guardianNumber: guardianNumber,
       ParentsContactsManager.form: form,
       ParentsContactsManager.streams: streams,
-      ParentsContactsManager.admission:admission
+      ParentsContactsManager.admission: admission,
+      ParentsContactsManager.studentName:studentName
     };
   }
-
 
   factory ParentsContacts.fromJson(Map<String, dynamic> json) {
     return new ParentsContacts(
@@ -37,7 +39,8 @@ class ParentsContacts {
         guardianNumber: json[ParentsContactsManager.guardianNumber],
         form: json[ParentsContactsManager.form],
         admission: json[ParentsContactsManager.admission],
-        streams: json[ParentsContactsManager.streams]);
+        streams: json[ParentsContactsManager.streams],
+        studentName: json[ParentsContactsManager.studentName]);
   }
 }
 

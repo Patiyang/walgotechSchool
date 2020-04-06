@@ -108,6 +108,7 @@ class _SettingsState extends State<Settings> {
           form: result['contacts'][i]['form'],
           admission: result['contacts'][i]['Admission'],
           streams: result['contacts'][i]['stream'],
+          studentName: result['contacts'][i]['studentName']
         );
         smsManager.addParentsContacts(contacts).then((contact) => print('$contact has been added'));
       }
